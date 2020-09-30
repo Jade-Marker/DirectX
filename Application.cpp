@@ -69,7 +69,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -78,6 +78,31 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
+    Cube* cube;
+    cube = new Cube(
+        0, 0, 0,
+        0, 0, 0,
+        1, 1, 0,
+        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+    );
+    _cubes.push_back(cube);
+
+    cube = new Cube(
+        5, 0, 0,
+        30, 0, 20,
+        0, -1, 0,
+        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+    );
+    _cubes.push_back(cube);
+
+
+    cube = new Cube(
+        -5, 0, 0,
+        30, 0, 20,
+        -2, 0, 0.5f,
+        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+    );
+    _cubes.push_back(cube);
 	return S_OK;
 }
 
@@ -153,16 +178,21 @@ HRESULT Application::InitVertexBuffer()
     // Create vertex buffer
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, 1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f ) },
-        { XMFLOAT3( -1.0f, -1.0f, 0.0f ), XMFLOAT4( 0.0f, 1.0f, 1.0f, 1.0f ) },
-        { XMFLOAT3( 1.0f, -1.0f, 0.0f ), XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },     //0
+        { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //1
+        { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },    //2
+        { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },     //3
+
+        { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },      //4
+        { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },       //5
+        { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.5f, 5.0f, 1.0f) },     //6
+        { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },      //7
     };
 
     D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(SimpleVertex) * 4;
+    bd.ByteWidth = sizeof(SimpleVertex) * 8;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -187,13 +217,28 @@ HRESULT Application::InitIndexBuffer()
     {
         0,1,2,
         2,1,3,
+
+        1,5,3,
+        3,5,7,
+
+        5,4,7,
+        7,4,6,
+
+        4,0,6,
+        6,0,2,
+
+        4,5,0,
+        0,5,1,
+
+        6,2,3,
+        7,6,3
     };
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * 6;     
+    bd.ByteWidth = sizeof(WORD) * 36;     
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 
@@ -399,32 +444,15 @@ void Application::Cleanup()
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
+
+    for (int i = 0; i < _cubes.size(); i++)
+        delete _cubes[i];
 }
 
 void Application::Update()
 {
-    // Update our time
-    static float t = 0.0f;
-
-    if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
-    {
-        t += (float) XM_PI * 0.0125f;
-    }
-    else
-    {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
-
-        if (dwTimeStart == 0)
-            dwTimeStart = dwTimeCur;
-
-        t = (dwTimeCur - dwTimeStart) / 1000.0f;
-    }
-
-    //
-    // Animate the cube
-    //
-	XMStoreFloat4x4(&_world, XMMatrixRotationZ(t));
+    for (int i = 0; i < _cubes.size(); i++)
+        _cubes[i]->Update();
 }
 
 void Application::Draw()
@@ -435,27 +463,8 @@ void Application::Draw()
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
 
-	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_view);
-	XMMATRIX projection = XMLoadFloat4x4(&_projection);
-    //
-    // Update variables
-    //
-    ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
-
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    //
-    // Renders a triangle
-    //
-	_pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	_pImmediateContext->DrawIndexed(6, 0, 0);        
+    for (int i = 0; i < _cubes.size(); i++)
+        _cubes[i]->Draw(_view, _projection);
 
     //
     // Present our back buffer to our front buffer

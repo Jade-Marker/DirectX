@@ -12,10 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Structures.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
+    <ClCompile Include="Cube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

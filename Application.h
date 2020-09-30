@@ -5,22 +5,12 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
+#include <vector>
+#include "Structures.h"
 #include "resource.h"
+#include "Cube.h"
 
 using namespace DirectX;
-
-struct SimpleVertex
-{
-    XMFLOAT3 Pos;
-    XMFLOAT4 Color;
-};
-
-struct ConstantBuffer
-{
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-};
 
 class Application
 {
@@ -54,6 +44,9 @@ private:
 
 	UINT _WindowHeight;
 	UINT _WindowWidth;
+
+private:
+	std::vector<Cube*> _cubes;
 
 public:
 	Application();
