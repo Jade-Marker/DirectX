@@ -10,18 +10,17 @@ class Cube
 {
 private:
 	ID3D11DeviceContext* _pImmediateContext;
-	D3D_DRIVER_TYPE _driverType;
 	ID3D11VertexShader* _pVertexShader;
 	ID3D11PixelShader* _pPixelShader;
 	ID3D11Buffer* _pConstantBuffer;
-	float _x, _y, _z;
-	float _xAngle, _yAngle, _zAngle;
-	float _tX, _tY, _tZ;
+	XMFLOAT3 _position;
+	XMFLOAT3 _angle;
+	XMFLOAT3 _tScale;
 	float _t;
 
 public:
-	Cube(float x, float y, float z, float xAngle, float yAngle, float zAngle, float tX, float tY, float tZ,
-		ID3D11DeviceContext* pImmediateContext, D3D_DRIVER_TYPE driverType, ID3D11VertexShader* pVertexShader, ID3D11PixelShader* pPixelShader, ID3D11Buffer* pConstantBuffer);
+	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
+		ID3D11DeviceContext* pImmediateContext, ID3D11VertexShader* pVertexShader, ID3D11PixelShader* pPixelShader, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update();
 };

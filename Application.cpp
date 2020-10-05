@@ -80,27 +80,34 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     Cube* cube;
     cube = new Cube(
-        0, 0, 0,
-        0, 0, 0,
-        1, 1, 0,
-        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(1, 1, 0),
+        _pImmediateContext, _pVertexShader, _pPixelShader, _pConstantBuffer
     );
     _cubes.push_back(cube);
 
     cube = new Cube(
-        5, 0, 0,
-        30, 0, 20,
-        0, -1, 0,
-        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+        XMFLOAT3(5, 0, 0),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(0, -1, 0),
+        _pImmediateContext, _pVertexShader, _pPixelShader, _pConstantBuffer
     );
     _cubes.push_back(cube);
 
+    cube = new Cube(
+        XMFLOAT3(0, 6, 0),
+        XMFLOAT3(-5, 0, 3),
+        XMFLOAT3(0.27f, -3.0f,1000),
+        _pImmediateContext, _pVertexShader, _pPixelShader, _pConstantBuffer
+    );
+    _cubes.push_back(cube);
 
     cube = new Cube(
-        -5, 0, 0,
-        30, 0, 20,
-        -2, 0, 0.5f,
-        _pImmediateContext, _driverType, _pVertexShader, _pPixelShader, _pConstantBuffer
+        XMFLOAT3(-5, 0, 0),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(-2, 0, 0.5f),
+        _pImmediateContext, _pVertexShader, _pPixelShader, _pConstantBuffer
     );
     _cubes.push_back(cube);
 	return S_OK;

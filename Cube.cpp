@@ -1,19 +1,17 @@
 #include "Cube.h"
 
-Cube::Cube(float x, float y, float z, float xAngle, float yAngle, float zAngle, float tX, float tY, float tZ,
-    ID3D11DeviceContext* pImmediateContext, D3D_DRIVER_TYPE driverType, ID3D11VertexShader* pVertexShader, ID3D11PixelShader* pPixelShader, ID3D11Buffer* pConstantBuffer):
-	_x(x), _y(y), _z(z), _xAngle(xAngle), _yAngle(yAngle), _zAngle(zAngle), _tX(tX), _tY(tY), _tZ(tZ),
-    _pImmediateContext(pImmediateContext), _t(0.0f), _driverType(driverType), _pVertexShader(pVertexShader), _pPixelShader(pPixelShader), _pConstantBuffer(pConstantBuffer)
+Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
+    ID3D11DeviceContext* pImmediateContext, ID3D11VertexShader* pVertexShader, ID3D11PixelShader* pPixelShader, ID3D11Buffer* pConstantBuffer):
+	_position(position), _angle(angle), _tScale(tScale),
+    _pImmediateContext(pImmediateContext), _t(0.0f), _pVertexShader(pVertexShader), _pPixelShader(pPixelShader), _pConstantBuffer(pConstantBuffer)
 {
 }
 
 void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 {
     DirectX::XMMATRIX mWorld =
-        DirectX::XMMatrixRotationZ(_zAngle) *
-        DirectX::XMMatrixRotationY(_yAngle) *
-        DirectX::XMMatrixRotationX(_xAngle) *
-        DirectX::XMMatrixTranslation(_x, _y, _z) *
+        DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
+        DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
         DirectX::XMMatrixIdentity();
 
     DirectX::XMMATRIX mView = XMLoadFloat4x4(&view);
@@ -42,22 +40,15 @@ void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 void Cube::Update()
 {
-    if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
-    {
-        _t += (float)DirectX::XM_PI * 0.0125f;
-    }
-    else
-    {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount();
+    static DWORD dwTimeStart = 0;
+    DWORD dwTimeCur = GetTickCount();
 
-        if (dwTimeStart == 0)
-            dwTimeStart = dwTimeCur;
+    if (dwTimeStart == 0)
+        dwTimeStart = dwTimeCur;
 
-        _t = (dwTimeCur - dwTimeStart) / 1000.0f;
-    }
+    _t = (dwTimeCur - dwTimeStart) / 1000.0f;
 
-    _xAngle = _t * _tX;
-    _yAngle = _t * _tY;
-    _zAngle = _t * _tZ;
+    _angle.x = _t * _tScale.x;
+    _angle.y = _t * _tScale.y;
+    _angle.z = _t * _tScale.z;
 }
