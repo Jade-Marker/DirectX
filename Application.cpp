@@ -93,7 +93,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     cube = new Cube(                     
         XMFLOAT3(0, 6, 0),               
         XMFLOAT3(-5, 0, 3),              
-        XMFLOAT3(0.27f, -3.0f,12.5f),     
+        XMFLOAT3(0.27f, -3.0f,6),     
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
     _cubes.push_back(cube);              

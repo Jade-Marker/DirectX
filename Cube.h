@@ -23,6 +23,11 @@ private:
 	XMFLOAT3 _tScale;
 	float _t;
 
+	SimpleVertex* vertexSource;
+	UINT vertexCount;
+	WORD* indexSource;
+	UINT indexCount;
+
 public:
 	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
