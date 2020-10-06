@@ -16,6 +16,7 @@ private:
 	ID3D11Buffer* _pVertexBuffer;
 	ID3D11Buffer* _pIndexBuffer;
 	ID3D11Buffer* _pConstantBuffer;
+	ID3D11InputLayout* _pVertexLayout;
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;
@@ -24,13 +25,15 @@ private:
 
 public:
 	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
-		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11VertexShader* pVertexShader, ID3D11PixelShader* pPixelShader, ID3D11Buffer* pConstantBuffer);
+		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update();
 
 private:
 	HRESULT InitVertexBuffer();
 	HRESULT InitIndexBuffer();
-	void BindBuffers();
+	HRESULT InitShadersAndInputLayout();
+	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+	void BindBuffersAndLayout();
 };
 
