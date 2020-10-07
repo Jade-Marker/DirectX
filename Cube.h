@@ -20,6 +20,7 @@ private:
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;
+	XMFLOAT3 _scale;
 	XMFLOAT3 _tScale;
 	float _t;
 
@@ -29,7 +30,7 @@ private:
 	UINT indexCount;
 
 public:
-	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
+	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update();

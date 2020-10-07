@@ -55,12 +55,12 @@ static WORD pyramidIndices[] =
     2,0,4
 };
 
-Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 tScale,
+Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
-	_position(position), _angle(angle), _tScale(tScale),
+	_position(position), _angle(angle), _scale(scale), _tScale(tScale),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer)
 {
-    if (position.x == 0)
+    if (position.x == 0 && position.y == 0)
     {
         vertexSource = vertices;
         vertexCount = 8;
@@ -85,6 +85,7 @@ void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
     BindBuffersAndLayout();
 
     DirectX::XMMATRIX mWorld =
+        DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) * 
         DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
         DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
         DirectX::XMMatrixIdentity();

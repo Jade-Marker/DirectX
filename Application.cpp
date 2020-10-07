@@ -75,24 +75,27 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     Cube* cube;
     cube = new Cube(
+        XMFLOAT3(5, 0, -3),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(1, 3, 1),
+        XMFLOAT3(0, -1, 0),
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+    _cubes.push_back(cube);
+
+    cube = new Cube(
+        XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
-        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(1, 1, 0),
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
-    _cubes.push_back(cube);              
-                                         
-    cube = new Cube(                     
-        XMFLOAT3(5, 0, 0),               
-        XMFLOAT3(30, 0, 20),             
-        XMFLOAT3(0, -1, 0),              
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );                                   
-    _cubes.push_back(cube);              
+    _cubes.push_back(cube);                                                                 
                                          
     cube = new Cube(                     
         XMFLOAT3(0, 6, 0),               
-        XMFLOAT3(-5, 0, 3),              
+        XMFLOAT3(-5, 0, 3),
+        XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f,6),     
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
@@ -100,7 +103,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
                                          
     cube = new Cube(                     
         XMFLOAT3(-5, 0, 0),              
-        XMFLOAT3(30, 0, 20),             
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f),           
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
@@ -209,7 +213,24 @@ HRESULT Application::InitDevice()
     if (FAILED(hr))
         return hr;
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, nullptr);
+    //Set up the depth stencil buffer
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+    depthStencilDesc.Width = _WindowWidth;
+    depthStencilDesc.Height = _WindowHeight;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.MiscFlags = 0;
+
+    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
+    _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -250,6 +271,9 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
 
+    if (_depthStencilView) _depthStencilView->Release();
+    if (_depthStencilBuffer) _depthStencilBuffer->Release();
+
     for (int i = 0; i < _cubes.size(); i++)
         delete _cubes[i];
 }
@@ -267,6 +291,7 @@ void Application::Draw()
     //
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     for (int i = 0; i < _cubes.size(); i++)
         _cubes[i]->Draw(_view, _projection);
