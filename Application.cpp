@@ -73,43 +73,59 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
-    Cube* cube;
-    cube = new Cube(
-        XMFLOAT3(5, 0, -3),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 3, 1),
-        XMFLOAT3(0, -1, 0),
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );
-    _cubes.push_back(cube);
-
-    cube = new Cube(
-        XMFLOAT3(0, 0, 5),
+    Planet* sun;
+    sun = new Planet(
         XMFLOAT3(0, 0, 0),
-        XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(1, 1, 0),
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );                                   
-    _cubes.push_back(cube);                                                                 
-                                         
-    cube = new Cube(                     
-        XMFLOAT3(0, 6, 0),               
-        XMFLOAT3(-5, 0, 3),
-        XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6),     
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );                                   
-    _cubes.push_back(cube);              
-                                         
-    cube = new Cube(                     
-        XMFLOAT3(-5, 0, 0),              
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f),           
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(2, 2, 2),
+        XMFLOAT3(0.0f, -1, 0.0f),
+        nullptr,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
-    _cubes.push_back(cube);
-	return S_OK;
+
+    Planet* planet1 = new Planet(
+        XMFLOAT3(3, 0, 0),
+        XMFLOAT3(0, 0, 20),
+        XMFLOAT3(0.375f, 0.375f, 0.375f),
+        XMFLOAT3(1, 0.2f, 0),
+        sun,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+
+    Planet* moon1 = new Planet(
+        XMFLOAT3(2, 0, 0),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(0.25f, 0.25f, 0.25f),
+        XMFLOAT3(2, 0, 0),
+        planet1,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+
+    Planet* planet2 = new Planet(
+        XMFLOAT3(2, 2, 2),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(0.375f, 0.375f, 0.375f),
+        XMFLOAT3(0, 1, 0.5f),
+        sun,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+
+    Planet* moon2 = new Planet(
+        XMFLOAT3(2, 0, 0),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(0.25f, 0.25f, 0.25f),
+        XMFLOAT3(0, 1, 1),
+        planet2,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+
+    _planets.push_back(sun);
+    _planets.push_back(planet1);
+    _planets.push_back(moon1);
+    _planets.push_back(planet2);
+    _planets.push_back(moon2);
+
+    
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -274,14 +290,14 @@ void Application::Cleanup()
     if (_depthStencilView) _depthStencilView->Release();
     if (_depthStencilBuffer) _depthStencilBuffer->Release();
 
-    for (int i = 0; i < _cubes.size(); i++)
-        delete _cubes[i];
+    for (int i = 0; i < _planets.size(); i++)
+        delete _planets[i];
 }
 
 void Application::Update()
 {
-    for (int i = 0; i < _cubes.size(); i++)
-        _cubes[i]->Update();
+    for (int i = 0; i < _planets.size(); i++)
+        _planets[i]->Update();
 }
 
 void Application::Draw()
@@ -293,8 +309,8 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    for (int i = 0; i < _cubes.size(); i++)
-        _cubes[i]->Draw(_view, _projection);
+    for (int i = 0; i < _planets.size(); i++)
+        _planets[i]->Draw(_view, _projection);
 
     //
     // Present our back buffer to our front buffer

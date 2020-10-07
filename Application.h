@@ -8,7 +8,7 @@
 #include <vector>
 #include "Structures.h"
 #include "resource.h"
-#include "Cube.h"
+#include "Planet.h"
 
 using namespace DirectX;
 
@@ -39,7 +39,7 @@ private:
 	UINT _WindowWidth;
 
 private:
-	std::vector<Cube*> _cubes;
+	std::vector<Planet*> _planets;
 
 public:
 	Application();

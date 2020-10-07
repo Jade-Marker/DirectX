@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "Planet.h"
 
 static SimpleVertex vertices[] =
 {
@@ -55,9 +55,9 @@ static WORD pyramidIndices[] =
     2,0,4
 };
 
-Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
+Planet::Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Planet* parent,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
-	_position(position), _angle(angle), _scale(scale), _tScale(tScale),
+	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer)
 {
     if (position.x == 0 && position.y == 0)
@@ -80,15 +80,11 @@ Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
     InitShadersAndInputLayout();
 }
 
-void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
+void Planet::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 {
     BindBuffersAndLayout();
 
-    DirectX::XMMATRIX mWorld =
-        DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) * 
-        DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
-        DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
-        DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX mWorld = GetWorldMatrix();
 
     DirectX::XMMATRIX mView = XMLoadFloat4x4(&view);
     DirectX::XMMATRIX mProjection = XMLoadFloat4x4(&projection);
@@ -114,7 +110,7 @@ void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 
 
-void Cube::Update()
+void Planet::Update()
 {
     static DWORD dwTimeStart = 0;
     DWORD dwTimeCur = GetTickCount();
@@ -129,7 +125,23 @@ void Cube::Update()
     _angle.z = _t * _tScale.z;
 }
 
-HRESULT Cube::InitVertexBuffer()
+XMMATRIX Planet::GetWorldMatrix()
+{
+    DirectX::XMMATRIX world =
+        DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) *
+        DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
+        DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
+        DirectX::XMMatrixIdentity();
+
+    if (_parent != nullptr)
+    {
+        world = world * _parent->GetWorldMatrix();
+    }
+
+    return world;
+}
+
+HRESULT Planet::InitVertexBuffer()
 {
     HRESULT hr;    
 
@@ -152,7 +164,7 @@ HRESULT Cube::InitVertexBuffer()
     return S_OK;
 }
 
-HRESULT Cube::InitIndexBuffer()
+HRESULT Planet::InitIndexBuffer()
 {
     HRESULT hr;    
 
@@ -175,7 +187,7 @@ HRESULT Cube::InitIndexBuffer()
     return S_OK;
 }
 
-HRESULT Cube::InitShadersAndInputLayout()
+HRESULT Planet::InitShadersAndInputLayout()
 {
     HRESULT hr;
 
@@ -237,7 +249,7 @@ HRESULT Cube::InitShadersAndInputLayout()
     return hr;
 }
 
-HRESULT Cube::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+HRESULT Planet::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
     HRESULT hr = S_OK;
 
@@ -269,7 +281,7 @@ HRESULT Cube::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCS
     return S_OK;
 }
 
-void Cube::BindBuffersAndLayout()
+void Planet::BindBuffersAndLayout()
 {
     // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);

@@ -6,7 +6,7 @@
 #include <directxcolors.h>
 #include "Structures.h"
 
-class Cube
+class Planet
 {
 private:
 	ID3D11Device* _pd3dDevice;
@@ -29,11 +29,15 @@ private:
 	WORD* indexSource;
 	UINT indexCount;
 
+	Planet* _parent;
+
 public:
-	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
+	Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Planet* parent,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update();
+	XMMATRIX GetWorldMatrix();
+
 
 private:
 	HRESULT InitVertexBuffer();
