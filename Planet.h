@@ -17,6 +17,11 @@ private:
 	ID3D11Buffer* _pIndexBuffer;
 	ID3D11Buffer* _pConstantBuffer;
 	ID3D11InputLayout* _pVertexLayout;
+	ID3D11RasterizerState* _rasterState;
+	ID3D11RasterizerState* _solidRasterState;
+	ID3D11RasterizerState* _wireframeRasterState;
+
+	bool _rasterKeyDown;
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;
@@ -45,5 +50,6 @@ private:
 	HRESULT InitShadersAndInputLayout();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	void BindBuffersAndLayout();
+	void InitRasterState();
 };
 

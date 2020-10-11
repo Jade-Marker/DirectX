@@ -58,7 +58,7 @@ static WORD pyramidIndices[] =
 Planet::Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Planet* parent,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer)
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), _rasterKeyDown(false)
 {
     if (position.x == 0 && position.y == 0)
     {
@@ -78,6 +78,7 @@ Planet::Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScal
     InitVertexBuffer();
     InitIndexBuffer();
     InitShadersAndInputLayout();
+    InitRasterState();
 }
 
 void Planet::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
@@ -123,6 +124,27 @@ void Planet::Update()
     _angle.x = _t * _tScale.x;
     _angle.y = _t * _tScale.y;
     _angle.z = _t * _tScale.z;
+
+    if (GetAsyncKeyState(VK_UP) && !_rasterKeyDown)
+    {
+        _rasterKeyDown = true;
+
+        if (_rasterState == _wireframeRasterState)
+            _rasterState = _solidRasterState;
+        else 
+            _rasterState = _wireframeRasterState;
+
+    }
+    else if (GetAsyncKeyState(VK_DOWN) && _rasterKeyDown)
+    {
+        _rasterKeyDown = false;
+
+        if (_rasterState == _wireframeRasterState)
+            _rasterState = _solidRasterState;
+        else
+            _rasterState = _wireframeRasterState;
+
+    }
 }
 
 XMMATRIX Planet::GetWorldMatrix()
@@ -293,4 +315,28 @@ void Planet::BindBuffersAndLayout()
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+    _pImmediateContext->RSSetState(_rasterState);
+}
+
+void Planet::InitRasterState()
+{
+    HRESULT hr;
+    D3D11_RASTERIZER_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+
+    desc.FillMode = D3D11_FILL_WIREFRAME;
+    desc.CullMode = D3D11_CULL_NONE;
+
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_solidRasterState);
+
+    desc.FillMode = D3D11_FILL_SOLID;
+    desc.CullMode = D3D11_CULL_BACK;
+
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
+
+    if (vertexCount == 8)
+        _rasterState = _solidRasterState;
+    else
+        _rasterState = _wireframeRasterState;
 }
