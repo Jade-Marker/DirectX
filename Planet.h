@@ -22,6 +22,8 @@ private:
 	ID3D11RasterizerState* _wireframeRasterState;
 
 	bool _rasterKeyDown;
+	bool _yDirState;
+	bool _xDirState;
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;
@@ -40,7 +42,7 @@ public:
 	Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Planet* parent,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
-	void Update();
+	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();
 
 

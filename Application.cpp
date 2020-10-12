@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <time.h>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -64,7 +65,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -20.0f, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -125,7 +126,18 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _planets.push_back(planet2);
     _planets.push_back(moon2);
 
-    
+    srand(time(NULL));
+    for (int i = 0; i < 100; i++)
+    {
+        Planet* asteroid = new Planet(
+            XMFLOAT3((rand() % 20) - 10, (rand() % 20) - 10, (rand() % 20) - 10),
+            XMFLOAT3(rand() % 60, rand() % 60, rand() % 60),
+            XMFLOAT3((rand() % 100) / 1000.0f, (rand() % 100) / 1000.0f, (rand() % 100) / 1000.0f),
+            XMFLOAT3(2 * (rand() % 100) / 100.0f, 2 * (rand() % 100) / 100.0f, 2 * (rand() % 100) / 100.0f),
+            planet1, _pd3dDevice, _pImmediateContext, _pConstantBuffer);
+
+        _planets.push_back(asteroid);
+    }
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -294,10 +306,10 @@ void Application::Cleanup()
         delete _planets[i];
 }
 
-void Application::Update()
+void Application::Update(float deltaTime)
 {
     for (int i = 0; i < _planets.size(); i++)
-        _planets[i]->Update();
+        _planets[i]->Update(deltaTime);
 }
 
 void Application::Draw()

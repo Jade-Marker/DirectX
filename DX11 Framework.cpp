@@ -24,8 +24,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
         }
         else
         {
-			theApp->Update();
+            static DWORD dwTimeStart = 0;
+
+            if (dwTimeStart == 0)
+                dwTimeStart = GetTickCount();
+
+            static float timeOld;
+            float time = (GetTickCount() - dwTimeStart) / 1000.0f;
+
+            float deltaTime = time - timeOld;
+
+			theApp->Update(deltaTime);
             theApp->Draw();
+
+            timeOld = time;
         }
     }
 

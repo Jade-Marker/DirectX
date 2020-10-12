@@ -1,4 +1,5 @@
 #include "Planet.h"
+#include <iostream>
 
 static SimpleVertex vertices[] =
 {
@@ -58,9 +59,9 @@ static WORD pyramidIndices[] =
 Planet::Planet(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Planet* parent,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), _rasterKeyDown(false)
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), _rasterKeyDown(false), _yDirState(false), _xDirState(false)
 {
-    if (position.x == 0 && position.y == 0)
+    if (position.x == 0 && position.y == 0 && parent == nullptr)
     {
         vertexSource = vertices;
         vertexCount = 8;
@@ -111,7 +112,7 @@ void Planet::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 
 
-void Planet::Update()
+void Planet::Update(float deltaTime)
 {
     static DWORD dwTimeStart = 0;
     DWORD dwTimeCur = GetTickCount();
@@ -121,9 +122,17 @@ void Planet::Update()
 
     _t = (dwTimeCur - dwTimeStart) / 1000.0f;
 
-    _angle.x = _t * _tScale.x;
-    _angle.y = _t * _tScale.y;
-    _angle.z = _t * _tScale.z;
+    if(_xDirState)
+        _angle.x += _tScale.x * deltaTime;
+    else
+        _angle.x -= _tScale.x * deltaTime;
+
+    if(_yDirState)
+        _angle.y += _tScale.y * deltaTime;
+    else
+        _angle.y -= _tScale.y * deltaTime;
+
+    _angle.z += _tScale.z * deltaTime;
 
     if (GetAsyncKeyState(VK_UP) && !_rasterKeyDown)
     {
@@ -145,6 +154,16 @@ void Planet::Update()
             _rasterState = _wireframeRasterState;
 
     }
+
+    if (GetAsyncKeyState('A') && !_xDirState)
+        _xDirState = true;    
+    else if (GetAsyncKeyState('D') && _xDirState)
+        _xDirState = false;
+
+    if (GetAsyncKeyState('W') && !_yDirState)
+        _yDirState = true;
+    else if (GetAsyncKeyState('S') && _yDirState)
+        _yDirState = false;
 }
 
 XMMATRIX Planet::GetWorldMatrix()
