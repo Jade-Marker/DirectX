@@ -40,7 +40,7 @@ VS_OUTPUT VS( float4 Pos : POSITION, float4 Color : COLOR )
 //--------------------------------------------------------------------------------------
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-    if (input.Color.m < 0.2)
+    if (input.Color.r < 0.2)
         discard;
 
     return input.Color.rgba;
