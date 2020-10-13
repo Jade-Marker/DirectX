@@ -5,8 +5,9 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "Structures.h"
+#include "Mesh.h"
 
-class Cube
+class SceneObject
 {
 private:
 	ID3D11Device* _pd3dDevice;
@@ -32,15 +33,12 @@ private:
 	XMFLOAT3 _tScale;
 	float _t;
 
-	SimpleVertex* vertexSource;
-	UINT vertexCount;
-	WORD* indexSource;
-	UINT indexCount;
+	Mesh* _mesh;
 
-	Cube* _parent;
+	SceneObject* _parent;
 
 public:
-	Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Cube* parent,
+	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update(float deltaTime);
@@ -51,8 +49,8 @@ private:
 	HRESULT InitIndexBuffer();
 	HRESULT InitShadersAndInputLayout();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-	void BindBuffersAndLayout();
-	void InitRasterState();
+	void InitDraw();
+	void InitRasterState(bool startInWireFrame);
 
 };
 

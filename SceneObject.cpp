@@ -1,90 +1,19 @@
-#include "Cube.h"
-
-static SimpleVertex vertices[] =
-{
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },     //0
-    { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },    //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },     //3
-
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },      //4
-    { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },       //5
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.5f, 5.0f, 1.0f) },     //6
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },      //7
-};
-
-static WORD indices[] =
-{
-    0,1,2,
-    2,1,3,
-
-    1,5,3,
-    3,5,7,
-
-    5,4,7,
-    7,4,6,
-
-    4,0,6,
-    6,0,2,
-
-    4,5,0,
-    0,5,1,
-
-    6,2,3,
-    7,6,3
-};
-
-static SimpleVertex pyramidVertices[] =
-{
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.2f, 0.1f, 0.5f, 1.0f) },      //0
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.9f, 1.0f, 1.0f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.9f, 1.0f, 0.5f, 1.0f) },     //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.1f, 0.5f, 0.2f, 1.0f) },      //3
-
-    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.6f, 0.3f, 1.0f) },       //4
-};
-
-static WORD pyramidIndices[] =
-{
-    0,2,1,
-    1,2,3,
-
-    0,1,4,
-    1,3,4,
-    3,2,4,
-    2,0,4
-};
-
-Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Cube* parent,
+#include "SceneObject.h"
+SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
-	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent),
+	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), 
     _rasterKeyDown(false), _yDirState(false), _xDirState(false)
 {
-    if (position.x == 0 && position.y == 0)
-    {
-        vertexSource = vertices;
-        vertexCount = 8;
-        indexSource = indices;
-        indexCount = 36;
-    }
-    else
-    {
-        vertexSource = pyramidVertices;
-        vertexCount = 5;
-        indexSource = pyramidIndices;
-        indexCount = 18;
-    }
-
     InitVertexBuffer();
     InitIndexBuffer();
     InitShadersAndInputLayout();
-    InitRasterState();
+    InitRasterState(startInWireFrame);
 }
 
-void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
+void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 {
-    BindBuffersAndLayout();
+    InitDraw();
 
     DirectX::XMMATRIX mWorld = GetWorldMatrix();
 
@@ -107,12 +36,12 @@ void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
     _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
     _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-    _pImmediateContext->DrawIndexed(indexCount, 0, 0);
+    _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
 
 
 
-void Cube::Update(float deltaTime)
+void SceneObject::Update(float deltaTime)
 {
     if (_xDirState)
         _angle.x += _tScale.x * deltaTime;
@@ -158,7 +87,7 @@ void Cube::Update(float deltaTime)
         _yDirState = false;
 }
 
-XMMATRIX Cube::GetWorldMatrix()
+XMMATRIX SceneObject::GetWorldMatrix()
 {
     DirectX::XMMATRIX world =
         DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) *
@@ -174,20 +103,20 @@ XMMATRIX Cube::GetWorldMatrix()
     return world;
 }
 
-HRESULT Cube::InitVertexBuffer()
+HRESULT SceneObject::InitVertexBuffer()
 {
     HRESULT hr;    
 
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(SimpleVertex) * vertexCount;
+    bd.ByteWidth = sizeof(SimpleVertex) * _mesh->GetVertexCount();
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = 0;
 
     D3D11_SUBRESOURCE_DATA InitData;
     ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = vertexSource;
+    InitData.pSysMem = _mesh->GetVertices();
 
     hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
@@ -197,7 +126,7 @@ HRESULT Cube::InitVertexBuffer()
     return S_OK;
 }
 
-HRESULT Cube::InitIndexBuffer()
+HRESULT SceneObject::InitIndexBuffer()
 {
     HRESULT hr;    
 
@@ -205,13 +134,13 @@ HRESULT Cube::InitIndexBuffer()
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * indexCount;
+    bd.ByteWidth = sizeof(WORD) * _mesh->GetIndexCount();
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     bd.CPUAccessFlags = 0;
 
     D3D11_SUBRESOURCE_DATA InitData;
     ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = indexSource;
+    InitData.pSysMem = _mesh->GetIndices();
     hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
 
     if (FAILED(hr))
@@ -220,7 +149,7 @@ HRESULT Cube::InitIndexBuffer()
     return S_OK;
 }
 
-HRESULT Cube::InitShadersAndInputLayout()
+HRESULT SceneObject::InitShadersAndInputLayout()
 {
     HRESULT hr;
 
@@ -282,7 +211,7 @@ HRESULT Cube::InitShadersAndInputLayout()
     return hr;
 }
 
-HRESULT Cube::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+HRESULT SceneObject::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
     HRESULT hr = S_OK;
 
@@ -314,7 +243,7 @@ HRESULT Cube::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCS
     return S_OK;
 }
 
-void Cube::BindBuffersAndLayout()
+void SceneObject::InitDraw()
 {
     // Set vertex buffer
     UINT stride = sizeof(SimpleVertex);
@@ -331,7 +260,7 @@ void Cube::BindBuffersAndLayout()
     _pImmediateContext->RSSetState(_rasterState);
 }
 
-void Cube::InitRasterState()
+void SceneObject::InitRasterState(bool startInWireFrame)
 {
     HRESULT hr;
     D3D11_RASTERIZER_DESC desc;
@@ -347,8 +276,8 @@ void Cube::InitRasterState()
 
     hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
 
-    if (vertexCount == 8)
-        _rasterState = _solidRasterState;
-    else
+    if (startInWireFrame)
         _rasterState = _wireframeRasterState;
+    else
+        _rasterState = _solidRasterState;
 }

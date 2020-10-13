@@ -1,5 +1,105 @@
 #include "Application.h"
 
+static SimpleVertex cubeVertices[] =
+{
+    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },     //0
+    { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //1
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },    //2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },     //3
+
+    { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },      //4
+    { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },       //5
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.5f, 5.0f, 1.0f) },     //6
+    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },      //7
+};
+
+static WORD cubeIndices[] =
+{
+    0,1,2,
+    2,1,3,
+
+    1,5,3,
+    3,5,7,
+
+    5,4,7,
+    7,4,6,
+
+    4,0,6,
+    6,0,2,
+
+    4,5,0,
+    0,5,1,
+
+    6,2,3,
+    7,6,3
+};
+
+static SimpleVertex pyramidVertices[] =
+{
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.2f, 0.1f, 0.5f, 1.0f) },      //0
+    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.9f, 1.0f, 1.0f) },       //1
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.9f, 1.0f, 0.5f, 1.0f) },     //2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.1f, 0.5f, 0.2f, 1.0f) },      //3
+
+    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.6f, 0.3f, 1.0f) },       //4
+};
+
+static WORD pyramidIndices[] =
+{
+    0,2,1,
+    1,2,3,
+
+    0,1,4,
+    1,3,4,
+    3,2,4,
+    2,0,4
+};
+
+static SimpleVertex icosphereVertices[] =
+{
+    { XMFLOAT3( 0.0f,        -1.000000f,  0.000000f), XMFLOAT4(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
+    { XMFLOAT3(0.7236f,      -0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
+    { XMFLOAT3(-0.276385f,   -0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
+    { XMFLOAT3(-0.894425f,   -0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
+    { XMFLOAT3(-0.276385f,   -0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
+    { XMFLOAT3(0.723600f,    -0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
+    { XMFLOAT3(0.276385f,     0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
+    { XMFLOAT3(-0.723600f,    0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
+    { XMFLOAT3(-0.723600f,    0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
+    { XMFLOAT3(0.276385f,     0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
+    { XMFLOAT3(0.894425f,     0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
+    { XMFLOAT3(0.000000f,     1.000000f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
+};
+
+static WORD icosphereIndices[] =
+{
+   0, 1, 2,
+   1, 0, 5,
+   0, 2, 3,
+   0, 3, 4,
+
+   0, 4, 5,
+   1, 5, 10,
+   2, 1, 6,
+   3, 2, 7,
+
+   4, 3, 8,
+   5, 4, 9,
+   1, 10,6,
+   2, 6, 7,
+
+   3, 7, 8,
+   4, 8, 9,
+   5, 9,10,
+   6, 10,11,
+
+   7, 6, 11,
+   8, 7, 11,
+   9,8, 11,
+   10,9,11,
+
+};
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -73,42 +173,51 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     // Initialize the projection matrix
 	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
 
-    Cube* cube;
-    cube = new Cube(
-        XMFLOAT3(5, 0, -3),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 3, 1),
-        XMFLOAT3(0, -1, 0), nullptr,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );
-    _cubes.push_back(cube);
+    _cubeMesh = new Mesh(cubeVertices, sizeof(cubeVertices) / sizeof(SimpleVertex), cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
+    _pyramidMesh = new Mesh(pyramidVertices, sizeof(pyramidVertices) / sizeof(SimpleVertex), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
+    _icosphereMesh = new Mesh(icosphereVertices, sizeof(icosphereVertices) / sizeof(SimpleVertex), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
 
-    cube = new Cube(
+    SceneObject* cube;
+    SceneObject* pyramid1;
+    SceneObject* pyramid2;
+    SceneObject* icosphere;
+
+    cube = new SceneObject(
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
-        XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(1, 1, 0), nullptr,
+        XMFLOAT3(2, 2, 2),
+        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
-    );                                   
-    _cubes.push_back(cube);                                                                 
+    );
+
+    pyramid1 = new SceneObject(
+        XMFLOAT3(5, 0, -3),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(1, 2, 1),
+        XMFLOAT3(0, -1, 0), cube, _pyramidMesh, true,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );                                
                                          
-    cube = new Cube(                     
+    pyramid2 = new SceneObject(
         XMFLOAT3(0, 6, 0),               
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6), nullptr,   
+        XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
-    _cubes.push_back(cube);              
                                          
-    cube = new Cube(                     
+    icosphere = new SceneObject(
         XMFLOAT3(-5, 0, 0),              
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f), nullptr,
+        XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
-    _cubes.push_back(cube);
+
+    _sceneObjects.push_back(cube);
+    _sceneObjects.push_back(pyramid1);
+    _sceneObjects.push_back(pyramid2);
+    _sceneObjects.push_back(icosphere);
 	return S_OK;
 }
 
@@ -274,14 +383,14 @@ void Application::Cleanup()
     if (_depthStencilView) _depthStencilView->Release();
     if (_depthStencilBuffer) _depthStencilBuffer->Release();
 
-    for (int i = 0; i < _cubes.size(); i++)
-        delete _cubes[i];
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        delete _sceneObjects[i];
 }
 
 void Application::Update(float deltaTime)
 {
-    for (int i = 0; i < _cubes.size(); i++)
-        _cubes[i]->Update(deltaTime);
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        _sceneObjects[i]->Update(deltaTime);
 }
 
 void Application::Draw()
@@ -293,8 +402,8 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    for (int i = 0; i < _cubes.size(); i++)
-        _cubes[i]->Draw(_view, _projection);
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        _sceneObjects[i]->Draw(_view, _projection);
 
     //
     // Present our back buffer to our front buffer
