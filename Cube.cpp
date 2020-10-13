@@ -55,10 +55,11 @@ static WORD pyramidIndices[] =
     2,0,4
 };
 
-Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
+Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, Cube* parent,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
-	_position(position), _angle(angle), _scale(scale), _tScale(tScale),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer)
+	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent),
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), 
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false)
 {
     if (position.x == 0 && position.y == 0)
     {
@@ -78,17 +79,14 @@ Cube::Cube(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale,
     InitVertexBuffer();
     InitIndexBuffer();
     InitShadersAndInputLayout();
+    InitRasterState();
 }
 
 void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 {
     BindBuffersAndLayout();
 
-    DirectX::XMMATRIX mWorld =
-        DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) * 
-        DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
-        DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
-        DirectX::XMMatrixIdentity();
+    DirectX::XMMATRIX mWorld = GetWorldMatrix();
 
     DirectX::XMMATRIX mView = XMLoadFloat4x4(&view);
     DirectX::XMMATRIX mProjection = XMLoadFloat4x4(&projection);
@@ -114,19 +112,66 @@ void Cube::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 
 
-void Cube::Update()
+void Cube::Update(float deltaTime)
 {
-    static DWORD dwTimeStart = 0;
-    DWORD dwTimeCur = GetTickCount();
+    if (_xDirState)
+        _angle.x += _tScale.x * deltaTime;
+    else
+        _angle.x -= _tScale.x * deltaTime;
 
-    if (dwTimeStart == 0)
-        dwTimeStart = dwTimeCur;
+    if (_yDirState)
+        _angle.y += _tScale.y * deltaTime;
+    else
+        _angle.y -= _tScale.y * deltaTime;
 
-    _t = (dwTimeCur - dwTimeStart) / 1000.0f;
+    _angle.z += _tScale.z * deltaTime;
 
-    _angle.x = _t * _tScale.x;
-    _angle.y = _t * _tScale.y;
-    _angle.z = _t * _tScale.z;
+    if (GetAsyncKeyState(VK_UP) && !_rasterKeyDown)
+    {
+        _rasterKeyDown = true;
+
+        if (_rasterState == _wireframeRasterState)
+            _rasterState = _solidRasterState;
+        else
+            _rasterState = _wireframeRasterState;
+
+    }
+    else if (GetAsyncKeyState(VK_DOWN) && _rasterKeyDown)
+    {
+        _rasterKeyDown = false;
+
+        if (_rasterState == _wireframeRasterState)
+            _rasterState = _solidRasterState;
+        else
+            _rasterState = _wireframeRasterState;
+
+    }
+
+    if (GetAsyncKeyState('A') && !_xDirState)
+        _xDirState = true;
+    else if (GetAsyncKeyState('D') && _xDirState)
+        _xDirState = false;
+
+    if (GetAsyncKeyState('W') && !_yDirState)
+        _yDirState = true;
+    else if (GetAsyncKeyState('S') && _yDirState)
+        _yDirState = false;
+}
+
+XMMATRIX Cube::GetWorldMatrix()
+{
+    DirectX::XMMATRIX world =
+        DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&_scale)) *
+        DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&_angle)) *
+        DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&_position)) *
+        DirectX::XMMatrixIdentity();
+
+    if (_parent != nullptr)
+    {
+        world = world * _parent->GetWorldMatrix();
+    }
+
+    return world;
 }
 
 HRESULT Cube::InitVertexBuffer()
@@ -281,4 +326,29 @@ void Cube::BindBuffersAndLayout()
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+    //Set the raster state
+    _pImmediateContext->RSSetState(_rasterState);
+}
+
+void Cube::InitRasterState()
+{
+    HRESULT hr;
+    D3D11_RASTERIZER_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+
+    desc.FillMode = D3D11_FILL_WIREFRAME;
+    desc.CullMode = D3D11_CULL_NONE;
+
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_solidRasterState);
+
+    desc.FillMode = D3D11_FILL_SOLID;
+    desc.CullMode = D3D11_CULL_BACK;
+
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
+
+    if (vertexCount == 8)
+        _rasterState = _solidRasterState;
+    else
+        _rasterState = _wireframeRasterState;
 }

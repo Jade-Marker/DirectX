@@ -78,7 +78,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(5, 0, -3),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 3, 1),
-        XMFLOAT3(0, -1, 0),
+        XMFLOAT3(0, -1, 0), nullptr,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
     _cubes.push_back(cube);
@@ -87,7 +87,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(1, 1, 0),
+        XMFLOAT3(1, 1, 0), nullptr,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
     _cubes.push_back(cube);                                                                 
@@ -96,7 +96,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 6, 0),               
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6),     
+        XMFLOAT3(0.27f, -3.0f,6), nullptr,   
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
     _cubes.push_back(cube);              
@@ -105,7 +105,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 0),              
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f),           
+        XMFLOAT3(-2, 0, 0.5f), nullptr,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
     _cubes.push_back(cube);
@@ -278,10 +278,10 @@ void Application::Cleanup()
         delete _cubes[i];
 }
 
-void Application::Update()
+void Application::Update(float deltaTime)
 {
     for (int i = 0; i < _cubes.size(); i++)
-        _cubes[i]->Update();
+        _cubes[i]->Update(deltaTime);
 }
 
 void Application::Draw()

@@ -47,7 +47,7 @@ public:
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
 
-	void Update();
+	void Update(float deltaTime);
 	void Draw();
 };
 
