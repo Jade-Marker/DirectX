@@ -177,6 +177,18 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _pyramidMesh = new Mesh(pyramidVertices, sizeof(pyramidVertices) / sizeof(SimpleVertex), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
     _icosphereMesh = new Mesh(icosphereVertices, sizeof(icosphereVertices) / sizeof(SimpleVertex), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
 
+    // Define the input layout
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+
+    UINT numElements = ARRAYSIZE(layout);
+
+    _dx11Shader = new Shader(L"DX11 Framework.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    _invertShader = new Shader(L"Discard.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+
     SceneObject* cube;
     SceneObject* pyramid1;
     SceneObject* pyramid2;
@@ -186,7 +198,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false,
+        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _invertShader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
@@ -194,7 +206,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(5, 0, -3),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
-        XMFLOAT3(0, -1, 0), cube, _pyramidMesh, true,
+        XMFLOAT3(0, -1, 0), cube, _pyramidMesh, true, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                
                                          
@@ -202,7 +214,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 6, 0),               
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false,
+        XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
                                          
@@ -210,7 +222,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 0),              
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false,
+        XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 

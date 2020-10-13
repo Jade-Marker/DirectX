@@ -10,6 +10,7 @@
 #include "resource.h"
 #include "SceneObject.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 using namespace DirectX;
 
@@ -44,6 +45,9 @@ private:
 	Mesh* _cubeMesh;
 	Mesh* _pyramidMesh;
 	Mesh* _icosphereMesh;
+
+	Shader* _dx11Shader;
+	Shader* _invertShader;
 
 public:
 	Application();

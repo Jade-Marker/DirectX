@@ -1,13 +1,12 @@
 #include "SceneObject.h"
-SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame,
+SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
-	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh),
+	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), 
     _rasterKeyDown(false), _yDirState(false), _xDirState(false)
 {
     InitVertexBuffer();
     InitIndexBuffer();
-    InitShadersAndInputLayout();
     InitRasterState(startInWireFrame);
 }
 
@@ -32,10 +31,9 @@ void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
     //
     // Renders a triangle
     //
-    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-    _pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+    _shader->SetShader();
+    _shader->SetConstantBuffers(0, 1, &_pConstantBuffer);
+
     _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
 
@@ -149,100 +147,6 @@ HRESULT SceneObject::InitIndexBuffer()
     return S_OK;
 }
 
-HRESULT SceneObject::InitShadersAndInputLayout()
-{
-    HRESULT hr;
-
-    // Compile the vertex shader
-    ID3DBlob* pVSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-    // Create the vertex shader
-    hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-    if (FAILED(hr))
-    {
-        pVSBlob->Release();
-        return hr;
-    }
-
-    // Compile the pixel shader
-    ID3DBlob* pPSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-    // Create the pixel shader
-    hr = _pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-    pPSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-    // Define the input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    UINT numElements = ARRAYSIZE(layout);
-
-    // Create the input layout
-    hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-        pVSBlob->GetBufferSize(), &_pVertexLayout);
-    pVSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-    return hr;
-}
-
-HRESULT SceneObject::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
-{
-    HRESULT hr = S_OK;
-
-    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-    // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-    // Setting this flag improves the shader debugging experience, but still allows 
-    // the shaders to be optimized and to run exactly the way they will run in 
-    // the release configuration of this program.
-    dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-    ID3DBlob* pErrorBlob;
-    hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
-        dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
-
-    if (FAILED(hr))
-    {
-        if (pErrorBlob != nullptr)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-
-        if (pErrorBlob) pErrorBlob->Release();
-
-        return hr;
-    }
-
-    if (pErrorBlob) pErrorBlob->Release();
-
-    return S_OK;
-}
-
 void SceneObject::InitDraw()
 {
     // Set vertex buffer
@@ -251,7 +155,7 @@ void SceneObject::InitDraw()
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 
     // Set the input layout
-    _pImmediateContext->IASetInputLayout(_pVertexLayout);
+    _shader->SetInputLayout();
 
     // Set index buffer
     _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);

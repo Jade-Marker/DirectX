@@ -6,18 +6,17 @@
 #include <directxcolors.h>
 #include "Structures.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 class SceneObject
 {
 private:
 	ID3D11Device* _pd3dDevice;
 	ID3D11DeviceContext* _pImmediateContext;
-	ID3D11VertexShader* _pVertexShader;
-	ID3D11PixelShader* _pPixelShader;
+
 	ID3D11Buffer* _pVertexBuffer;
 	ID3D11Buffer* _pIndexBuffer;
 	ID3D11Buffer* _pConstantBuffer;
-	ID3D11InputLayout* _pVertexLayout;
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
@@ -34,11 +33,12 @@ private:
 	float _t;
 
 	Mesh* _mesh;
+	Shader* _shader;
 
 	SceneObject* _parent;
 
 public:
-	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame,
+	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
 		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
 	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
 	void Update(float deltaTime);
@@ -47,8 +47,6 @@ public:
 private:
 	HRESULT InitVertexBuffer();
 	HRESULT InitIndexBuffer();
-	HRESULT InitShadersAndInputLayout();
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	void InitDraw();
 	void InitRasterState(bool startInWireFrame);
 
