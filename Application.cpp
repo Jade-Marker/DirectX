@@ -36,12 +36,12 @@ static WORD cubeIndices[] =
 
 static SimpleVertex pyramidVertices[] =
 {
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.2f, 0.1f, 0.5f, 1.0f) },      //0
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.9f, 1.0f, 1.0f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.9f, 1.0f, 0.5f, 1.0f) },     //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.1f, 0.5f, 0.2f, 1.0f) },      //3
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //0
+    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },       //1
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },     //2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //3
 
-    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.6f, 0.3f, 1.0f) },       //4
+    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },       //4
 };
 
 static WORD pyramidIndices[] =
@@ -123,6 +123,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+Mesh* Application::GenerateMesh(int width, int height)
+{
+    std::vector<SimpleVertex> vertices;
+    std::vector<WORD> indices;
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            float xLower, xUpper, yLower, yUpper;
+
+            xLower = -1.0f + (x * 2.0f);
+            xUpper = 1.0f + (x * 2.0f);
+            yLower = -1.0f + (y * 2.0f);
+            yUpper = 1.0f + (y * 2.0f);
+
+            SimpleVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
+            SimpleVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
+            SimpleVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
+            SimpleVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
+
+            vertices.push_back(vertex1);
+            vertices.push_back(vertex2);
+            vertices.push_back(vertex3);
+            vertices.push_back(vertex4);
+        }
+    }
+
+    for (int i = 0; i < width * height; i++)
+    {
+        indices.push_back(0 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(3 + 4 * i);
+    }
+
+    Mesh* mesh = new Mesh(vertices.data(), vertices.size(), indices.data(), indices.size());
+    return mesh;
+}
+
 Application::Application()
 {
 	_hInst = nullptr;
@@ -176,6 +218,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _cubeMesh = new Mesh(cubeVertices, sizeof(cubeVertices) / sizeof(SimpleVertex), cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
     _pyramidMesh = new Mesh(pyramidVertices, sizeof(pyramidVertices) / sizeof(SimpleVertex), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
     _icosphereMesh = new Mesh(icosphereVertices, sizeof(icosphereVertices) / sizeof(SimpleVertex), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
+    _planeMesh = GenerateMesh(4,4);
 
     // Define the input layout
     D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -187,18 +230,20 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     UINT numElements = ARRAYSIZE(layout);
 
     _dx11Shader = new Shader(L"DX11 Framework.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
-    _invertShader = new Shader(L"Discard.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    _discardShader = new Shader(L"Discard.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    _basicShader = new Shader(L"BasicShader.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
 
     SceneObject* cube;
     SceneObject* pyramid1;
     SceneObject* pyramid2;
     SceneObject* icosphere;
+    SceneObject* plane;
 
     cube = new SceneObject(
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _invertShader,
+        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _discardShader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
@@ -226,10 +271,19 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
+    plane = new SceneObject(
+        XMFLOAT3(-3, -9, 0),
+        XMFLOAT3(70, 0, 0),
+        XMFLOAT3(1, 1, 1),
+        XMFLOAT3(0, 0, 0), nullptr, _planeMesh, false, _dx11Shader,
+        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+    );
+
     _sceneObjects.push_back(cube);
     _sceneObjects.push_back(pyramid1);
     _sceneObjects.push_back(pyramid2);
     _sceneObjects.push_back(icosphere);
+    _sceneObjects.push_back(plane);
 	return S_OK;
 }
 
@@ -410,6 +464,7 @@ void Application::Draw()
     //
     // Clear the back buffer
     //
+
     float ClearColor[4] = {0.0f, 0.125f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -420,5 +475,6 @@ void Application::Draw()
     //
     // Present our back buffer to our front buffer
     //
+
     _pSwapChain->Present(0, 0);
 }

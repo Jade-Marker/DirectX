@@ -3,7 +3,7 @@ SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFL
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), 
-    _rasterKeyDown(false), _yDirState(false), _xDirState(false)
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _time(0.0f)
 {
     InitVertexBuffer();
     InitIndexBuffer();
@@ -25,6 +25,7 @@ void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
     cb.mWorld = XMMatrixTranspose(mWorld);
     cb.mView = XMMatrixTranspose(mView);
     cb.mProjection = XMMatrixTranspose(mProjection);
+    cb.gTime = _time;
 
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
@@ -41,6 +42,8 @@ void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 void SceneObject::Update(float deltaTime)
 {
+    _time += deltaTime;
+
     if (_xDirState)
         _angle.x += _tScale.x * deltaTime;
     else

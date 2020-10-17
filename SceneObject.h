@@ -25,6 +25,7 @@ private:
 	bool _yDirState;
 	bool _xDirState;
 
+	float _time;
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;

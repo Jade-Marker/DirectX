@@ -45,9 +45,13 @@ private:
 	Mesh* _cubeMesh;
 	Mesh* _pyramidMesh;
 	Mesh* _icosphereMesh;
+	Mesh* _planeMesh;
 
 	Shader* _dx11Shader;
-	Shader* _invertShader;
+	Shader* _basicShader;
+	Shader* _discardShader;
+
+	Mesh* GenerateMesh(int width, int height);
 
 public:
 	Application();
