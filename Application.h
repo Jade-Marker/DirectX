@@ -28,6 +28,8 @@ private:
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D*		_depthStencilBuffer;
 	ID3D11Buffer*           _pConstantBuffer;
+	ID3D11BlendState*		_pBlendState;
+
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
@@ -50,6 +52,7 @@ private:
 	Shader* _dx11Shader;
 	Shader* _basicShader;
 	Shader* _discardShader;
+	Shader* _waterShader;
 
 	Mesh* GenerateMesh(int width, int height);
 

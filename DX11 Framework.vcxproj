@@ -403,6 +403,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Water.fx">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
