@@ -33,6 +33,9 @@ private:
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+	XMFLOAT3				_lightDirection;
+	XMFLOAT4				_diffuseMaterial;
+	XMFLOAT4				_diffuseLight;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);

@@ -1,16 +1,21 @@
 #include "Application.h"
 
+//todo
+//Fix issue with ConstantBuffer by making a global constant buffer (for lights, time, etc), and by making a local constant buffer (world-view matrices, etc)
+//Fix issue with SimpleVertex by making a vertex class that has functions to access data at to get size of data.Then create LightVertexand UnlitColouredVertex classes which inherit from that
+//Add point, spotlight and directional light based on examples in chapter 7
+
 static SimpleVertex cubeVertices[] =
 {
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },     //0
-    { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },    //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },     //3
-
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },      //4
-    { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },       //5
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.5f, 0.5f, 5.0f, 1.0f) },     //6
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },      //7
+    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f) },     //0
+    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f) },       //1
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f) },       //2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f) },       //3
+                                           
+    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f) },       //4
+    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f) },       //5
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f) },       //6
+    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f) },       //7
 };
 
 static WORD cubeIndices[] =
@@ -34,71 +39,71 @@ static WORD cubeIndices[] =
     7,6,3
 };
 
-static SimpleVertex pyramidVertices[] =
-{
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //0
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },     //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //3
-
-    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },       //4
-};
-
-static WORD pyramidIndices[] =
-{
-    0,2,1,
-    1,2,3,
-
-    0,1,4,
-    1,3,4,
-    3,2,4,
-    2,0,4
-};
-
-static SimpleVertex icosphereVertices[] =
-{
-    { XMFLOAT3( 0.0f,        -1.000000f,  0.000000f), XMFLOAT4(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
-    { XMFLOAT3(0.7236f,      -0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
-    { XMFLOAT3(-0.276385f,   -0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
-    { XMFLOAT3(-0.894425f,   -0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
-    { XMFLOAT3(-0.276385f,   -0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
-    { XMFLOAT3(0.723600f,    -0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
-    { XMFLOAT3(0.276385f,     0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
-    { XMFLOAT3(-0.723600f,    0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
-    { XMFLOAT3(-0.723600f,    0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
-    { XMFLOAT3(0.276385f,     0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
-    { XMFLOAT3(0.894425f,     0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
-    { XMFLOAT3(0.000000f,     1.000000f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
-};
-
-static WORD icosphereIndices[] =
-{
-   0, 1, 2,
-   1, 0, 5,
-   0, 2, 3,
-   0, 3, 4,
-
-   0, 4, 5,
-   1, 5, 10,
-   2, 1, 6,
-   3, 2, 7,
-
-   4, 3, 8,
-   5, 4, 9,
-   1, 10,6,
-   2, 6, 7,
-
-   3, 7, 8,
-   4, 8, 9,
-   5, 9,10,
-   6, 10,11,
-
-   7, 6, 11,
-   8, 7, 11,
-   9,8, 11,
-   10,9,11,
-
-};
+//static SimpleVertex pyramidVertices[] =
+//{
+//    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //0
+//    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },       //1
+//    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },     //2
+//    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //3
+//
+//    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },       //4
+//};
+//
+//static WORD pyramidIndices[] =
+//{
+//    0,2,1,
+//    1,2,3,
+//
+//    0,1,4,
+//    1,3,4,
+//    3,2,4,
+//    2,0,4
+//};
+//
+//static SimpleVertex icosphereVertices[] =
+//{
+//    { XMFLOAT3( 0.0f,        -1.000000f,  0.000000f), XMFLOAT4(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
+//    { XMFLOAT3(0.7236f,      -0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
+//    { XMFLOAT3(-0.276385f,   -0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
+//    { XMFLOAT3(-0.894425f,   -0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
+//    { XMFLOAT3(-0.276385f,   -0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
+//    { XMFLOAT3(0.723600f,    -0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
+//    { XMFLOAT3(0.276385f,     0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
+//    { XMFLOAT3(-0.723600f,    0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
+//    { XMFLOAT3(-0.723600f,    0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
+//    { XMFLOAT3(0.276385f,     0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
+//    { XMFLOAT3(0.894425f,     0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
+//    { XMFLOAT3(0.000000f,     1.000000f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
+//};
+//
+//static WORD icosphereIndices[] =
+//{
+//   0, 1, 2,
+//   1, 0, 5,
+//   0, 2, 3,
+//   0, 3, 4,
+//
+//   0, 4, 5,
+//   1, 5, 10,
+//   2, 1, 6,
+//   3, 2, 7,
+//
+//   4, 3, 8,
+//   5, 4, 9,
+//   1, 10,6,
+//   2, 6, 7,
+//
+//   3, 7, 8,
+//   4, 8, 9,
+//   5, 9,10,
+//   6, 10,11,
+//
+//   7, 6, 11,
+//   8, 7, 11,
+//   9,8, 11,
+//   10,9,11,
+//
+//};
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -128,7 +133,7 @@ Mesh* Application::GenerateMesh(int width, int height)
     std::vector<SimpleVertex> vertices;
     std::vector<WORD> indices;
 
-    for (int y = 0; y < height; y++)
+   /* for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
@@ -149,7 +154,7 @@ Mesh* Application::GenerateMesh(int width, int height)
             vertices.push_back(vertex3);
             vertices.push_back(vertex4);
         }
-    }
+    }*/
 
     for (int i = 0; i < width * height; i++)
     {
@@ -236,23 +241,23 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _pImmediateContext->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
 
     _cubeMesh = new Mesh(cubeVertices, sizeof(cubeVertices) / sizeof(SimpleVertex), cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pyramidMesh = new Mesh(pyramidVertices, sizeof(pyramidVertices) / sizeof(SimpleVertex), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
-    _icosphereMesh = new Mesh(icosphereVertices, sizeof(icosphereVertices) / sizeof(SimpleVertex), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
-    _planeMesh = GenerateMesh(32,8);
+    //_pyramidMesh = new Mesh(pyramidVertices, sizeof(pyramidVertices) / sizeof(SimpleVertex), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
+    //_icosphereMesh = new Mesh(icosphereVertices, sizeof(icosphereVertices) / sizeof(SimpleVertex), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
+    //_planeMesh = GenerateMesh(32,8);
 
     // Define the input layout
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
 
     UINT numElements = ARRAYSIZE(layout);
 
     _dx11Shader = new Shader(L"DX11 Framework.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
-    _discardShader = new Shader(L"Discard.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
-    _basicShader = new Shader(L"BasicShader.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
-    _waterShader = new Shader(L"Water.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    //_discardShader = new Shader(L"Discard.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    //_basicShader = new Shader(L"BasicShader.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
+    //_waterShader = new Shader(L"Water.fx", layout, numElements, _pd3dDevice, _pImmediateContext);
 
     SceneObject* cube;
     SceneObject* cube2;
@@ -265,7 +270,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _discardShader,
+        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
@@ -273,7 +278,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, -9, 3),
         XMFLOAT3(35, 0, 0),
         XMFLOAT3(0.5f, 1, 1),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _discardShader,
+        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
@@ -281,7 +286,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(5, 0, -3),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
-        XMFLOAT3(0, -1, 0), cube, _pyramidMesh, false, _dx11Shader,
+        XMFLOAT3(0, -1, 0), cube, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                
                                          
@@ -289,7 +294,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 6, 0),               
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false, _dx11Shader,
+        XMFLOAT3(0.27f, -3.0f,6), cube, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );                                   
                                          
@@ -297,7 +302,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 0),              
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _dx11Shader,
+        XMFLOAT3(-2, 0, 0.5f), cube, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
@@ -305,16 +310,21 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-15, -9, 0),
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(0, 0, 0), nullptr, _planeMesh, false, _waterShader,
+        XMFLOAT3(0, 0, 0), nullptr, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pConstantBuffer
     );
 
     _sceneObjects.push_back(cube);
-    _sceneObjects.push_back(cube2);
-    _sceneObjects.push_back(pyramid1);
-    _sceneObjects.push_back(pyramid2);
-    _sceneObjects.push_back(icosphere);
-    _sceneObjects.push_back(plane);
+    //_sceneObjects.push_back(cube2);
+    //_sceneObjects.push_back(pyramid1);
+    //_sceneObjects.push_back(pyramid2);
+    //_sceneObjects.push_back(icosphere);
+    //_sceneObjects.push_back(plane);
+
+    _lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
+    _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	return S_OK;
 }
 

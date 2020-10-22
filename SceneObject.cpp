@@ -27,6 +27,21 @@ void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
     cb.mProjection = XMMatrixTranspose(mProjection);
     cb.gTime = _time;
 
+    cb.DiffuseMtrl = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    cb.DiffuseLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    cb.AmbientMtrl = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    cb.AmbientLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    cb.DiffuseMtrl = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    cb.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    cb.AmbientMtrl = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    cb.AmbientLight= XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f);
+
+    cb.SpecularMtrl = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
+    cb.SpecularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+    cb.SpecularPower = 10.0f;
+    cb.EyePosW = XMFLOAT3(0.0f, 0.0f, -10.0f);
+    cb.LightVecW = XMFLOAT3(0.25f, 0.5f, -1.0f);
+
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     //
@@ -175,13 +190,11 @@ void SceneObject::InitRasterState(bool startInWireFrame)
 
     desc.FillMode = D3D11_FILL_WIREFRAME;
     desc.CullMode = D3D11_CULL_NONE;
-
-    hr = _pd3dDevice->CreateRasterizerState(&desc, &_solidRasterState);
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
 
     desc.FillMode = D3D11_FILL_SOLID;
     desc.CullMode = D3D11_CULL_BACK;
-
-    hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
+    hr = _pd3dDevice->CreateRasterizerState(&desc, &_solidRasterState);
 
     if (startInWireFrame)
         _rasterState = _wireframeRasterState;
