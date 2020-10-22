@@ -8,12 +8,15 @@ struct SimpleVertex
 	XMFLOAT3 Normal;
 };
 
-struct ConstantBuffer
+struct LocalConstantBuffer
 {
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
+	XMMATRIX WorldMatrix;
+};
 
+struct GlobalConstantBuffer
+{
+	XMMATRIX ViewMatrix;
+	XMMATRIX ProjectionMatrix;
 	XMFLOAT4 DiffuseMtrl;
 	XMFLOAT4 DiffuseLight;
 	XMFLOAT4 AmbientMtrl;

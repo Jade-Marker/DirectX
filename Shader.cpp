@@ -110,6 +110,6 @@ void Shader::SetShader()
 
 void Shader::SetConstantBuffers(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* constantBuffers)
 {
-    _pImmediateContext->VSSetConstantBuffers(0, 1, constantBuffers);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, constantBuffers);
+    _pImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
+    _pImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
 }

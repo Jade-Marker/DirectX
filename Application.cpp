@@ -1,8 +1,9 @@
 #include "Application.h"
 
 //todo
-//Fix issue with ConstantBuffer by making a global constant buffer (for lights, time, etc), and by making a local constant buffer (world-view matrices, etc)
 //Fix issue with SimpleVertex by making a vertex class that has functions to access data at to get size of data.Then create LightVertexand UnlitColouredVertex classes which inherit from that
+//Fix read access error with mesh (since memcpy is used, some checks should also be added to constructor)
+//Do a general cleanup of code before moving onto next step
 //Add point, spotlight and directional light based on examples in chapter 7
 
 static SimpleVertex cubeVertices[] =
@@ -180,7 +181,8 @@ Application::Application()
 	_pImmediateContext = nullptr;
 	_pSwapChain = nullptr;
 	_pRenderTargetView = nullptr;
-	_pConstantBuffer = nullptr;
+	_pLocalConstantBuffer = nullptr;
+	_pGlobalConstantBuffer = nullptr;
 }
 
 Application::~Application()
@@ -207,11 +209,22 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
+    _lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
+    _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _ambientMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+    _ambientLight = XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f);
+    _specularMaterial = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
+    _specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+    _specularPower = 10.0f;
+    _cameraPos = XMFLOAT3(0.0f, 0.0f, -10.0f);
+    _time = 0;
+
 	// Initialize the world matrix
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f);
+	XMVECTOR Eye = XMVectorSet(_cameraPos.x, _cameraPos.y, _cameraPos.z, 0.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -271,7 +284,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
         XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );
 
     cube2 = new SceneObject(
@@ -279,7 +292,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(35, 0, 0),
         XMFLOAT3(0.5f, 1, 1),
         XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );
 
     pyramid1 = new SceneObject(
@@ -287,7 +300,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );                                
                                          
     pyramid2 = new SceneObject(
@@ -295,7 +308,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f,6), cube, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );                                   
                                          
     icosphere = new SceneObject(
@@ -303,7 +316,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );
 
     plane = new SceneObject(
@@ -311,7 +324,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(0, 0, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
     );
 
     _sceneObjects.push_back(cube);
@@ -320,10 +333,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     //_sceneObjects.push_back(pyramid2);
     //_sceneObjects.push_back(icosphere);
     //_sceneObjects.push_back(plane);
-
-    _lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
-    _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return S_OK;
 }
@@ -462,14 +471,21 @@ HRESULT Application::InitDevice()
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Create the constant buffer
+	// Create the local constant buffer
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstantBuffer);
+	bd.ByteWidth = sizeof(LocalConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
+    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pLocalConstantBuffer);
+
+    if (FAILED(hr))
+        return hr;
+
+    //Create the global constant buffer
+    bd.ByteWidth = sizeof(GlobalConstantBuffer);
+    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pGlobalConstantBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -481,7 +497,8 @@ void Application::Cleanup()
 {
     if (_pImmediateContext) _pImmediateContext->ClearState();
 
-    if (_pConstantBuffer) _pConstantBuffer->Release();
+    if (_pLocalConstantBuffer) _pLocalConstantBuffer->Release();
+    if (_pGlobalConstantBuffer) _pGlobalConstantBuffer->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
     if (_pImmediateContext) _pImmediateContext->Release();
@@ -506,6 +523,8 @@ void Application::Cleanup()
 
 void Application::Update(float deltaTime)
 {
+    _time += deltaTime;
+
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Update(deltaTime);
 }
@@ -520,8 +539,27 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+
+    GlobalConstantBuffer cb;
+    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_view));
+    cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
+    cb.DiffuseMtrl     = _diffuseMaterial;
+    cb.DiffuseLight    = _diffuseLight;
+    cb.AmbientMtrl     = _ambientMaterial;
+    cb.AmbientLight    = _ambientLight;
+    cb.SpecularMtrl    = _specularMaterial;
+    cb.SpecularLight   = _specularLight;
+    cb.EyePosW         = _cameraPos;
+    cb.SpecularPower   = _specularPower;
+    cb.LightVecW       = _lightDirection;
+    cb.gTime           = _time;
+
+    _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+    _dx11Shader->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
+
     for (int i = 0; i < _sceneObjects.size(); i++)
-        _sceneObjects[i]->Draw(_view, _projection);
+        _sceneObjects[i]->Draw();
 
     //
     // Present our back buffer to our front buffer

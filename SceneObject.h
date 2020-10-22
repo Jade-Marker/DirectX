@@ -7,6 +7,7 @@
 #include "Structures.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Constants.h"
 
 class SceneObject
 {
@@ -16,7 +17,8 @@ private:
 
 	ID3D11Buffer* _pVertexBuffer;
 	ID3D11Buffer* _pIndexBuffer;
-	ID3D11Buffer* _pConstantBuffer;
+	ID3D11Buffer* _pLocalConstantBuffer;
+	ID3D11Buffer* _pGlobalConstantBuffer;
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
@@ -24,8 +26,6 @@ private:
 	bool _rasterKeyDown;
 	bool _yDirState;
 	bool _xDirState;
-
-	float _time;
 
 	XMFLOAT3 _position;
 	XMFLOAT3 _angle;
@@ -40,8 +40,8 @@ private:
 
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer);
-	void Draw(XMFLOAT4X4 view, XMFLOAT4X4 projection);
+		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, ID3D11Buffer* pGlobalConstantBuffer);
+	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();
 

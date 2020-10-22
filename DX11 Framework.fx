@@ -10,8 +10,12 @@
 cbuffer ConstantBuffer : register( b0 )
 {
 	matrix World;
-	matrix View;
-	matrix Projection;
+}
+
+cbuffer GlobalConstant : register( b1 )
+{
+    matrix View;
+    matrix Projection;
     float4 DiffuseMtrl;
     float4 DiffuseLight;
     float4 AmbientMtrl;

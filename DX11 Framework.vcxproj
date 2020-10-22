@@ -390,6 +390,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="SceneObject.h" />
     <CLInclude Include="resource.h" />

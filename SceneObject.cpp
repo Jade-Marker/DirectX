@@ -1,54 +1,30 @@
 #include "SceneObject.h"
+
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pConstantBuffer):
+    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, ID3D11Buffer* pGlobalConstantBuffer) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pConstantBuffer(pConstantBuffer), 
-    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _time(0.0f)
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pLocalConstantBuffer(pLocalConstantBuffer), _pGlobalConstantBuffer(pGlobalConstantBuffer),
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false)
 {
     InitVertexBuffer();
     InitIndexBuffer();
     InitRasterState(startInWireFrame);
 }
 
-void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
+void SceneObject::Draw()
 {
     InitDraw();
 
     DirectX::XMMATRIX mWorld = GetWorldMatrix();
 
-    DirectX::XMMATRIX mView = XMLoadFloat4x4(&view);
-    DirectX::XMMATRIX mProjection = XMLoadFloat4x4(&projection);
-    //
-    // Update variables
-    //
-    ConstantBuffer cb;
-    cb.mWorld = XMMatrixTranspose(mWorld);
-    cb.mView = XMMatrixTranspose(mView);
-    cb.mProjection = XMMatrixTranspose(mProjection);
-    cb.gTime = _time;
+    LocalConstantBuffer cb;
+    cb.WorldMatrix = XMMatrixTranspose(mWorld);
 
-    cb.DiffuseMtrl = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    cb.DiffuseLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    cb.AmbientMtrl = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    cb.AmbientLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    cb.DiffuseMtrl = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    cb.DiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    cb.AmbientMtrl = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    cb.AmbientLight= XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f);
+    _pImmediateContext->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
 
-    cb.SpecularMtrl = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-    cb.SpecularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    cb.SpecularPower = 10.0f;
-    cb.EyePosW = XMFLOAT3(0.0f, 0.0f, -10.0f);
-    cb.LightVecW = XMFLOAT3(0.25f, 0.5f, -1.0f);
 
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    //
-    // Renders a triangle
-    //
     _shader->SetShader();
-    _shader->SetConstantBuffers(0, 1, &_pConstantBuffer);
+    _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
 
     _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
@@ -57,8 +33,6 @@ void SceneObject::Draw(DirectX::XMFLOAT4X4 view, DirectX::XMFLOAT4X4 projection)
 
 void SceneObject::Update(float deltaTime)
 {
-    _time += deltaTime;
-
     if (_xDirState)
         _angle.x += _tScale.x * deltaTime;
     else

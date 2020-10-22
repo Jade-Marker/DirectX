@@ -16,6 +16,7 @@
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

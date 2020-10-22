@@ -11,6 +11,7 @@
 #include "SceneObject.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Constants.h"
 
 using namespace DirectX;
 
@@ -27,15 +28,24 @@ private:
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D*		_depthStencilBuffer;
-	ID3D11Buffer*           _pConstantBuffer;
+	ID3D11Buffer*           _pLocalConstantBuffer;
+	ID3D11Buffer*           _pGlobalConstantBuffer;
 	ID3D11BlendState*		_pBlendState;
 
 	XMFLOAT4X4              _world;
 	XMFLOAT4X4              _view;
 	XMFLOAT4X4              _projection;
+
 	XMFLOAT3				_lightDirection;
 	XMFLOAT4				_diffuseMaterial;
 	XMFLOAT4				_diffuseLight;
+	XMFLOAT4				_ambientMaterial;
+	XMFLOAT4				_ambientLight;
+	XMFLOAT4				_specularMaterial;
+	XMFLOAT4				_specularLight;
+	float					_specularPower;
+	XMFLOAT3				_cameraPos;
+	float					_time;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
