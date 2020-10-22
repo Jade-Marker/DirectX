@@ -2,7 +2,13 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-struct SimpleVertex
+struct BasicVertex
+{
+	XMFLOAT3 Pos;
+	XMFLOAT4 Color;
+};
+
+struct LightVertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT3 Normal;

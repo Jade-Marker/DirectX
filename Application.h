@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Constants.h"
+#include "Vertices.h"
 
 using namespace DirectX;
 

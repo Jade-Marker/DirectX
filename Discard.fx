@@ -7,11 +7,25 @@
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
-cbuffer ConstantBuffer : register( b0 )
+cbuffer ConstantBuffer : register(b0)
 {
-	matrix World;
-	matrix View;
-	matrix Projection;
+    matrix World;
+}
+
+cbuffer GlobalConstant : register(b1)
+{
+    matrix View;
+    matrix Projection;
+    float4 DiffuseMtrl;
+    float4 DiffuseLight;
+    float4 AmbientMtrl;
+    float4 AmbientLight;
+    float4 SpecularMtrl;
+    float4 SpecularLight;
+    float3 EyePosW;
+    float SpecularPower;
+    float3 LightVecW;
+    float gTime;
 }
 
 //--------------------------------------------------------------------------------------
