@@ -1,13 +1,13 @@
 #include "SceneObject.h"
 
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, ID3D11Buffer* pGlobalConstantBuffer) :
+    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pLocalConstantBuffer(pLocalConstantBuffer), _pGlobalConstantBuffer(pGlobalConstantBuffer),
-    _rasterKeyDown(false), _yDirState(false), _xDirState(false)
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pLocalConstantBuffer(pLocalConstantBuffer),
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(pd3dDevice, pImmediateContext), _indexBuffer(pd3dDevice, pImmediateContext)
 {
-    InitVertexBuffer();
-    InitIndexBuffer();
+    _vertexBuffer.Initialise(mesh);
+    _indexBuffer.Initialise(mesh);
     InitRasterState(startInWireFrame);
 }
 
@@ -93,64 +93,14 @@ XMMATRIX SceneObject::GetWorldMatrix()
     return world;
 }
 
-HRESULT SceneObject::InitVertexBuffer()
-{
-    HRESULT hr;    
-
-    D3D11_BUFFER_DESC bd;
-    ZeroMemory(&bd, sizeof(bd));
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = _mesh->GetVertices()->GetSize();
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = 0;
-
-    D3D11_SUBRESOURCE_DATA InitData;
-    ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = _mesh->GetVertices()->GetData();
-
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
-
-    if (FAILED(hr))
-        return hr;
-
-    return S_OK;
-}
-
-HRESULT SceneObject::InitIndexBuffer()
-{
-    HRESULT hr;    
-
-    D3D11_BUFFER_DESC bd;
-    ZeroMemory(&bd, sizeof(bd));
-
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * _mesh->GetIndexCount();
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    bd.CPUAccessFlags = 0;
-
-    D3D11_SUBRESOURCE_DATA InitData;
-    ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = _mesh->GetIndices();
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
-
-    if (FAILED(hr))
-        return hr;
-
-    return S_OK;
-}
-
 void SceneObject::InitDraw()
 {
-    // Set vertex buffer
-    UINT stride = _mesh->GetVertices()->GetStride();
-    UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+    //Bind buffers
+    _vertexBuffer.Bind();
+    _indexBuffer.Bind();
 
     // Set the input layout
     _shader->SetInputLayout();
-
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
     //Set the raster state
     _pImmediateContext->RSSetState(_rasterState);

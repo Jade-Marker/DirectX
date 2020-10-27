@@ -7,7 +7,9 @@
 #include "Structures.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "VertexBuffer.h"
 #include "Constants.h"
+#include "IndexBuffer.h"
 
 class SceneObject
 {
@@ -15,10 +17,10 @@ private:
 	ID3D11Device* _pd3dDevice;
 	ID3D11DeviceContext* _pImmediateContext;
 
-	ID3D11Buffer* _pVertexBuffer;
-	ID3D11Buffer* _pIndexBuffer;
+	VertexBuffer _vertexBuffer;
+	IndexBuffer _indexBuffer;
+
 	ID3D11Buffer* _pLocalConstantBuffer;
-	ID3D11Buffer* _pGlobalConstantBuffer;
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
@@ -40,14 +42,12 @@ private:
 
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, ID3D11Buffer* pGlobalConstantBuffer);
+		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer);
 	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();
 
 private:
-	HRESULT InitVertexBuffer();
-	HRESULT InitIndexBuffer();
 	void InitDraw();
 	void InitRasterState(bool startInWireFrame);
 

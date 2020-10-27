@@ -307,7 +307,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
         XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );
 
     cube2 = new SceneObject(
@@ -315,7 +315,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(35, 0, 0),
         XMFLOAT3(0.5f, 1, 1),
         XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );
 
     pyramid1 = new SceneObject(
@@ -323,7 +323,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _pyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );                       
                                          
     pyramid2 = new SceneObject(
@@ -331,7 +331,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );                                   
                                          
     icosphere = new SceneObject(
@@ -339,7 +339,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );
 
     plane = new SceneObject(
@@ -347,7 +347,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(0, 0, 0), nullptr, _planeMesh, false, _waterShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _pGlobalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );
 
     _sceneObjects.push_back(cube);
