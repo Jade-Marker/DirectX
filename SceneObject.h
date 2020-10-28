@@ -10,6 +10,7 @@
 #include "VertexBuffer.h"
 #include "Constants.h"
 #include "IndexBuffer.h"
+#include "DDSTextureLoader.h"
 
 class SceneObject
 {
@@ -24,6 +25,9 @@ private:
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
+
+	ID3D11ShaderResourceView* _pTexture;
+	ID3D11SamplerState* _pSamplerLinear;
 
 	bool _rasterKeyDown;
 	bool _yDirState;
@@ -50,6 +54,7 @@ public:
 private:
 	void InitDraw();
 	void InitRasterState(bool startInWireFrame);
+	void InitTexture();
 
 };
 

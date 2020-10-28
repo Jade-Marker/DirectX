@@ -12,6 +12,7 @@ struct LightVertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT3 Normal;
+	XMFLOAT2 TexCoord;
 };
 
 struct LocalConstantBuffer

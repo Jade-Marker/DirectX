@@ -2,42 +2,72 @@
 
 //todo
 //Do a general cleanup of code before moving onto next step
+//Cleanup texture code
+//Split code in Application into several functions
+//Extract camera stuff out to a class
+//Extract light stuff out to a class/struct
+//Clean up Mesh/Vertices code
+
+//Add support for multiple textures
+//Use the specular map for the crate
 //Add point, spotlight and directional light based on examples in chapter 7
 
 static LightVertex cubeVertices[] =
 {
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f) },     //0
-    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f) },       //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f) },       //3
-                                           
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f) },       //4
-    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f) },       //5
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f) },       //6
-    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f) },       //7
+    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,0.0f) },       //0
+    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(1.0f,0.0f) },       //1
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(0.0f,1.0f) },       //2
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,1.0f) },       //3
+
+    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //4
+    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //5
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //6
+    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //7
+
+    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //8
+    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //9
+    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //10
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //11
+
+    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //12
+    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,0.0f) },       //13
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //14
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(1.0f,1.0f) },       //15
+
+    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //16
+    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //17
+    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //18
+    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //19
+
+
+    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,0.0f) },       //20
+    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(1.0f,0.0f) },       //21
+    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,1.0f) },       //22
+    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,1.0f) },       //23
+
 };
 
 static Vertices cube = Vertices((void*)cubeVertices, sizeof(cubeVertices), sizeof(cubeVertices)/sizeof(cubeVertices[0]));
 
 static WORD cubeIndices[] =
 {
-    0,1,2,
-    2,1,3,
+    0, 1, 2,
+    2, 1, 3,
 
-    1,5,3,
-    3,5,7,
+    4, 5, 6,
+    6, 5, 7,
 
-    5,4,7,
-    7,4,6,
+    8, 9,10,
+    10,9,11,
 
-    4,0,6,
-    6,0,2,
+    12,13,14,
+    14,13,15,
 
-    4,5,0,
-    0,5,1,
+    16,17,18,
+    18,17,19,
 
-    6,2,3,
-    7,6,3
+    20,21,22,
+    22,21,23
 };
 
 static BasicVertex pyramidVertices[] =
@@ -280,6 +310,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
     UINT numElementsLighting = ARRAYSIZE(lightingLayout);
 
@@ -314,7 +345,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, -9, 3),
         XMFLOAT3(35, 0, 0),
         XMFLOAT3(0.5f, 1, 1),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
+        XMFLOAT3(0.5f, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
     );
 

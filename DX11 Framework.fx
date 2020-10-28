@@ -28,20 +28,25 @@ cbuffer GlobalConstant : register( b1 )
     float gTime;
 }
 
+Texture2D txDiffuse : register(t0);
+SamplerState samLinear : register(s0);
+
 //--------------------------------------------------------------------------------------
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
     float3 Norm: NORMAL;
     float3 PosW: POSITION;
+    float2 Tex: TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader - Implements Gouraud Shading using Diffuse lighting only
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL: NORMAL)
+VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL: NORMAL, float2 Tex: TEXCOORD0)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
+    output.Tex = Tex;
 
     output.Pos = mul(Pos, World);
     output.PosW = output.Pos;
@@ -80,7 +85,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
     float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
     
-    color.rgb = diffuse + ambient + specular;
+    float4 textureColor = txDiffuse.Sample(samLinear, input.Tex);
+
+    color.rgb = (diffuse + ambient + specular) * textureColor;
     color.a = DiffuseMtrl.a;
 
     return color;
