@@ -40,22 +40,29 @@ struct VS_OUTPUT
     float2 Tex: TEXCOORD0;
 };
 
+struct VS_INPUT
+{
+    float4 Pos : POSITION;
+    float3 NormalL : NORMAL;
+    float2 Tex : TEXCOORD0;
+};
+
 //--------------------------------------------------------------------------------------
 // Vertex Shader - Implements Gouraud Shading using Diffuse lighting only
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL: NORMAL, float2 Tex: TEXCOORD0)
+VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
-    output.Tex = Tex;
+    output.Tex = input.Tex;
 
-    output.Pos = mul(Pos, World);
+    output.Pos = mul(input.Pos, World);
     output.PosW = output.Pos;
     output.Pos = mul(output.Pos, View);
     output.Pos = mul(output.Pos, Projection);
 
     //Convert from local to world space
     //W component of vector is 0 as vectors cannot be translated
-    float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
+    float3 normalW = mul(float4(input.NormalL, 0.0f), World).xyz;
     normalW = normalize(normalW);
     output.Norm = normalW;
 

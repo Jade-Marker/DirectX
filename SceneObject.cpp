@@ -1,12 +1,11 @@
 #include "SceneObject.h"
 
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer) :
+    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
     _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pLocalConstantBuffer(pLocalConstantBuffer),
-    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(pd3dDevice, pImmediateContext), _indexBuffer(pd3dDevice, pImmediateContext)
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(pd3dDevice, pImmediateContext), _indexBuffer(pd3dDevice, pImmediateContext), _textures(textures)
 {
-    InitTexture();
     _vertexBuffer.Initialise(mesh);
     _indexBuffer.Initialise(mesh);
     InitRasterState(startInWireFrame);
@@ -27,8 +26,8 @@ void SceneObject::Draw()
     _shader->SetShader();
     _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
 
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pTexture);
-    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+    for (int i = 0; i < _textures.size(); i++)
+        _textures[i]->Bind(_shader, i);
 
     _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
@@ -128,21 +127,4 @@ void SceneObject::InitRasterState(bool startInWireFrame)
         _rasterState = _wireframeRasterState;
     else
         _rasterState = _solidRasterState;
-}
-
-void SceneObject::InitTexture()
-{
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTexture);
-
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter         = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW       = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD         = 0;
-    sampDesc.MaxLOD         = D3D11_FLOAT32_MAX;
-
-    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
 }

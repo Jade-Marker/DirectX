@@ -68,6 +68,9 @@ private:
 	Shader* _discardShader;
 	Shader* _waterShader;
 
+	std::vector<Texture*> _crateTextures;
+	std::vector<Texture*> _blankTextures;
+
 	Mesh* GenerateMesh(int width, int height);
 
 public:

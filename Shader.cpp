@@ -113,3 +113,15 @@ void Shader::SetConstantBuffers(UINT startSlot, UINT numBuffers, ID3D11Buffer* c
     _pImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
     _pImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
 }
+
+void Shader::SetShaderResources(UINT startSlot, UINT numViews, ID3D11ShaderResourceView* const* ppShaderResourceViews)
+{
+    _pImmediateContext->VSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
+    _pImmediateContext->PSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
+}
+
+void Shader::SetSamplers(UINT StartSlot, UINT NumSamplers, ID3D11SamplerState* const* ppSamplers)
+{
+    _pImmediateContext->VSSetSamplers(StartSlot, NumSamplers, ppSamplers);
+    _pImmediateContext->PSSetSamplers(StartSlot, NumSamplers, ppSamplers);
+}

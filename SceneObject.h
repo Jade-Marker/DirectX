@@ -10,7 +10,7 @@
 #include "VertexBuffer.h"
 #include "Constants.h"
 #include "IndexBuffer.h"
-#include "DDSTextureLoader.h"
+#include "Texture.h"
 
 class SceneObject
 {
@@ -25,9 +25,8 @@ private:
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
-
-	ID3D11ShaderResourceView* _pTexture;
-	ID3D11SamplerState* _pSamplerLinear;
+	
+	std::vector<Texture*> _textures;
 
 	bool _rasterKeyDown;
 	bool _yDirState;
@@ -46,7 +45,7 @@ private:
 
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer);
+		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures);
 	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();
@@ -54,7 +53,6 @@ public:
 private:
 	void InitDraw();
 	void InitRasterState(bool startInWireFrame);
-	void InitTexture();
 
 };
 

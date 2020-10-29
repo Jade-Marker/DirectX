@@ -2,7 +2,6 @@
 
 //todo
 //Do a general cleanup of code before moving onto next step
-//Cleanup texture code
 //Split code in Application into several functions
 //Extract camera stuff out to a class
 //Extract light stuff out to a class/struct
@@ -305,6 +304,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _icosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
     _planeMesh = GenerateMesh(32,8);
 
+    _crateTextures.push_back(new Texture(_pd3dDevice, L"Crate_COLOR.dds"));
+
     // Define the input layouts
     D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
     {
@@ -338,7 +339,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
         XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _crateTextures
     );
 
     cube2 = new SceneObject(
@@ -346,7 +347,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(35, 0, 0),
         XMFLOAT3(0.5f, 1, 1),
         XMFLOAT3(0.5f, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _crateTextures
     );
 
     pyramid1 = new SceneObject(
@@ -354,7 +355,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _pyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );                       
                                          
     pyramid2 = new SceneObject(
@@ -362,7 +363,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );                                   
                                          
     icosphere = new SceneObject(
@@ -370,7 +371,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
     plane = new SceneObject(
@@ -378,7 +379,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(0, 0, 0), nullptr, _planeMesh, false, _waterShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
     _sceneObjects.push_back(cube);
@@ -573,6 +574,9 @@ void Application::Cleanup()
     if(_basicShader) delete _basicShader;
     if(_discardShader) delete _discardShader;
     if(_waterShader) delete _waterShader;
+
+    for (int i = 0; i < _crateTextures.size(); i++)
+        delete _crateTextures[i];
 }
 
 void Application::Update(float deltaTime)
