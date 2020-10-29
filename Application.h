@@ -63,10 +63,7 @@ private:
 	Mesh* _icosphereMesh;
 	Mesh* _planeMesh;
 
-	Shader* _dx11Shader;
-	Shader* _basicShader;
-	Shader* _discardShader;
-	Shader* _waterShader;
+	std::vector<Shader*> _shaders;
 
 	std::vector<Texture*> _crateTextures;
 	std::vector<Texture*> _blankTextures;
@@ -78,6 +75,10 @@ public:
 	~Application();
 
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow);
+	void InitTextures();
+	void InitMeshes();
+	void InitConstantBufferVars();
+	void InitSceneObjects();
 
 	void Update(float deltaTime);
 	void Draw();

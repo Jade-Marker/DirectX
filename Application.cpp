@@ -2,7 +2,7 @@
 
 //todo
 //Do a general cleanup of code before moving onto next step
-//Split code in Application into several functions
+//Clean up Draw code
 //Extract camera stuff out to a class
 //Extract light stuff out to a class/struct
 //Clean up Mesh/Vertices code
@@ -225,10 +225,6 @@ Application::Application()
     _pyramidMesh        = nullptr;
     _icosphereMesh      = nullptr;
     _planeMesh          = nullptr;
-    _dx11Shader         = nullptr;
-    _basicShader        = nullptr;
-    _discardShader      = nullptr;
-    _waterShader        = nullptr;
 }
 
 Application::~Application()
@@ -255,6 +251,29 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
+    InitConstantBufferVars();
+    InitMeshes();
+    InitTextures();
+    InitSceneObjects();
+
+	return S_OK;
+}
+
+void Application::InitTextures()
+{
+    _crateTextures.push_back(new Texture(_pd3dDevice, L"Crate_COLOR.dds"));
+}
+
+void Application::InitMeshes()
+{
+    _cubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
+    _pyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
+    _icosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
+    _planeMesh = GenerateMesh(32, 8);
+}
+
+void Application::InitConstantBufferVars()
+{
     _lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
     _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -266,52 +285,39 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _cameraPos = XMFLOAT3(0.0f, 0.0f, -10.0f);
     _time = 0;
 
-	// Initialize the world matrix
-	XMStoreFloat4x4(&_world, XMMatrixIdentity());
+    // Initialize the world matrix
+    XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     // Initialize the view matrix
-	XMVECTOR Eye = XMVectorSet(_cameraPos.x, _cameraPos.y, _cameraPos.z, 0.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    XMVECTOR Eye = XMVectorSet(_cameraPos.x, _cameraPos.y, _cameraPos.z, 0.0f);
+    XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+    XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
+    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
 
     // Initialize the projection matrix
-	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
+}
 
-    //Initialize the blend state
-    D3D11_BLEND_DESC blendDesc;
-    ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-    blendDesc.AlphaToCoverageEnable = false;
-    blendDesc.IndependentBlendEnable = false;
-
-    blendDesc.RenderTarget[0].BlendEnable = true;
-    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-    _pd3dDevice->CreateBlendState(&blendDesc, &_pBlendState);
-
-    float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    _pImmediateContext->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
-
-    _cubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
-    _icosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
-    _planeMesh = GenerateMesh(32,8);
-
-    _crateTextures.push_back(new Texture(_pd3dDevice, L"Crate_COLOR.dds"));
+void Application::InitSceneObjects()
+{
+    SceneObject* cube;
+    SceneObject* cube2;
+    SceneObject* pyramid1;
+    SceneObject* pyramid2;
+    SceneObject* icosphere;
+    SceneObject* plane;
+    Shader* _dx11Shader;
+    Shader* _discardShader;
+    Shader* _basicShader;
+    Shader* _waterShader;
 
     // Define the input layouts
     D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
     };
     UINT numElementsLighting = ARRAYSIZE(lightingLayout);
 
@@ -327,12 +333,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _basicShader = new Shader(L"BasicShader.fx", basicLayout, numElementsBasic, _pd3dDevice, _pImmediateContext);
     _waterShader = new Shader(L"Water.fx", basicLayout, numElementsBasic, _pd3dDevice, _pImmediateContext);
 
-    SceneObject* cube;
-    SceneObject* cube2;
-    SceneObject* pyramid1;
-    SceneObject* pyramid2;
-    SceneObject* icosphere;
-    SceneObject* plane;
+    _shaders.push_back(_dx11Shader);
+    _shaders.push_back(_discardShader);
+    _shaders.push_back(_basicShader);
+    _shaders.push_back(_waterShader);
 
     cube = new SceneObject(
         XMFLOAT3(0, 0, 5),
@@ -356,18 +360,18 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _pyramidMesh, false, _basicShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
-    );                       
-                                         
+    );
+
     pyramid2 = new SceneObject(
-        XMFLOAT3(0, 6, 0),               
+        XMFLOAT3(0, 6, 0),
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f,6), cube, _pyramidMesh, false, _basicShader,
+        XMFLOAT3(0.27f, -3.0f, 6), cube, _pyramidMesh, false, _basicShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
-    );                                   
-                                         
+    );
+
     icosphere = new SceneObject(
-        XMFLOAT3(-5, 0, 0),              
+        XMFLOAT3(-5, 0, 0),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _basicShader,
@@ -388,8 +392,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _sceneObjects.push_back(pyramid2);
     _sceneObjects.push_back(icosphere);
     _sceneObjects.push_back(plane);
-
-	return S_OK;
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -526,6 +528,26 @@ HRESULT Application::InitDevice()
     // Set primitive topology
     _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    //Initialize the blend state
+    D3D11_BLEND_DESC blendDesc;
+    ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+    blendDesc.AlphaToCoverageEnable = false;
+    blendDesc.IndependentBlendEnable = false;
+
+    blendDesc.RenderTarget[0].BlendEnable = true;
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    _pd3dDevice->CreateBlendState(&blendDesc, &_pBlendState);
+
+    float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    _pImmediateContext->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
+
 	// Create the local constant buffer
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -570,10 +592,8 @@ void Application::Cleanup()
     if(_icosphereMesh) delete _icosphereMesh;
     if(_planeMesh) delete _planeMesh;
 
-    if(_dx11Shader) delete _dx11Shader;
-    if(_basicShader) delete _basicShader;
-    if(_discardShader) delete _discardShader;
-    if(_waterShader) delete _waterShader;
+    for (int i = 0; i < _shaders.size(); i++)
+        delete _shaders[i];
 
     for (int i = 0; i < _crateTextures.size(); i++)
         delete _crateTextures[i];
@@ -614,7 +634,10 @@ void Application::Draw()
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
 
-    _dx11Shader->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
+    //_dx11Shader->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
+
+    for (int i = 0; i < _shaders.size(); i++)
+        _shaders[i]->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Draw();
