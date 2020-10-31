@@ -13,26 +13,24 @@ SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFL
 
 void SceneObject::Draw()
 {
-    InitDraw();
+    //Bind buffers
+    _vertexBuffer.Bind();
+    _indexBuffer.Bind();
 
-    DirectX::XMMATRIX mWorld = GetWorldMatrix();
-
-    LocalConstantBuffer cb;
-    cb.WorldMatrix = XMMatrixTranspose(mWorld);
-
-    _pImmediateContext->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-
+    // Set the shader and the input layout
     _shader->SetShader();
-    _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
+    _shader->SetInputLayout();
+
+    //Set the raster state
+    _pImmediateContext->RSSetState(_rasterState);
+
+    UpdateConstantBuffer();
 
     for (int i = 0; i < _textures.size(); i++)
         _textures[i]->Bind(_shader, i);
 
     _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
-
-
 
 void SceneObject::Update(float deltaTime)
 {
@@ -96,19 +94,6 @@ XMMATRIX SceneObject::GetWorldMatrix()
     return world;
 }
 
-void SceneObject::InitDraw()
-{
-    //Bind buffers
-    _vertexBuffer.Bind();
-    _indexBuffer.Bind();
-
-    // Set the input layout
-    _shader->SetInputLayout();
-
-    //Set the raster state
-    _pImmediateContext->RSSetState(_rasterState);
-}
-
 void SceneObject::InitRasterState(bool startInWireFrame)
 {
     HRESULT hr;
@@ -127,4 +112,14 @@ void SceneObject::InitRasterState(bool startInWireFrame)
         _rasterState = _wireframeRasterState;
     else
         _rasterState = _solidRasterState;
+}
+
+void SceneObject::UpdateConstantBuffer()
+{
+    LocalConstantBuffer cb;
+    cb.WorldMatrix = XMMatrixTranspose(GetWorldMatrix());
+
+    _pImmediateContext->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
+
+    _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
 }

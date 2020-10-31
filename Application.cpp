@@ -2,7 +2,6 @@
 
 //todo
 //Do a general cleanup of code before moving onto next step
-//Clean up Draw code
 //Extract camera stuff out to a class
 //Extract light stuff out to a class/struct
 //Clean up Mesh/Vertices code
@@ -633,8 +632,6 @@ void Application::Draw()
     cb.gTime           = _time;
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    //_dx11Shader->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
 
     for (int i = 0; i < _shaders.size(); i++)
         _shaders[i]->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);

@@ -51,8 +51,8 @@ public:
 	XMMATRIX GetWorldMatrix();
 
 private:
-	void InitDraw();
 	void InitRasterState(bool startInWireFrame);
+	void UpdateConstantBuffer();
 
 };
 
