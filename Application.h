@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "Constants.h"
 #include "Vertices.h"
+#include "Camera.h"
 
 using namespace DirectX;
 
@@ -33,8 +34,7 @@ private:
 	ID3D11Buffer*           _pGlobalConstantBuffer;
 	ID3D11BlendState*		_pBlendState;
 
-	XMFLOAT4X4              _world;
-	XMFLOAT4X4              _view;
+	Camera					_camera;
 	XMFLOAT4X4              _projection;
 
 	XMFLOAT3				_lightDirection;
@@ -45,7 +45,6 @@ private:
 	XMFLOAT4				_specularMaterial;
 	XMFLOAT4				_specularLight;
 	float					_specularPower;
-	XMFLOAT3				_cameraPos;
 	float					_time;
 
 private:

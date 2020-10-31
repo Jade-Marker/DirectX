@@ -2,7 +2,6 @@
 
 //todo
 //Do a general cleanup of code before moving onto next step
-//Extract camera stuff out to a class
 //Extract light stuff out to a class/struct
 //Clean up Mesh/Vertices code
 
@@ -204,7 +203,8 @@ Mesh* Application::GenerateMesh(int width, int height)
     return mesh;
 }
 
-Application::Application()
+Application::Application():
+    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f))
 {
 	_hInst = nullptr;
 	_hWnd = nullptr;
@@ -281,18 +281,7 @@ void Application::InitConstantBufferVars()
     _specularMaterial = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
     _specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
     _specularPower = 10.0f;
-    _cameraPos = XMFLOAT3(0.0f, 0.0f, -10.0f);
     _time = 0;
-
-    // Initialize the world matrix
-    XMStoreFloat4x4(&_world, XMMatrixIdentity());
-
-    // Initialize the view matrix
-    XMVECTOR Eye = XMVectorSet(_cameraPos.x, _cameraPos.y, _cameraPos.z, 0.0f);
-    XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-    XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
@@ -618,7 +607,7 @@ void Application::Draw()
 
 
     GlobalConstantBuffer cb;
-    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_view));
+    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera.GetViewMatrix()));
     cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
     cb.DiffuseMtrl     = _diffuseMaterial;
     cb.DiffuseLight    = _diffuseLight;
@@ -626,7 +615,7 @@ void Application::Draw()
     cb.AmbientLight    = _ambientLight;
     cb.SpecularMtrl    = _specularMaterial;
     cb.SpecularLight   = _specularLight;
-    cb.EyePosW         = _cameraPos;
+    cb.EyePosW         = _camera.GetPosition();
     cb.SpecularPower   = _specularPower;
     cb.LightVecW       = _lightDirection;
     cb.gTime           = _time;
