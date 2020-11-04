@@ -1,10 +1,9 @@
 #include "Application.h"
 
 //todo
-//Extract light stuff out to a class/struct
+//Update constant buffer to support multiple lights
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
-//Update constant buffer to support multiple lights
 //Clean up Mesh/Vertices code
 //Do a general cleanup of code before moving onto next step
 
@@ -210,7 +209,8 @@ Mesh* Application::GenerateMesh(int width, int height)
 }
 
 Application::Application():
-    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f))
+    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f)), 
+    _light(XMFLOAT4(0.0f, 0.0f, -6.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 1.0f, 20, 5.0f)
 {
 	_hInst = nullptr;
 	_hWnd = nullptr;
@@ -283,13 +283,8 @@ void Application::InitMeshes()
 void Application::InitConstantBufferVars()
 {
     _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _ambientMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    _ambientLight = XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f);
     _specularMaterial = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-    _specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    _specularPower = 10.0f;
-    _lightPos = XMFLOAT4(-10.0f, 0.0f, -6.0f, 1.0f);
     _time = 0;
 
     // Initialize the projection matrix
@@ -623,17 +618,17 @@ void Application::Draw()
     cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera.GetViewMatrix()));
     cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
     cb.DiffuseMtrl     = _diffuseMaterial;
-    cb.DiffuseLight    = _diffuseLight;
+    cb.DiffuseLight    = _light.GetDiffuseColor();
     cb.AmbientMtrl     = _ambientMaterial;
-    cb.AmbientLight    = _ambientLight;
+    cb.AmbientLight    = _light.GetAmbientColor();
     cb.SpecularMtrl    = _specularMaterial;
-    cb.SpecularLight   = _specularLight;
+    cb.SpecularLight   = _light.GetSpecularColor();
     cb.EyePosW         = _camera.GetPosition();
-    cb.SpecularPower   = _specularPower;
-    cb.LightPosW       = _lightPos;
-    cb.DiffuseStrength = 1.0f;
-    cb.AmbientStrength = 10.0f;
-    cb.SpecularStrength = 5.0f;
+    cb.SpecularPower   = _light.GetSpecularPower();
+    cb.LightPosW       = _light.GetPosition();
+    cb.DiffuseStrength = _light.GetDiffuseStrength();
+    cb.AmbientStrength = _light.GetAmbientStrength();
+    cb.SpecularStrength = _light.GetSpecularStrength();
     cb.gTime           = _time;
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);

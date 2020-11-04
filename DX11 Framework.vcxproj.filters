@@ -24,6 +24,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

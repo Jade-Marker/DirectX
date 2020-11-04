@@ -15,6 +15,7 @@
 #include "Vertices.h"
 #include "Camera.h"
 #include "OBJLoader.h"
+#include "Light.h"
 
 using namespace DirectX;
 
@@ -41,12 +42,8 @@ private:
 	XMFLOAT4				_diffuseMaterial;
 	XMFLOAT4				_ambientMaterial;
 	XMFLOAT4				_specularMaterial;
-	XMFLOAT4				_diffuseLight;
-	XMFLOAT4				_ambientLight;
-	XMFLOAT4				_specularLight;
-	float					_specularPower;
+	Light					_light;
 	float					_time;
-	XMFLOAT4				_lightPos;
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
