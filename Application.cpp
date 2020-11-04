@@ -1,12 +1,18 @@
 #include "Application.h"
 
 //todo
-//Do a general cleanup of code before moving onto next step
 //Extract light stuff out to a class/struct
+//Look through assignment brief and update todo list
+//Create Transform struct for position, scale and rotation
+//Update constant buffer to support multiple lights
 //Clean up Mesh/Vertices code
+//Do a general cleanup of code before moving onto next step
 
 //Add support for multiple textures
 //Use the specular map for the crate
+//Create material class that contains textures/colors for diffuse, ambient and specular and make each sceneObject have a material
+//Potentially worth adding imGui
+//Add an InputManager class so that the input code in SceneObject can be cleaner
 //Add point, spotlight and directional light based on examples in chapter 7
 
 static LightVertex cubeVertices[] =
@@ -276,7 +282,6 @@ void Application::InitMeshes()
 
 void Application::InitConstantBufferVars()
 {
-    _lightDirection = XMFLOAT3(0.25f, 0.5f, -1.0f);
     _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     _diffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _ambientMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
@@ -284,6 +289,7 @@ void Application::InitConstantBufferVars()
     _specularMaterial = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
     _specularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
     _specularPower = 10.0f;
+    _lightPos = XMFLOAT4(-10.0f, 0.0f, -6.0f, 1.0f);
     _time = 0;
 
     // Initialize the projection matrix
@@ -379,10 +385,10 @@ void Application::InitSceneObjects()
 
     _sceneObjects.push_back(cube);
     _sceneObjects.push_back(fish);
-    _sceneObjects.push_back(pyramid1);
-    _sceneObjects.push_back(pyramid2);
-    _sceneObjects.push_back(icosphere);
-    _sceneObjects.push_back(plane);
+    //_sceneObjects.push_back(pyramid1);
+    //_sceneObjects.push_back(pyramid2);
+    //_sceneObjects.push_back(icosphere);
+    //_sceneObjects.push_back(plane);
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -624,7 +630,10 @@ void Application::Draw()
     cb.SpecularLight   = _specularLight;
     cb.EyePosW         = _camera.GetPosition();
     cb.SpecularPower   = _specularPower;
-    cb.LightVecW       = _lightDirection;
+    cb.LightPosW       = _lightPos;
+    cb.DiffuseStrength = 1.0f;
+    cb.AmbientStrength = 10.0f;
+    cb.SpecularStrength = 5.0f;
     cb.gTime           = _time;
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);

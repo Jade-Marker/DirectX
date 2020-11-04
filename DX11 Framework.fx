@@ -24,8 +24,11 @@ cbuffer GlobalConstant : register( b1 )
     float4 SpecularLight;
     float3 EyePosW;
     float SpecularPower;
-    float3 LightVecW;
+    float4 LightPosW;
     float gTime;
+    float DiffuseStrength;
+    float AmbientStrength;
+    float SpecularStrength;
 }
 
 Texture2D txDiffuse : register(t0);
@@ -80,15 +83,19 @@ float4 PS(VS_OUTPUT input) : SV_Target
 
     float3 normalizedNorm = normalize(input.Norm);
 
+    float distanceScale = 1.0f / distance(input.PosW, LightPosW);
+
+    float3 normalizedLightDirection = normalize(LightPosW - input.PosW);
+
     //Compute the reflection vector
-    float3 r = reflect(-LightVecW, normalizedNorm);
+    float3 r = reflect(-normalizedLightDirection, normalizedNorm);
     
     //Determine how much (if any) specular light makes it into the eye
-    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
+    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower) * distanceScale * SpecularStrength;
     
     //Compute diffuse, ambient and specular components
-    float3 ambient = AmbientMtrl * AmbientLight;
-    float diffuseAmount = max(dot(LightVecW, normalizedNorm), 0.0f);
+    float3 ambient = AmbientMtrl * AmbientLight * distanceScale * AmbientStrength;
+    float diffuseAmount = max(dot(normalizedLightDirection, normalizedNorm), 0.0f) * distanceScale * DiffuseStrength;
     float3 diffuse = diffuseAmount * (DiffuseMtrl * DiffuseLight).rgb;
     float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
     

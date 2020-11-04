@@ -37,6 +37,9 @@ struct GlobalConstantBuffer
 	XMFLOAT4 SpecularLight;
 	XMFLOAT3 EyePosW;
 	float	 SpecularPower;
-	XMFLOAT3 LightVecW;
+	XMFLOAT4 LightPosW;
 	float gTime;
+	float DiffuseStrength;
+	float AmbientStrength;
+	float SpecularStrength;
 };
