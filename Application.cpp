@@ -217,13 +217,14 @@ Application::Application():
 	_pLocalConstantBuffer = nullptr;
 	_pGlobalConstantBuffer = nullptr;
 
-    _depthStencilView   = nullptr;
-    _depthStencilBuffer = nullptr;
+    _pDepthStencilView   = nullptr;
+    _pDepthStencilBuffer = nullptr;
     _pBlendState        = nullptr;
-    _cubeMesh           = nullptr;
-    _pyramidMesh        = nullptr;
-    _icosphereMesh      = nullptr;
-    _planeMesh          = nullptr;
+    _pCubeMesh           = nullptr;
+    _pFishMesh            = nullptr;
+    _pPyramidMesh        = nullptr;
+    _pIcosphereMesh      = nullptr;
+    _pPlaneMesh          = nullptr;
 }
 
 Application::~Application()
@@ -261,14 +262,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 void Application::InitTextures()
 {
     _crateTextures.push_back(new Texture(_pd3dDevice, L"Crate_COLOR.dds"));
+    _fishTextures.push_back(new Texture(_pd3dDevice, L"fish.dds"));
 }
 
 void Application::InitMeshes()
 {
-    _cubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
-    _icosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
-    _planeMesh = GenerateMesh(32, 8);
+    _pCubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
+    _pFishMesh = OBJLoader::Load("fish.obj", _pd3dDevice, true);
+    _pPyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
+    _pIcosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
+    _pPlaneMesh = GenerateMesh(32, 8);
 }
 
 void Application::InitConstantBufferVars()
@@ -290,7 +293,7 @@ void Application::InitConstantBufferVars()
 void Application::InitSceneObjects()
 {
     SceneObject* cube;
-    SceneObject* cube2;
+    SceneObject* fish;
     SceneObject* pyramid1;
     SceneObject* pyramid2;
     SceneObject* icosphere;
@@ -330,23 +333,23 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 0, 5),
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
-        XMFLOAT3(0, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
+        XMFLOAT3(0, 1, 0), nullptr, _pCubeMesh, false, _dx11Shader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _crateTextures
     );
 
-    cube2 = new SceneObject(
-        XMFLOAT3(0, -9, 3),
-        XMFLOAT3(35, 0, 0),
-        XMFLOAT3(0.5f, 1, 1),
-        XMFLOAT3(0.5f, 1, 0), nullptr, _cubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _crateTextures
+    fish = new SceneObject(
+        XMFLOAT3(0, -6, 5),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(4, 4, 4),
+        XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
+        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _fishTextures
     );
 
     pyramid1 = new SceneObject(
         XMFLOAT3(5, 0, -3),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
-        XMFLOAT3(0, -1, 0), cube, _pyramidMesh, false, _basicShader,
+        XMFLOAT3(0, -1, 0), cube, _pPyramidMesh, false, _basicShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
@@ -354,7 +357,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 6, 0),
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f, 6), cube, _pyramidMesh, false, _basicShader,
+        XMFLOAT3(0.27f, -3.0f, 6), cube, _pPyramidMesh, false, _basicShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
@@ -362,7 +365,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(-5, 0, 0),
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f), cube, _icosphereMesh, false, _basicShader,
+        XMFLOAT3(-2, 0, 0.5f), cube, _pIcosphereMesh, false, _basicShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
@@ -370,12 +373,12 @@ void Application::InitSceneObjects()
         XMFLOAT3(-15, -9, 0),
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(0, 0, 0), nullptr, _planeMesh, false, _waterShader,
+        XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
         _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
     );
 
     _sceneObjects.push_back(cube);
-    _sceneObjects.push_back(cube2);
+    _sceneObjects.push_back(fish);
     _sceneObjects.push_back(pyramid1);
     _sceneObjects.push_back(pyramid2);
     _sceneObjects.push_back(icosphere);
@@ -497,10 +500,10 @@ HRESULT Application::InitDevice()
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.MiscFlags = 0;
 
-    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_depthStencilBuffer);
-    _pd3dDevice->CreateDepthStencilView(_depthStencilBuffer, nullptr, &_depthStencilView);
+    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+    _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _depthStencilView);
+    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -569,22 +572,26 @@ void Application::Cleanup()
     if (_pImmediateContext) _pImmediateContext->Release();
     if (_pd3dDevice) _pd3dDevice->Release();
 
-    if (_depthStencilView) _depthStencilView->Release();
-    if (_depthStencilBuffer) _depthStencilBuffer->Release();
+    if (_pDepthStencilView) _pDepthStencilView->Release();
+    if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         delete _sceneObjects[i];
 
-    if(_cubeMesh) delete _cubeMesh;
-    if(_pyramidMesh) delete _pyramidMesh;
-    if(_icosphereMesh) delete _icosphereMesh;
-    if(_planeMesh) delete _planeMesh;
+    if(_pCubeMesh) delete _pCubeMesh;
+    if(_pFishMesh) delete _pFishMesh;
+    if(_pPyramidMesh) delete _pPyramidMesh;
+    if(_pIcosphereMesh) delete _pIcosphereMesh;
+    if(_pPlaneMesh) delete _pPlaneMesh;
 
     for (int i = 0; i < _shaders.size(); i++)
         delete _shaders[i];
 
     for (int i = 0; i < _crateTextures.size(); i++)
         delete _crateTextures[i];
+
+    for (int i = 0; i < _fishTextures.size(); i++)
+        delete _fishTextures[i];
 }
 
 void Application::Update(float deltaTime)
@@ -603,7 +610,7 @@ void Application::Draw()
 
     float ClearColor[4] = {0.0f, 0.3f, 0.3f, 1.0f}; // red,green,blue,alpha
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    _pImmediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
     GlobalConstantBuffer cb;

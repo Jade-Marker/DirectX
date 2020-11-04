@@ -36,7 +36,6 @@ private:
 	XMFLOAT3 _angle;
 	XMFLOAT3 _scale;
 	XMFLOAT3 _tScale;
-	float _t;
 
 	Mesh* _mesh;
 	Shader* _shader;

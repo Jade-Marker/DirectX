@@ -3,7 +3,7 @@
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
     ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _t(0.0f), _pLocalConstantBuffer(pLocalConstantBuffer),
+    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _pLocalConstantBuffer(pLocalConstantBuffer),
     _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(pd3dDevice, pImmediateContext), _indexBuffer(pd3dDevice, pImmediateContext), _textures(textures)
 {
     _vertexBuffer.Initialise(mesh);

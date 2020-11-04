@@ -14,6 +14,7 @@
 #include "Constants.h"
 #include "Vertices.h"
 #include "Camera.h"
+#include "OBJLoader.h"
 
 using namespace DirectX;
 
@@ -28,8 +29,8 @@ private:
 	ID3D11DeviceContext*    _pImmediateContext;
 	IDXGISwapChain*         _pSwapChain;
 	ID3D11RenderTargetView* _pRenderTargetView;
-	ID3D11DepthStencilView* _depthStencilView;
-	ID3D11Texture2D*		_depthStencilBuffer;
+	ID3D11DepthStencilView* _pDepthStencilView;
+	ID3D11Texture2D*		_pDepthStencilBuffer;
 	ID3D11Buffer*           _pLocalConstantBuffer;
 	ID3D11Buffer*           _pGlobalConstantBuffer;
 	ID3D11BlendState*		_pBlendState;
@@ -57,14 +58,16 @@ private:
 
 private:
 	std::vector<SceneObject*> _sceneObjects;
-	Mesh* _cubeMesh;
-	Mesh* _pyramidMesh;
-	Mesh* _icosphereMesh;
-	Mesh* _planeMesh;
+	Mesh* _pCubeMesh;
+	Mesh* _pFishMesh;
+	Mesh* _pPyramidMesh;
+	Mesh* _pIcosphereMesh;
+	Mesh* _pPlaneMesh;
 
 	std::vector<Shader*> _shaders;
 
 	std::vector<Texture*> _crateTextures;
+	std::vector<Texture*> _fishTextures;
 	std::vector<Texture*> _blankTextures;
 
 	Mesh* GenerateMesh(int width, int height);

@@ -13,6 +13,11 @@ struct LightVertex
 	XMFLOAT3 Pos;
 	XMFLOAT3 Normal;
 	XMFLOAT2 TexCoord;
+
+	bool operator<(const LightVertex other) const
+	{
+		return memcmp((void*)this, (void*)&other, sizeof(LightVertex)) > 0;
+	};
 };
 
 struct LocalConstantBuffer
