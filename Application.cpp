@@ -6,6 +6,7 @@
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
 //Do a general cleanup of code before moving onto next step
+//Sort files in project into folders
 
 //Add support for multiple textures
 //Use the specular map for the crate
@@ -209,8 +210,7 @@ Mesh* Application::GenerateMesh(int width, int height)
 }
 
 Application::Application():
-    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f)), 
-    _light(XMFLOAT4(0.0f, 0.0f, -6.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 1.0f, 20, 5.0f)
+    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f))
 {
 	_hInst = nullptr;
 	_hWnd = nullptr;
@@ -289,6 +289,12 @@ void Application::InitConstantBufferVars()
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
+
+    _pLight = new PointLight(XMFLOAT3(0.0f, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+        XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+
+    //_pLight = new DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+    //    XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 1.0f, 1.0f, 5.0f);
 }
 
 void Application::InitSceneObjects()
@@ -618,18 +624,19 @@ void Application::Draw()
     cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera.GetViewMatrix()));
     cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
     cb.DiffuseMtrl     = _diffuseMaterial;
-    cb.DiffuseLight    = _light.GetDiffuseColor();
+    cb.DiffuseLight    = _pLight->GetDiffuseColor();
     cb.AmbientMtrl     = _ambientMaterial;
-    cb.AmbientLight    = _light.GetAmbientColor();
+    cb.AmbientLight    = _pLight->GetAmbientColor();
     cb.SpecularMtrl    = _specularMaterial;
-    cb.SpecularLight   = _light.GetSpecularColor();
+    cb.SpecularLight   = _pLight->GetSpecularColor();
     cb.EyePosW         = _camera.GetPosition();
-    cb.SpecularPower   = _light.GetSpecularPower();
-    cb.LightPosW       = _light.GetPosition();
-    cb.DiffuseStrength = _light.GetDiffuseStrength();
-    cb.AmbientStrength = _light.GetAmbientStrength();
-    cb.SpecularStrength = _light.GetSpecularStrength();
+    cb.SpecularPower   = _pLight->GetSpecularPower();
+    cb.LightPosW       = _pLight->GetPosition();
+    cb.DiffuseStrength = _pLight->GetDiffuseStrength();
+    cb.AmbientStrength = _pLight->GetAmbientStrength();
+    cb.SpecularStrength = _pLight->GetSpecularStrength();
     cb.gTime           = _time;
+    cb.LightDir        = _pLight->GetDirection();
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
 

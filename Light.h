@@ -7,6 +7,7 @@ class Light
 {
 private:
 	XMFLOAT4 _position;
+	XMFLOAT4 _direction;
 	XMFLOAT4 _diffuseColor;
 	XMFLOAT4 _ambientColor;
 	XMFLOAT4 _specularColor;
@@ -16,10 +17,11 @@ private:
 	float _specularStrength;
 
 public:
-	Light(const XMFLOAT4& position, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
+	Light(const XMFLOAT4& position, const XMFLOAT4& direction, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
 		float specularPower, float diffuseStrength, float ambientStrength, float specularStrength);
 
 	const XMFLOAT4& GetPosition();
+	const XMFLOAT4& GetDirection();
 	const XMFLOAT4& GetDiffuseColor();
 	const XMFLOAT4& GetAmbientColor();
 	const XMFLOAT4& GetSpecularColor();

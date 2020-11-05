@@ -16,6 +16,8 @@
 #include "Camera.h"
 #include "OBJLoader.h"
 #include "Light.h"
+#include "PointLight.h"
+#include "DirectionalLight.h"
 
 using namespace DirectX;
 
@@ -42,7 +44,7 @@ private:
 	XMFLOAT4				_diffuseMaterial;
 	XMFLOAT4				_ambientMaterial;
 	XMFLOAT4				_specularMaterial;
-	Light					_light;
+	Light*					_pLight;
 	float					_time;
 
 private:

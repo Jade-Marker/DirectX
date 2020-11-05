@@ -25,6 +25,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="DirectionalLight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -40,6 +42,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

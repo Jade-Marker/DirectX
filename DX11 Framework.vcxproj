@@ -382,10 +382,12 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -401,10 +403,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="SceneObject.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />

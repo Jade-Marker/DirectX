@@ -42,4 +42,5 @@ struct GlobalConstantBuffer
 	float DiffuseStrength;
 	float AmbientStrength;
 	float SpecularStrength;
+	XMFLOAT4 LightDir;
 };
