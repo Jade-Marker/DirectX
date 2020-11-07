@@ -39,7 +39,7 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
 
     // Compile the vertex shader
     ID3DBlob* pVSBlob = nullptr;
-    hr = CompileShaderFromFile(shaderSource, "VS", "vs_4_0", &pVSBlob);
+    hr = CompileShaderFromFile(shaderSource, "VS", "vs_5_0", &pVSBlob);
 
     if (FAILED(hr))
     {
@@ -63,7 +63,7 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
 
             // Compile the pixel shader
             ID3DBlob* pPSBlob = nullptr;
-            hr = CompileShaderFromFile(shaderSource, "PS", "ps_4_0", &pPSBlob);
+            hr = CompileShaderFromFile(shaderSource, "PS", "ps_5_0", &pPSBlob);
 
             if (FAILED(hr))
             {

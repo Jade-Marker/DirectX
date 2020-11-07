@@ -1,7 +1,8 @@
 #include "Application.h"
 
 //todo
-//Update constant buffer to support multiple lights
+//Update structuredBuffer to support resizing at runtime
+//Make a base buffer type
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
@@ -258,6 +259,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
     InitConstantBufferVars();
+    InitLights();
     InitMeshes();
     InitTextures();
     InitSceneObjects();
@@ -282,19 +284,13 @@ void Application::InitMeshes()
 
 void Application::InitConstantBufferVars()
 {
-    _diffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    _ambientMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-    _specularMaterial = XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
+    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _time = 0;
 
     // Initialize the projection matrix
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
-
-    _pLight = new PointLight(XMFLOAT3(0.0f, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-        XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-
-    //_pLight = new DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-    //    XMFLOAT4(0.4f, 0.4f, 0.4f, 0.4f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f), 10.0f, 1.0f, 1.0f, 5.0f);
 }
 
 void Application::InitSceneObjects()
@@ -390,6 +386,22 @@ void Application::InitSceneObjects()
     //_sceneObjects.push_back(pyramid2);
     //_sceneObjects.push_back(icosphere);
     //_sceneObjects.push_back(plane);
+}
+
+void Application::InitLights()
+{
+    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
+        XMFLOAT4(0.0f, 0.4f, 0.0f, 0.4f), XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
+        XMFLOAT4(1.0f, 0.0f, 0.0f, 0.4f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
+        XMFLOAT4(0.0f, 0.0f, 0.4f, 0.4f), XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
+
+    _lights.push_back(greenPointLight);
+    _lights.push_back(redPointLight);
+    _lights.push_back(basicDirectional);
+
+    _pLightBuffer = new StructuredBuffer(_pd3dDevice, _pImmediateContext, _lights.data(), _lights.size(), sizeof(Light));
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -624,24 +636,18 @@ void Application::Draw()
     cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera.GetViewMatrix()));
     cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
     cb.DiffuseMtrl     = _diffuseMaterial;
-    cb.DiffuseLight    = _pLight->GetDiffuseColor();
     cb.AmbientMtrl     = _ambientMaterial;
-    cb.AmbientLight    = _pLight->GetAmbientColor();
     cb.SpecularMtrl    = _specularMaterial;
-    cb.SpecularLight   = _pLight->GetSpecularColor();
     cb.EyePosW         = _camera.GetPosition();
-    cb.SpecularPower   = _pLight->GetSpecularPower();
-    cb.LightPosW       = _pLight->GetPosition();
-    cb.DiffuseStrength = _pLight->GetDiffuseStrength();
-    cb.AmbientStrength = _pLight->GetAmbientStrength();
-    cb.SpecularStrength = _pLight->GetSpecularStrength();
     cb.gTime           = _time;
-    cb.LightDir        = _pLight->GetDirection();
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     for (int i = 0; i < _shaders.size(); i++)
+    {
         _shaders[i]->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
+        _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
+    }
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Draw();

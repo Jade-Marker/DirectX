@@ -51,3 +51,53 @@ float Light::GetSpecularStrength()
 {
     return _specularStrength;
 }
+
+const void* Light::GetData()
+{
+	return &_diffuseColor;
+}
+
+void Light::SetDiffuse(const XMFLOAT4& diffuseColor)
+{
+    _diffuseColor = diffuseColor;
+}
+
+void Light::SetAmbient(const XMFLOAT4& ambientColor)
+{
+    _ambientColor = ambientColor;
+}
+
+void Light::SetSpecular(const XMFLOAT4& specularColor)
+{
+    _specularColor = specularColor;
+}
+
+void Light::SetPosition(const XMFLOAT4& position)
+{
+    _position = position;
+}
+
+void Light::SetDirection(const XMFLOAT4& direction)
+{
+    _direction = direction;
+}
+
+void Light::SetSpecularPower(float specularPower)
+{
+    _specularPower = specularPower;
+}
+
+void Light::SetDiffuseStrength(float diffuseStrength)
+{
+    _diffuseStrength = diffuseStrength;
+}
+
+void Light::SetAmbientStrength(float ambientStrength)
+{
+    _ambientStrength = ambientStrength;
+}
+
+void Light::SetSpecularStrength(float specularStrength)
+{
+    _specularStrength = specularStrength;
+}

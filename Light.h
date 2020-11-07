@@ -6,11 +6,11 @@ using namespace DirectX;
 class Light
 {
 private:
-	XMFLOAT4 _position;
-	XMFLOAT4 _direction;
 	XMFLOAT4 _diffuseColor;
 	XMFLOAT4 _ambientColor;
 	XMFLOAT4 _specularColor;
+	XMFLOAT4 _position;
+	XMFLOAT4 _direction;
 	float	 _specularPower;
 	float _diffuseStrength;
 	float _ambientStrength;
@@ -30,5 +30,18 @@ public:
 	float GetDiffuseStrength();
 	float GetAmbientStrength();
 	float GetSpecularStrength();
+
+	const void* GetData();
+
+	void SetDiffuse(const XMFLOAT4& diffuseColor);
+	void SetAmbient(const XMFLOAT4& ambientColor);
+	void SetSpecular(const XMFLOAT4& specularColor);
+	void SetPosition(const XMFLOAT4& position);
+	void SetDirection(const XMFLOAT4& direction);
+
+	void SetSpecularPower(float specularPower);
+	void SetDiffuseStrength(float diffuseStrength);
+	void SetAmbientStrength(float ambientStrength);
+	void SetSpecularStrength(float specularStrength);
 };
 

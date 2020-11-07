@@ -391,6 +391,7 @@
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="Vertices.cpp" />
@@ -412,6 +413,7 @@
     <ClInclude Include="SceneObject.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="Structures.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexBuffer.h" />

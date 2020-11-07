@@ -18,6 +18,7 @@
 #include "Light.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "StructuredBuffer.h"
 
 using namespace DirectX;
 
@@ -44,8 +45,8 @@ private:
 	XMFLOAT4				_diffuseMaterial;
 	XMFLOAT4				_ambientMaterial;
 	XMFLOAT4				_specularMaterial;
-	Light*					_pLight;
 	float					_time;
+
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
@@ -69,6 +70,9 @@ private:
 	std::vector<Texture*> _fishTextures;
 	std::vector<Texture*> _blankTextures;
 
+	StructuredBuffer* _pLightBuffer;
+	std::vector<Light>		_lights;
+
 	Mesh* GenerateMesh(int width, int height);
 
 public:
@@ -80,7 +84,8 @@ public:
 	void InitMeshes();
 	void InitConstantBufferVars();
 	void InitSceneObjects();
-
+	void InitLights();
+	
 	void Update(float deltaTime);
 	void Draw();
 };
