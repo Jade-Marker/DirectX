@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Update structuredBuffer to support resizing at runtime
 //Make a base buffer type
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
@@ -615,7 +614,22 @@ void Application::Cleanup()
 
 void Application::Update(float deltaTime)
 {
-    _time += deltaTime;
+    _time += deltaTime;    
+
+    static float timer = 0;
+    timer += deltaTime;
+
+    if (timer >= 5.0f)
+    {
+        timer = 0;
+
+        PointLight light = PointLight(XMFLOAT3(0, 0.0f, 0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+            XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 1.0f, 1.0f, 1.0f);
+
+        _lights.push_back(light);
+
+        _pLightBuffer->Update(&_lights[_lights.size() - 1], sizeof(Light), (_lights.size() - 1) * sizeof(Light));
+    }
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Update(deltaTime);
@@ -640,6 +654,7 @@ void Application::Draw()
     cb.SpecularMtrl    = _specularMaterial;
     cb.EyePosW         = _camera.GetPosition();
     cb.gTime           = _time;
+    cb.numLights = _lights.size();
 
     _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
 

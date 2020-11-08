@@ -34,4 +34,6 @@ struct GlobalConstantBuffer
 	XMFLOAT4 SpecularMtrl;
 	XMFLOAT3 EyePosW;
 	float gTime;
+
+	int numLights;
 };

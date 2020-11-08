@@ -21,6 +21,7 @@ cbuffer GlobalConstant : register( b1 )
     float4 SpecularMtrl;
     float3 EyePosW;
     float gTime;
+    int numLights;
 }
 
 struct Light 
@@ -121,9 +122,6 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color;
     
-    uint numLights;
-    uint stride;
-    lightsBuffer.GetDimensions(numLights, stride);
     float3 sumOfLights = (0,0,0);
     for (uint i = 0; i < numLights; i++)
     {
