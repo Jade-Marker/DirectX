@@ -2,13 +2,11 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include "DeviceManager.h"
 
 class Shader
 {
 private:
-	ID3D11Device* _pd3dDevice;
-	ID3D11DeviceContext* _pImmediateContext;
-
 	ID3D11VertexShader* _pVertexShader;
 	ID3D11PixelShader* _pPixelShader;
 	ID3D11InputLayout* _pVertexLayout;
@@ -17,7 +15,7 @@ private:
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 public:
-	Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements, ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext);
+	Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements);
 	void SetInputLayout();
 	void SetShader();
 	void SetConstantBuffers(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* constantBuffers);

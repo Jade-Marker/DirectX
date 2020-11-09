@@ -32,8 +32,7 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
     return S_OK;
 }
 
-Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements, ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext) :
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext)
+Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements)
 {
     HRESULT hr;
 
@@ -50,7 +49,7 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
     {
 
         // Create the vertex shader
-        hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
+        hr = DeviceManager::GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
 
         if (FAILED(hr))
         {
@@ -75,7 +74,7 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
 
 
                 // Create the pixel shader
-                hr = _pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
+                hr = DeviceManager::GetDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
                 pPSBlob->Release();
 
                 if (FAILED(hr))
@@ -84,7 +83,7 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
                 else
                 {
                     // Create the input layout
-                    hr = _pd3dDevice->CreateInputLayout(layout, numLayoutElements, pVSBlob->GetBufferPointer(),
+                    hr = DeviceManager::GetDevice()->CreateInputLayout(layout, numLayoutElements, pVSBlob->GetBufferPointer(),
                         pVSBlob->GetBufferSize(), &_pVertexLayout);
                     pVSBlob->Release();
 
@@ -99,29 +98,29 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
 
 void Shader::SetInputLayout()
 {
-    _pImmediateContext->IASetInputLayout(_pVertexLayout);
+    DeviceManager::GetContext()->IASetInputLayout(_pVertexLayout);
 }
 
 void Shader::SetShader()
 {
-    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);   
-    _pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+    DeviceManager::GetContext()->VSSetShader(_pVertexShader, nullptr, 0);
+    DeviceManager::GetContext()->PSSetShader(_pPixelShader, nullptr, 0);
 }
 
 void Shader::SetConstantBuffers(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* constantBuffers)
 {
-    _pImmediateContext->VSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
-    _pImmediateContext->PSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
+    DeviceManager::GetContext()->VSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
+    DeviceManager::GetContext()->PSSetConstantBuffers(startSlot, numBuffers, constantBuffers);
 }
 
 void Shader::SetShaderResources(UINT startSlot, UINT numViews, ID3D11ShaderResourceView* const* ppShaderResourceViews)
 {
-    _pImmediateContext->VSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
-    _pImmediateContext->PSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
+    DeviceManager::GetContext()->VSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
+    DeviceManager::GetContext()->PSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
 }
 
 void Shader::SetSamplers(UINT StartSlot, UINT NumSamplers, ID3D11SamplerState* const* ppSamplers)
 {
-    _pImmediateContext->VSSetSamplers(StartSlot, NumSamplers, ppSamplers);
-    _pImmediateContext->PSSetSamplers(StartSlot, NumSamplers, ppSamplers);
+    DeviceManager::GetContext()->VSSetSamplers(StartSlot, NumSamplers, ppSamplers);
+    DeviceManager::GetContext()->PSSetSamplers(StartSlot, NumSamplers, ppSamplers);
 }

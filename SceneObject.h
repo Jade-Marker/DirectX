@@ -11,13 +11,11 @@
 #include "Constants.h"
 #include "IndexBuffer.h"
 #include "Texture.h"
+#include "DeviceManager.h"
 
 class SceneObject
 {
 private:
-	ID3D11Device* _pd3dDevice;
-	ID3D11DeviceContext* _pImmediateContext;
-
 	VertexBuffer _vertexBuffer;
 	IndexBuffer _indexBuffer;
 
@@ -44,7 +42,7 @@ private:
 
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-		ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures);
+		ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures);
 	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();

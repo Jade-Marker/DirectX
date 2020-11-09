@@ -1,9 +1,8 @@
 #include "Texture.h"
 
-Texture::Texture(ID3D11Device* pd3dDevice, const WCHAR* filePath):
-    _pd3dDevice(pd3dDevice)
+Texture::Texture(const WCHAR* filePath)
 {
-    DirectX::CreateDDSTextureFromFile(_pd3dDevice, filePath, nullptr, &_pTexture);
+    DirectX::CreateDDSTextureFromFile(DeviceManager::GetDevice(), filePath, nullptr, &_pTexture);
 
     D3D11_SAMPLER_DESC sampDesc;
     ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -15,7 +14,7 @@ Texture::Texture(ID3D11Device* pd3dDevice, const WCHAR* filePath):
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+    DeviceManager::GetDevice()->CreateSamplerState(&sampDesc, &_pSamplerLinear);
 }
 
 void Texture::Bind(Shader* shader, UINT slot)

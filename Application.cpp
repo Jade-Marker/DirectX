@@ -216,8 +216,6 @@ Application::Application():
 	_hWnd = nullptr;
 	_driverType = D3D_DRIVER_TYPE_NULL;
 	_featureLevel = D3D_FEATURE_LEVEL_11_0;
-	_pd3dDevice = nullptr;
-	_pImmediateContext = nullptr;
 	_pSwapChain = nullptr;
 	_pRenderTargetView = nullptr;
 	_pLocalConstantBuffer = nullptr;
@@ -268,14 +266,14 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 void Application::InitTextures()
 {
-    _crateTextures.push_back(new Texture(_pd3dDevice, L"Crate_COLOR.dds"));
-    _fishTextures.push_back(new Texture(_pd3dDevice, L"fish.dds"));
+    _crateTextures.push_back(new Texture(L"Crate_COLOR.dds"));
+    _fishTextures.push_back(new Texture(L"fish.dds"));
 }
 
 void Application::InitMeshes()
 {
     _pCubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pFishMesh = OBJLoader::Load("fish.obj", _pd3dDevice, true);
+    _pFishMesh = OBJLoader::Load("fish.obj", true);
     _pPyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
     _pIcosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
     _pPlaneMesh = GenerateMesh(32, 8);
@@ -321,10 +319,10 @@ void Application::InitSceneObjects()
     };
     UINT numElementsBasic = ARRAYSIZE(basicLayout);
 
-    _dx11Shader = new Shader(L"DX11 Framework.fx", lightingLayout, numElementsLighting, _pd3dDevice, _pImmediateContext);
-    _discardShader = new Shader(L"Discard.fx", basicLayout, numElementsBasic, _pd3dDevice, _pImmediateContext);
-    _basicShader = new Shader(L"BasicShader.fx", basicLayout, numElementsBasic, _pd3dDevice, _pImmediateContext);
-    _waterShader = new Shader(L"Water.fx", basicLayout, numElementsBasic, _pd3dDevice, _pImmediateContext);
+    _dx11Shader = new Shader(L"DX11 Framework.fx", lightingLayout, numElementsLighting);
+    _discardShader = new Shader(L"Discard.fx", basicLayout, numElementsBasic);
+    _basicShader = new Shader(L"BasicShader.fx", basicLayout, numElementsBasic);
+    _waterShader = new Shader(L"Water.fx", basicLayout, numElementsBasic);
 
     _shaders.push_back(_dx11Shader);
     _shaders.push_back(_discardShader);
@@ -336,7 +334,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
         XMFLOAT3(0, 1, 0), nullptr, _pCubeMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _crateTextures
+        _pLocalConstantBuffer, _crateTextures
     );
 
     fish = new SceneObject(
@@ -344,7 +342,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(4, 4, 4),
         XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _fishTextures
+        _pLocalConstantBuffer, _fishTextures
     );
 
     pyramid1 = new SceneObject(
@@ -352,7 +350,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _pPyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
+        _pLocalConstantBuffer, _blankTextures
     );
 
     pyramid2 = new SceneObject(
@@ -360,7 +358,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f, 6), cube, _pPyramidMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
+        _pLocalConstantBuffer, _blankTextures
     );
 
     icosphere = new SceneObject(
@@ -368,7 +366,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _pIcosphereMesh, false, _basicShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
+        _pLocalConstantBuffer, _blankTextures
     );
 
     plane = new SceneObject(
@@ -376,7 +374,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
-        _pd3dDevice, _pImmediateContext, _pLocalConstantBuffer, _blankTextures
+        _pLocalConstantBuffer, _blankTextures
     );
 
     _sceneObjects.push_back(cube);
@@ -400,7 +398,7 @@ void Application::InitLights()
     _lights.push_back(redPointLight);
     _lights.push_back(basicDirectional);
 
-    _pLightBuffer = new StructuredBuffer(_pd3dDevice, _pImmediateContext, _lights.data(), _lights.size(), sizeof(Light));
+    _pLightBuffer = new StructuredBuffer(_lights.data(), _lights.size(), sizeof(Light));
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -479,17 +477,23 @@ HRESULT Application::InitDevice()
     sd.SampleDesc.Quality = 0;
     sd.Windowed = TRUE;
 
+
+    ID3D11Device* _pd3dDevice;
+    ID3D11DeviceContext* _pImmediateContext;
+
     for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
     {
         _driverType = driverTypes[driverTypeIndex];
         hr = D3D11CreateDeviceAndSwapChain(nullptr, _driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-                                           D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
+            D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
         if (SUCCEEDED(hr))
             break;
     }
 
     if (FAILED(hr))
         return hr;
+
+    DeviceManager::Initialise(_pd3dDevice, _pImmediateContext);
 
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
@@ -498,7 +502,7 @@ HRESULT Application::InitDevice()
     if (FAILED(hr))
         return hr;
 
-    hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
+    hr = DeviceManager::GetDevice()->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
 
     if (FAILED(hr))
@@ -518,10 +522,10 @@ HRESULT Application::InitDevice()
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.MiscFlags = 0;
 
-    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
-    _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+    DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
 
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
+    DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
     // Setup the viewport
     D3D11_VIEWPORT vp;
@@ -531,11 +535,11 @@ HRESULT Application::InitDevice()
     vp.MaxDepth = 1.0f;
     vp.TopLeftX = 0;
     vp.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &vp);
+    DeviceManager::GetContext()->RSSetViewports(1, &vp);
 
 
     // Set primitive topology
-    _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    DeviceManager::GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     //Initialize the blend state
     D3D11_BLEND_DESC blendDesc;
@@ -552,10 +556,10 @@ HRESULT Application::InitDevice()
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-    _pd3dDevice->CreateBlendState(&blendDesc, &_pBlendState);
+    DeviceManager::GetDevice()->CreateBlendState(&blendDesc, &_pBlendState);
 
     float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    _pImmediateContext->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
+    DeviceManager::GetContext()->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
 
 	// Create the local constant buffer
 	D3D11_BUFFER_DESC bd;
@@ -564,14 +568,14 @@ HRESULT Application::InitDevice()
 	bd.ByteWidth = sizeof(LocalConstantBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pLocalConstantBuffer);
+    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, nullptr, &_pLocalConstantBuffer);
 
     if (FAILED(hr))
         return hr;
 
     //Create the global constant buffer
     bd.ByteWidth = sizeof(GlobalConstantBuffer);
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pGlobalConstantBuffer);
+    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, nullptr, &_pGlobalConstantBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -581,14 +585,10 @@ HRESULT Application::InitDevice()
 
 void Application::Cleanup()
 {
-    if (_pImmediateContext) _pImmediateContext->ClearState();
-
     if (_pLocalConstantBuffer) _pLocalConstantBuffer->Release();
     if (_pGlobalConstantBuffer) _pGlobalConstantBuffer->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
-    if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
 
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
@@ -642,8 +642,8 @@ void Application::Draw()
     //
 
     float ClearColor[4] = {0.0f, 0.3f, 0.3f, 1.0f}; // red,green,blue,alpha
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    DeviceManager::GetContext()->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
     GlobalConstantBuffer cb;
@@ -656,7 +656,7 @@ void Application::Draw()
     cb.gTime           = _time;
     cb.numLights = _lights.size();
 
-    _pImmediateContext->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
+    DeviceManager::GetContext()->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     for (int i = 0; i < _shaders.size(); i++)
     {

@@ -1,10 +1,10 @@
 #include "SceneObject.h"
 
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-    ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext, ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
+    ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _pLocalConstantBuffer(pLocalConstantBuffer),
-    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(pd3dDevice, pImmediateContext), _indexBuffer(pd3dDevice, pImmediateContext), _textures(textures)
+    _pLocalConstantBuffer(pLocalConstantBuffer),
+    _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(), _indexBuffer(), _textures(textures)
 {
     _vertexBuffer.Initialise(mesh);
     _indexBuffer.Initialise(mesh);
@@ -22,14 +22,14 @@ void SceneObject::Draw()
     _shader->SetInputLayout();
 
     //Set the raster state
-    _pImmediateContext->RSSetState(_rasterState);
+    DeviceManager::GetContext()->RSSetState(_rasterState);
 
     UpdateConstantBuffer();
 
     for (int i = 0; i < _textures.size(); i++)
         _textures[i]->Bind(_shader, i);
 
-    _pImmediateContext->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
+    DeviceManager::GetContext()->DrawIndexed(_mesh->GetIndexCount(), 0, 0);
 }
 
 void SceneObject::Update(float deltaTime)
@@ -102,11 +102,11 @@ void SceneObject::InitRasterState(bool startInWireFrame)
 
     desc.FillMode = D3D11_FILL_WIREFRAME;
     desc.CullMode = D3D11_CULL_NONE;
-    hr = _pd3dDevice->CreateRasterizerState(&desc, &_wireframeRasterState);
+    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_wireframeRasterState);
 
     desc.FillMode = D3D11_FILL_SOLID;
     desc.CullMode = D3D11_CULL_BACK;
-    hr = _pd3dDevice->CreateRasterizerState(&desc, &_solidRasterState);
+    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_solidRasterState);
 
     if (startInWireFrame)
         _rasterState = _wireframeRasterState;
@@ -119,7 +119,7 @@ void SceneObject::UpdateConstantBuffer()
     LocalConstantBuffer cb;
     cb.WorldMatrix = XMMatrixTranspose(GetWorldMatrix());
 
-    _pImmediateContext->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
+    DeviceManager::GetContext()->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
 
     _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
 }

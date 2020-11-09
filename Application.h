@@ -19,6 +19,7 @@
 #include "PointLight.h"
 #include "DirectionalLight.h"
 #include "StructuredBuffer.h"
+#include "DeviceManager.h"
 
 using namespace DirectX;
 
@@ -29,8 +30,6 @@ private:
 	HWND                    _hWnd;
 	D3D_DRIVER_TYPE         _driverType;
 	D3D_FEATURE_LEVEL       _featureLevel;
-	ID3D11Device*           _pd3dDevice;
-	ID3D11DeviceContext*    _pImmediateContext;
 	IDXGISwapChain*         _pSwapChain;
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _pDepthStencilView;
@@ -46,7 +45,6 @@ private:
 	XMFLOAT4				_ambientMaterial;
 	XMFLOAT4				_specularMaterial;
 	float					_time;
-
 
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);

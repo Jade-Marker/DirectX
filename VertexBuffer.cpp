@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pImmediateContext) :
-    _pd3dDevice(pd3dDevice), _pImmediateContext(pImmediateContext), _pVertexBuffer(nullptr), _pMesh(nullptr)
+VertexBuffer::VertexBuffer() :
+   _pVertexBuffer(nullptr), _pMesh(nullptr)
 {
 }
 
@@ -22,7 +22,7 @@ HRESULT VertexBuffer::Initialise(Mesh* mesh)
     ZeroMemory(&InitData, sizeof(InitData));
     InitData.pSysMem = _pMesh->GetVertices()->GetData();
 
-    hr = _pd3dDevice->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
+    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, &InitData, &_pVertexBuffer);
 
     if (FAILED(hr))
         return hr;
@@ -34,5 +34,5 @@ void VertexBuffer::Bind()
 {
     UINT stride = _pMesh->GetVertices()->GetStride();
     UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+    DeviceManager::GetContext()->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
 }
