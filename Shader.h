@@ -16,6 +16,7 @@ private:
 
 public:
 	Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements);
+	~Shader();
 	void SetInputLayout();
 	void SetShader();
 	void SetConstantBuffers(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* constantBuffers);

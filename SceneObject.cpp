@@ -11,6 +11,12 @@ SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFL
     InitRasterState(startInWireFrame);
 }
 
+SceneObject::~SceneObject()
+{
+    if (_solidRasterState) _solidRasterState->Release();
+    if (_wireframeRasterState) _wireframeRasterState->Release();
+}
+
 void SceneObject::Draw()
 {
     //Bind buffers

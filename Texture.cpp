@@ -1,6 +1,7 @@
 #include "Texture.h"
 
-Texture::Texture(const WCHAR* filePath)
+Texture::Texture(const WCHAR* filePath):
+    _pTexture(nullptr), _pSamplerLinear(nullptr)
 {
     DirectX::CreateDDSTextureFromFile(DeviceManager::GetDevice(), filePath, nullptr, &_pTexture);
 
@@ -15,6 +16,12 @@ Texture::Texture(const WCHAR* filePath)
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     DeviceManager::GetDevice()->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+}
+
+Texture::~Texture()
+{
+    if (_pTexture) _pTexture->Release();
+    if (_pSamplerLinear) _pSamplerLinear->Release();
 }
 
 void Texture::Bind(Shader* shader, UINT slot)

@@ -5,6 +5,11 @@ VertexBuffer::VertexBuffer() :
 {
 }
 
+VertexBuffer::~VertexBuffer()
+{
+    if (_pVertexBuffer) _pVertexBuffer->Release();
+}
+
 HRESULT VertexBuffer::Initialise(Mesh* mesh)
 {
     HRESULT hr;

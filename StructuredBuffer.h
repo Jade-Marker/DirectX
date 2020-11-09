@@ -15,6 +15,7 @@ private:
 
 public:
 	StructuredBuffer(const void* pInitialData, int count, int stride);
+	~StructuredBuffer();
 
 	void Bind(Shader* shader, UINT slot);
 

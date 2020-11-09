@@ -43,6 +43,7 @@ private:
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
 		ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures);
+	~SceneObject();
 	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();

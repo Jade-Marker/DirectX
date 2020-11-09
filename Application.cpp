@@ -593,8 +593,9 @@ void Application::Cleanup()
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
 
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        delete _sceneObjects[i];
+
+    if (_pLightBuffer) delete _pLightBuffer;
+    if (_pBlendState) _pBlendState->Release();
 
     if(_pCubeMesh) delete _pCubeMesh;
     if(_pFishMesh) delete _pFishMesh;
@@ -610,6 +611,9 @@ void Application::Cleanup()
 
     for (int i = 0; i < _fishTextures.size(); i++)
         delete _fishTextures[i];
+
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        delete _sceneObjects[i];
 }
 
 void Application::Update(float deltaTime)

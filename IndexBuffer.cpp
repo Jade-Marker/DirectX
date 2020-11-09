@@ -6,6 +6,11 @@ IndexBuffer::IndexBuffer():
 
 }
 
+IndexBuffer::~IndexBuffer()
+{
+    if (_pIndexBuffer) _pIndexBuffer->Release();
+}
+
 HRESULT IndexBuffer::Initialise(Mesh* mesh)
 {
     HRESULT hr;

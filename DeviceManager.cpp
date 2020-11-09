@@ -1,6 +1,7 @@
 #include "DeviceManager.h"
 
-DeviceManager::DeviceManager()
+DeviceManager::DeviceManager():
+	_pDevice(nullptr), _pImmediateContext(nullptr)
 {   
 	
 }

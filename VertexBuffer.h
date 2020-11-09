@@ -11,6 +11,7 @@ private:
 
 public:
 	VertexBuffer();
+	~VertexBuffer();
 
 	HRESULT Initialise(Mesh* mesh);
 	void Bind();

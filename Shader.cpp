@@ -32,7 +32,8 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
     return S_OK;
 }
 
-Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements)
+Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements) :
+    _pVertexShader(nullptr), _pPixelShader(nullptr), _pVertexLayout(nullptr)
 {
     HRESULT hr;
 
@@ -94,6 +95,13 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
             }
         }
     }
+}
+
+Shader::~Shader()
+{
+    if (_pVertexShader) _pVertexShader->Release();
+    if (_pPixelShader) _pPixelShader->Release();
+    if (_pVertexLayout) _pVertexLayout->Release();
 }
 
 void Shader::SetInputLayout()

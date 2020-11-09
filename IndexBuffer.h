@@ -10,6 +10,7 @@ private:
 
 public:
 	IndexBuffer();
+	~IndexBuffer();
 
 	HRESULT Initialise(Mesh* mesh);
 	void Bind();

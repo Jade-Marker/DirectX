@@ -33,6 +33,12 @@ StructuredBuffer::StructuredBuffer(const void* pInitialData, int count, int stri
 
 }
 
+StructuredBuffer::~StructuredBuffer()
+{
+	if (_pBuffer) _pBuffer->Release();
+	if (_pView) _pView->Release();
+}
+
 void StructuredBuffer::Bind(Shader* shader, UINT slot)
 {
 	shader->SetShaderResources(slot, 1, &_pView);
