@@ -1,12 +1,9 @@
 #pragma once
-#include <d3d11.h>
-#include "Shader.h"
-#include "DeviceManager.h"
+#include "Buffer.h"
 
-class StructuredBuffer
+class StructuredBuffer: Buffer
 {
 private:
-	ID3D11Buffer* _pBuffer;
 	ID3D11ShaderResourceView* _pView;
 	UINT _size;
 	UINT _stride;
@@ -17,7 +14,7 @@ public:
 	StructuredBuffer(const void* pInitialData, int count, int stride);
 	~StructuredBuffer();
 
-	void Bind(Shader* shader, UINT slot);
+	virtual void Bind(Shader* shader, UINT slot);
 
 	void Update(const void* pData, UINT size, UINT offset);
 };

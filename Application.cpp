@@ -1,7 +1,7 @@
 #include "Application.h"
 
 //todo
-//Make a base buffer type
+//Update constant buffers
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code

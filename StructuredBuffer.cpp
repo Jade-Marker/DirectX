@@ -2,20 +2,7 @@
 
 void StructuredBuffer::InitializeBuffer(ID3D11Buffer*& pBuffer, ID3D11ShaderResourceView*& pView, const void* pInitialData, int count, int stride)
 {
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = count * stride;
-	bd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-	bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bd.StructureByteStride = stride;
-
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = pInitialData;
-
-	HRESULT hr = DeviceManager::GetDevice()->CreateBuffer(&bd, &InitData, &pBuffer);
+	HRESULT hr = Buffer::Initialise(count * stride, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ, D3D11_RESOURCE_MISC_BUFFER_STRUCTURED, stride, pInitialData, pBuffer);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC rvD;
 	ZeroMemory(&rvD, sizeof(rvD));
@@ -27,7 +14,7 @@ void StructuredBuffer::InitializeBuffer(ID3D11Buffer*& pBuffer, ID3D11ShaderReso
 }
 
 StructuredBuffer::StructuredBuffer(const void* pInitialData, int count, int stride):
-	_pBuffer(nullptr), _pView(nullptr), _size(count * stride), _stride(stride)
+	_pView(nullptr), _size(count * stride), _stride(stride)
 {
 	InitializeBuffer(_pBuffer, _pView, pInitialData, count, stride);
 
@@ -35,7 +22,6 @@ StructuredBuffer::StructuredBuffer(const void* pInitialData, int count, int stri
 
 StructuredBuffer::~StructuredBuffer()
 {
-	if (_pBuffer) _pBuffer->Release();
 	if (_pView) _pView->Release();
 }
 

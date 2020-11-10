@@ -29,6 +29,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="DeviceManager.h" />
+    <ClInclude Include="Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
+    <ClCompile Include="Buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

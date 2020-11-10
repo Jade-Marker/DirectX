@@ -1,18 +1,13 @@
 #pragma once
-#include <d3d11.h>
+#include "Buffer.h"
 #include "Mesh.h"
-#include "DeviceManager.h"
 
-class IndexBuffer
+class IndexBuffer:Buffer
 {
-private:
-	ID3D11Buffer* _pIndexBuffer;
-
 public:
 	IndexBuffer();
-	~IndexBuffer();
 
 	HRESULT Initialise(Mesh* mesh);
-	void Bind();
+	virtual void Bind(Shader* shader = nullptr, UINT slot = 0);
 };
 

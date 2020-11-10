@@ -1,32 +1,14 @@
 #include "IndexBuffer.h"
 
-IndexBuffer::IndexBuffer():
-	_pIndexBuffer(nullptr)
+IndexBuffer::IndexBuffer()
 {
 
 }
 
-IndexBuffer::~IndexBuffer()
-{
-    if (_pIndexBuffer) _pIndexBuffer->Release();
-}
 
 HRESULT IndexBuffer::Initialise(Mesh* mesh)
 {
-    HRESULT hr;
-
-    D3D11_BUFFER_DESC bd;
-    ZeroMemory(&bd, sizeof(bd));
-
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = sizeof(WORD) * mesh->GetIndexCount();
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    bd.CPUAccessFlags = 0;
-
-    D3D11_SUBRESOURCE_DATA InitData;
-    ZeroMemory(&InitData, sizeof(InitData));
-    InitData.pSysMem = mesh->GetIndices();
-    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, &InitData, &_pIndexBuffer);
+    HRESULT hr = Buffer::Initialise(sizeof(WORD) * mesh->GetIndexCount(), D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, mesh->GetIndices());
 
     if (FAILED(hr))
         return hr;
@@ -34,7 +16,7 @@ HRESULT IndexBuffer::Initialise(Mesh* mesh)
     return S_OK;
 }
 
-void IndexBuffer::Bind()
+void IndexBuffer::Bind(Shader* shader, UINT slot)
 {
-    DeviceManager::GetContext()->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    DeviceManager::GetContext()->IASetIndexBuffer(_pBuffer, DXGI_FORMAT_R16_UINT, 0);
 }
