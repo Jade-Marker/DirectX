@@ -20,6 +20,7 @@
 #include "DirectionalLight.h"
 #include "StructuredBuffer.h"
 #include "DeviceManager.h"
+#include "ConstantBuffer.h"
 
 using namespace DirectX;
 
@@ -34,9 +35,11 @@ private:
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D*		_pDepthStencilBuffer;
-	ID3D11Buffer*           _pLocalConstantBuffer;
-	ID3D11Buffer*           _pGlobalConstantBuffer;
 	ID3D11BlendState*		_pBlendState;
+
+	ConstantBuffer			_localConstantBuffer;
+	ConstantBuffer			_globalConstantBuffer;
+
 
 	Camera					_camera;
 	XMFLOAT4X4              _projection;

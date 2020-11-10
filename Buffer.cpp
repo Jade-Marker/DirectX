@@ -26,11 +26,19 @@ HRESULT Buffer::Initialise(UINT ByteWidth, D3D11_USAGE Usage, UINT BindFlags, UI
 	bufferDesc.MiscFlags = MiscFlags;
 	bufferDesc.StructureByteStride = StructureByteStride;
 
-	D3D11_SUBRESOURCE_DATA subData;
-	ZeroMemory(&subData, sizeof(subData));
-	subData.pSysMem = pData;
+	HRESULT hr;
+	if (pData == nullptr)
+	{
+		hr = DeviceManager::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &pBuffer);
+	}
+	else
+	{
+		D3D11_SUBRESOURCE_DATA subData;
+		ZeroMemory(&subData, sizeof(subData));
+		subData.pSysMem = pData;
 
-	HRESULT hr = DeviceManager::GetDevice()->CreateBuffer(&bufferDesc, &subData, &pBuffer);
+		hr = DeviceManager::GetDevice()->CreateBuffer(&bufferDesc, &subData, &pBuffer);
+	}
 
 	return hr;
 }

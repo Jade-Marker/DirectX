@@ -1,7 +1,7 @@
 #include "Application.h"
 
 //todo
-//Update constant buffers
+//Sort project into folders
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
@@ -218,8 +218,6 @@ Application::Application():
 	_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	_pSwapChain = nullptr;
 	_pRenderTargetView = nullptr;
-	_pLocalConstantBuffer = nullptr;
-	_pGlobalConstantBuffer = nullptr;
 
     _pDepthStencilView   = nullptr;
     _pDepthStencilBuffer = nullptr;
@@ -334,7 +332,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(2, 2, 2),
         XMFLOAT3(0, 1, 0), nullptr, _pCubeMesh, false, _dx11Shader,
-        _pLocalConstantBuffer, _crateTextures
+        &_localConstantBuffer, _crateTextures
     );
 
     fish = new SceneObject(
@@ -342,7 +340,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(0, 0, 0),
         XMFLOAT3(4, 4, 4),
         XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
-        _pLocalConstantBuffer, _fishTextures
+        &_localConstantBuffer, _fishTextures
     );
 
     pyramid1 = new SceneObject(
@@ -350,7 +348,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 2, 1),
         XMFLOAT3(0, -1, 0), cube, _pPyramidMesh, false, _basicShader,
-        _pLocalConstantBuffer, _blankTextures
+        &_localConstantBuffer, _blankTextures
     );
 
     pyramid2 = new SceneObject(
@@ -358,7 +356,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(-5, 0, 3),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(0.27f, -3.0f, 6), cube, _pPyramidMesh, false, _basicShader,
-        _pLocalConstantBuffer, _blankTextures
+        &_localConstantBuffer, _blankTextures
     );
 
     icosphere = new SceneObject(
@@ -366,7 +364,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(30, 0, 20),
         XMFLOAT3(1, 1, 1),
         XMFLOAT3(-2, 0, 0.5f), cube, _pIcosphereMesh, false, _basicShader,
-        _pLocalConstantBuffer, _blankTextures
+        &_localConstantBuffer, _blankTextures
     );
 
     plane = new SceneObject(
@@ -374,7 +372,7 @@ void Application::InitSceneObjects()
         XMFLOAT3(70, 0, 0),
         XMFLOAT3(0.5f, 0.5f, 0.5f),
         XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
-        _pLocalConstantBuffer, _blankTextures
+        &_localConstantBuffer, _blankTextures
     );
 
     _sceneObjects.push_back(cube);
@@ -562,20 +560,13 @@ HRESULT Application::InitDevice()
     DeviceManager::GetContext()->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
 
 	// Create the local constant buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(LocalConstantBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, nullptr, &_pLocalConstantBuffer);
+    hr = _localConstantBuffer.Initialise(sizeof(LocalConstantBuffer));
 
     if (FAILED(hr))
         return hr;
 
     //Create the global constant buffer
-    bd.ByteWidth = sizeof(GlobalConstantBuffer);
-    hr = DeviceManager::GetDevice()->CreateBuffer(&bd, nullptr, &_pGlobalConstantBuffer);
+    hr = _globalConstantBuffer.Initialise(sizeof(GlobalConstantBuffer));
 
     if (FAILED(hr))
         return hr;
@@ -585,8 +576,6 @@ HRESULT Application::InitDevice()
 
 void Application::Cleanup()
 {
-    if (_pLocalConstantBuffer) _pLocalConstantBuffer->Release();
-    if (_pGlobalConstantBuffer) _pGlobalConstantBuffer->Release();
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
 
@@ -660,11 +649,11 @@ void Application::Draw()
     cb.gTime           = _time;
     cb.numLights = _lights.size();
 
-    DeviceManager::GetContext()->UpdateSubresource(_pGlobalConstantBuffer, 0, nullptr, &cb, 0, 0);
+    _globalConstantBuffer.Update(&cb);
 
     for (int i = 0; i < _shaders.size(); i++)
     {
-        _shaders[i]->SetConstantBuffers(cGlobalConstantBufferSlot, 1, &_pGlobalConstantBuffer);
+        _globalConstantBuffer.Bind(_shaders[i], cGlobalConstantBufferSlot);
         _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
     }
 

@@ -12,6 +12,7 @@
 #include "IndexBuffer.h"
 #include "Texture.h"
 #include "DeviceManager.h"
+#include "ConstantBuffer.h"
 
 class SceneObject
 {
@@ -19,7 +20,7 @@ private:
 	VertexBuffer _vertexBuffer;
 	IndexBuffer _indexBuffer;
 
-	ID3D11Buffer* _pLocalConstantBuffer;
+	ConstantBuffer* _pLocalConstantBuffer;
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _solidRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
@@ -42,7 +43,7 @@ private:
 
 public:
 	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-		ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures);
+		ConstantBuffer* pLocalConstantBuffer, std::vector<Texture*> textures);
 	~SceneObject();
 	void Draw();
 	void Update(float deltaTime);

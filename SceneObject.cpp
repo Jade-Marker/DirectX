@@ -1,7 +1,7 @@
 #include "SceneObject.h"
 
 SceneObject::SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
-    ID3D11Buffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
+    ConstantBuffer* pLocalConstantBuffer, std::vector<Texture*> textures) :
 	_position(position), _angle(angle), _scale(scale), _tScale(tScale), _parent(parent), _mesh(mesh), _shader(shader),
     _pLocalConstantBuffer(pLocalConstantBuffer),
     _rasterKeyDown(false), _yDirState(false), _xDirState(false), _vertexBuffer(), _indexBuffer(), _textures(textures)
@@ -125,7 +125,6 @@ void SceneObject::UpdateConstantBuffer()
     LocalConstantBuffer cb;
     cb.WorldMatrix = XMMatrixTranspose(GetWorldMatrix());
 
-    DeviceManager::GetContext()->UpdateSubresource(_pLocalConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    _shader->SetConstantBuffers(cLocalConstantBufferSlot, 1, &_pLocalConstantBuffer);
+    _pLocalConstantBuffer->Update(&cb);
+    _pLocalConstantBuffer->Bind(_shader, cLocalConstantBufferSlot);
 }

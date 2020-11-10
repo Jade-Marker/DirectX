@@ -30,6 +30,7 @@
     <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="ConstantBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -50,6 +51,7 @@
     <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
