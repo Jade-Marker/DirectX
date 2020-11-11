@@ -41,8 +41,7 @@ private:
 	ConstantBuffer			_globalConstantBuffer;
 
 
-	Camera					_camera;
-	XMFLOAT4X4              _projection;
+	Camera*					_camera;
 
 	XMFLOAT4				_diffuseMaterial;
 	XMFLOAT4				_ambientMaterial;
@@ -52,6 +51,8 @@ private:
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
+	void InitViewport();
+	void InitDepthStencilBuffer();
 	void Cleanup();
 
 	UINT _WindowHeight;
@@ -89,5 +90,7 @@ public:
 	
 	void Update(float deltaTime);
 	void Draw();
+	void Resize(UINT width, UINT height);
+	void ResizeRenderTargetView();
 };
 

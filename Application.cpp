@@ -147,9 +147,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     HDC hdc;
+    LPCREATESTRUCT pcs;
+
+    UINT width;
+    UINT height;
+
+    static Application* app;
 
     switch (message)
     {
+        case WM_CREATE:
+            pcs = (LPCREATESTRUCT)lParam;
+            app = (Application*)pcs->lpCreateParams;
+            break;
+
         case WM_PAINT:
             hdc = BeginPaint(hWnd, &ps);
             EndPaint(hWnd, &ps);
@@ -158,6 +169,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
+
+        case WM_SIZE:
+            width = LOWORD(lParam);
+            height = HIWORD(lParam);
+
+            app->Resize(width, height);
+        break;
 
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -209,8 +227,7 @@ Mesh* Application::GenerateMesh(int width, int height)
     return mesh;
 }
 
-Application::Application():
-    _camera(XMFLOAT3(0.0f, 0.0f, -10.0f))
+Application::Application()
 {
 	_hInst = nullptr;
 	_hWnd = nullptr;
@@ -227,6 +244,8 @@ Application::Application():
     _pPyramidMesh        = nullptr;
     _pIcosphereMesh      = nullptr;
     _pPlaneMesh          = nullptr;
+
+    _camera = nullptr;
 }
 
 Application::~Application()
@@ -245,6 +264,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     GetClientRect(_hWnd, &rc);
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
+
+    _camera = new Camera(XMFLOAT3(0.0f, 0.0f,-10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
 
     if (FAILED(InitDevice()))
     {
@@ -283,9 +304,6 @@ void Application::InitConstantBufferVars()
     _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _time = 0;
-
-    // Initialize the projection matrix
-    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT)_WindowHeight, 0.01f, 100.0f));
 }
 
 void Application::InitSceneObjects()
@@ -407,7 +425,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof(LONG_PTR);
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW );
@@ -424,7 +442,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
                          CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-                         nullptr);
+                         this);
     if (!_hWnd)
 		return E_FAIL;
 
@@ -507,33 +525,12 @@ HRESULT Application::InitDevice()
         return hr;
 
     //Set up the depth stencil buffer
-    D3D11_TEXTURE2D_DESC depthStencilDesc;
-    depthStencilDesc.Width = _WindowWidth;
-    depthStencilDesc.Height = _WindowHeight;
-    depthStencilDesc.MipLevels = 1;
-    depthStencilDesc.ArraySize = 1;
-    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    depthStencilDesc.CPUAccessFlags = 0;
-    depthStencilDesc.MiscFlags = 0;
-
-    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
-    DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+    InitDepthStencilBuffer();
 
     DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
     // Setup the viewport
-    D3D11_VIEWPORT vp;
-    vp.Width = (FLOAT)_WindowWidth;
-    vp.Height = (FLOAT)_WindowHeight;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    DeviceManager::GetContext()->RSSetViewports(1, &vp);
+    InitViewport();
 
 
     // Set primitive topology
@@ -574,6 +571,37 @@ HRESULT Application::InitDevice()
     return S_OK;
 }
 
+void Application::InitViewport()
+{
+    D3D11_VIEWPORT vp;
+    vp.Width = (FLOAT)_WindowWidth;
+    vp.Height = (FLOAT)_WindowHeight;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    DeviceManager::GetContext()->RSSetViewports(1, &vp);
+}
+
+void Application::InitDepthStencilBuffer()
+{
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+    depthStencilDesc.Width = _WindowWidth;
+    depthStencilDesc.Height = _WindowHeight;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.MiscFlags = 0;
+
+    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+    DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+}
+
 void Application::Cleanup()
 {
     if (_pRenderTargetView) _pRenderTargetView->Release();
@@ -612,6 +640,9 @@ void Application::Update(float deltaTime)
     static float timer = 0;
     timer += deltaTime;
 
+    static float time = 0;
+    time += deltaTime;
+
     if (timer >= 5.0f)
     {
         timer = 0;
@@ -623,6 +654,19 @@ void Application::Update(float deltaTime)
 
         _pLightBuffer->Update(&_lights[_lights.size() - 1], sizeof(Light), (_lights.size() - 1) * sizeof(Light));
     }
+
+    XMVECTOR position;
+    XMFLOAT3 offset;
+    XMFLOAT3 positionVec;
+
+    offset = XMFLOAT3(5.0f * sin(time), 0.0f, -10.0f);
+
+    position = XMLoadFloat3(&_camera->GetPosition());
+    position = XMLoadFloat3(&offset);
+
+    XMStoreFloat3(&positionVec, position);
+
+    _camera->SetPosition(positionVec);
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Update(deltaTime);
@@ -640,12 +684,12 @@ void Application::Draw()
 
 
     GlobalConstantBuffer cb;
-    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera.GetViewMatrix()));
-    cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_projection));
+    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera->GetViewMatrix()));
+    cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_camera->GetProjectionMatrix()));
     cb.DiffuseMtrl     = _diffuseMaterial;
     cb.AmbientMtrl     = _ambientMaterial;
     cb.SpecularMtrl    = _specularMaterial;
-    cb.EyePosW         = _camera.GetPosition();
+    cb.EyePosW         = _camera->GetPosition();
     cb.gTime           = _time;
     cb.numLights = _lights.size();
 
@@ -665,4 +709,41 @@ void Application::Draw()
     //
 
     _pSwapChain->Present(0, 0);
+}
+
+void Application::Resize(UINT width, UINT height)
+{
+    if (width != 0 && height != 0)
+    {
+        _WindowWidth = width;
+        _WindowHeight = height;
+
+        if (_camera != nullptr)
+        {
+            ResizeRenderTargetView();
+
+            _pDepthStencilBuffer->Release();
+            _pDepthStencilView->Release();
+            InitDepthStencilBuffer();
+            DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
+
+            InitViewport();
+
+            _camera->Reshape(_WindowWidth, _WindowHeight, 0.1f, 100.0f);
+        }
+    }
+}
+
+void Application::ResizeRenderTargetView()
+{
+    DeviceManager::GetContext()->OMSetRenderTargets(0, 0, 0);
+    _pRenderTargetView->Release();
+
+    HRESULT hr = _pSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+
+    ID3D11Texture2D* pBuffer;
+    hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer);
+    hr = DeviceManager::GetDevice()->CreateRenderTargetView(pBuffer, NULL, &_pRenderTargetView);
+
+    pBuffer->Release();
 }
