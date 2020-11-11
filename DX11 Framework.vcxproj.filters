@@ -11,66 +11,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="Structures.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="Constants.h" />
-    <ClInclude Include="Vertices.h" />
-    <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="OBJLoader.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="StructuredBuffer.h" />
-    <ClInclude Include="DeviceManager.h" />
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="Src\Buffers\Buffer.h" />
+    <ClInclude Include="Src\Buffers\ConstantBuffer.h" />
+    <ClInclude Include="Src\Buffers\StructuredBuffer.h" />
+    <ClInclude Include="Src\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Src\Buffers\IndexBuffer.h" />
+    <ClInclude Include="Src\Lights\DirectionalLight.h" />
+    <ClInclude Include="Src\Lights\Light.h" />
+    <ClInclude Include="Src\Lights\PointLight.h" />
+    <ClInclude Include="Src\Mesh\Mesh.h" />
+    <ClInclude Include="Src\Mesh\Vertices.h" />
+    <ClInclude Include="extern\DDSTextureLoader.h" />
+    <ClInclude Include="extern\OBJLoader.h" />
+    <ClInclude Include="Src\Managers\DeviceManager.h" />
+    <ClInclude Include="Src\SceneObjects\SceneObject.h" />
+    <ClInclude Include="Src\Core\Application.h" />
+    <ClInclude Include="Src\Core\Constants.h" />
+    <ClInclude Include="Src\Core\Structures.h" />
+    <ClInclude Include="Src\SceneObjects\Camera.h" />
+    <ClInclude Include="Src\Textures\Texture.h" />
+    <ClInclude Include="Src\Shaders\Shader.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Vertices.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="OBJLoader.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="DirectionalLight.cpp" />
-    <ClCompile Include="StructuredBuffer.cpp" />
-    <ClCompile Include="DeviceManager.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="ConstantBuffer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <CLInclude Include="resource.h">
-      <Filter>Resource Files</Filter>
-    </CLInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DX11 Framework.fx">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Discard.fx">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="BasicShader.fx">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Water.fx">
-      <Filter>Shaders</Filter>
-    </None>
+    <ClCompile Include="Src\Buffers\Buffer.cpp" />
+    <ClCompile Include="Src\Buffers\ConstantBuffer.cpp" />
+    <ClCompile Include="Src\Buffers\StructuredBuffer.cpp" />
+    <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Src\Buffers\IndexBuffer.cpp" />
+    <ClCompile Include="Src\Lights\DirectionalLight.cpp" />
+    <ClCompile Include="Src\Lights\Light.cpp" />
+    <ClCompile Include="Src\Lights\PointLight.cpp" />
+    <ClCompile Include="Src\Mesh\Mesh.cpp" />
+    <ClCompile Include="Src\Mesh\Vertices.cpp" />
+    <ClCompile Include="extern\DDSTextureLoader.cpp" />
+    <ClCompile Include="extern\OBJLoader.cpp" />
+    <ClCompile Include="Src\Managers\DeviceManager.cpp" />
+    <ClCompile Include="Src\SceneObjects\SceneObject.cpp" />
+    <ClCompile Include="Src\Core\Application.cpp" />
+    <ClCompile Include="Src\Core\DX11 Framework.cpp" />
+    <ClCompile Include="Src\SceneObjects\Camera.cpp" />
+    <ClCompile Include="Src\Textures\Texture.cpp" />
+    <ClCompile Include="Src\Shaders\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

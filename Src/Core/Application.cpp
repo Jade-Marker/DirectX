@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Sort project into folders
 //Look through assignment brief and update todo list
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
@@ -285,14 +284,14 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 void Application::InitTextures()
 {
-    _crateTextures.push_back(new Texture(L"Crate_COLOR.dds"));
-    _fishTextures.push_back(new Texture(L"fish.dds"));
+    _crateTextures.push_back(new Texture(L"Res\\Textures\\Crate_COLOR.dds"));
+    _fishTextures.push_back(new Texture(L"Res\\Textures\\fish.dds"));
 }
 
 void Application::InitMeshes()
 {
     _pCubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pFishMesh = OBJLoader::Load("fish.obj", true);
+    _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
     _pPyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
     _pIcosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
     _pPlaneMesh = GenerateMesh(32, 8);
@@ -335,10 +334,10 @@ void Application::InitSceneObjects()
     };
     UINT numElementsBasic = ARRAYSIZE(basicLayout);
 
-    _dx11Shader = new Shader(L"DX11 Framework.fx", lightingLayout, numElementsLighting);
-    _discardShader = new Shader(L"Discard.fx", basicLayout, numElementsBasic);
-    _basicShader = new Shader(L"BasicShader.fx", basicLayout, numElementsBasic);
-    _waterShader = new Shader(L"Water.fx", basicLayout, numElementsBasic);
+    _dx11Shader = new Shader(L"Res\\Shaders\\DX11 Framework.fx", lightingLayout, numElementsLighting);
+    _discardShader = new Shader(L"Res\\Shaders\\Discard.fx", basicLayout, numElementsBasic);
+    _basicShader = new Shader(L"Res\\Shaders\\BasicShader.fx", basicLayout, numElementsBasic);
+    _waterShader = new Shader(L"Res\\Shaders\\Water.fx", basicLayout, numElementsBasic);
 
     _shaders.push_back(_dx11Shader);
     _shaders.push_back(_discardShader);
