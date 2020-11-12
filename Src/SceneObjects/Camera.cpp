@@ -72,3 +72,10 @@ void Camera::Reshape(float windowWidth, float windowHeight, float nearDepth, flo
     _farDepth = farDepth;
     UpdateProjection();
 }
+
+void Camera::Reshape(float windowWidth, float windowHeight)
+{
+    _windowWidth = windowWidth;
+    _windowHeight = windowHeight;
+    UpdateProjection();
+}

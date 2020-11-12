@@ -38,5 +38,6 @@ public:
 	const XMFLOAT4X4& GetProjectionMatrix();
 
 	void Reshape(float windowWidth, float windowHeight, float nearDepth, float farDepth);
+	void Reshape(float windowWidth, float windowHeight);
 };
 

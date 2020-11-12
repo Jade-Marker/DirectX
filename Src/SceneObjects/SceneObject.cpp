@@ -52,35 +52,22 @@ void SceneObject::Update(float deltaTime)
 
     _angle.z += _tScale.z * deltaTime;
 
-    if (GetAsyncKeyState(VK_UP) && !_rasterKeyDown)
+    if (InputManager::GetKeyDown(VK_UP))
     {
-        _rasterKeyDown = true;
-
         if (_rasterState == _wireframeRasterState)
             _rasterState = _solidRasterState;
         else
             _rasterState = _wireframeRasterState;
-
-    }
-    else if (GetAsyncKeyState(VK_DOWN) && _rasterKeyDown)
-    {
-        _rasterKeyDown = false;
-
-        if (_rasterState == _wireframeRasterState)
-            _rasterState = _solidRasterState;
-        else
-            _rasterState = _wireframeRasterState;
-
     }
 
-    if (GetAsyncKeyState('A') && !_xDirState)
+    if (InputManager::GetKeyDown('A'))
         _xDirState = true;
-    else if (GetAsyncKeyState('D') && _xDirState)
+    else if (InputManager::GetKeyDown('D'))
         _xDirState = false;
 
-    if (GetAsyncKeyState('W') && !_yDirState)
+    if (InputManager::GetKeyDown('W'))
         _yDirState = true;
-    else if (GetAsyncKeyState('S') && _yDirState)
+    else if (InputManager::GetKeyDown('S'))
         _yDirState = false;
 }
 

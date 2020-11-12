@@ -21,6 +21,7 @@
 #include "StructuredBuffer.h"
 #include "DeviceManager.h"
 #include "ConstantBuffer.h"
+#include "InputManager.h"
 
 using namespace DirectX;
 

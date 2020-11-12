@@ -5,7 +5,8 @@
 //Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
 //Do a general cleanup of code before moving onto next step
-//Sort files in project into folders
+//Add mouse support to InputManager
+//Create debug file log that can be output to in the same way as cout
 
 //Add support for multiple textures
 //Use the specular map for the crate
@@ -174,7 +175,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             height = HIWORD(lParam);
 
             app->Resize(width, height);
-        break;
+            break;
+
+        case WM_KEYDOWN:
+            InputManager::KeyDown((char)wParam);
+            break;
+
+        case WM_KEYUP:
+            InputManager::KeyUp((char)wParam);
+            break;
 
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -669,6 +678,8 @@ void Application::Update(float deltaTime)
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Update(deltaTime);
+
+    InputManager::Update();
 }
 
 void Application::Draw()
@@ -728,7 +739,7 @@ void Application::Resize(UINT width, UINT height)
 
             InitViewport();
 
-            _camera->Reshape(_WindowWidth, _WindowHeight, 0.1f, 100.0f);
+            _camera->Reshape(_WindowWidth, _WindowHeight);
         }
     }
 }

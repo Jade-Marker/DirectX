@@ -32,6 +32,7 @@
     <ClInclude Include="Src\Textures\Texture.h" />
     <ClInclude Include="Src\Shaders\Shader.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Src\Managers\InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="Src\SceneObjects\Camera.cpp" />
     <ClCompile Include="Src\Textures\Texture.cpp" />
     <ClCompile Include="Src\Shaders\Shader.cpp" />
+    <ClCompile Include="Src\Managers\InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

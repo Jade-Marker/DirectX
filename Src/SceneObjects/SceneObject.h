@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include "DeviceManager.h"
 #include "ConstantBuffer.h"
+#include "InputManager.h"
 
 class SceneObject
 {

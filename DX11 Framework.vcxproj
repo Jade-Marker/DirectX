@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Managers\InputManager.cpp" />
     <ClCompile Include="Src\Core\Application.cpp" />
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
     <ClCompile Include="Src\SceneObjects\Camera.cpp" />
@@ -394,6 +395,7 @@
     <ClCompile Include="Src\Mesh\Vertices.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Core\Application.h" />
     <ClInclude Include="Src\Buffers\Buffer.h" />
