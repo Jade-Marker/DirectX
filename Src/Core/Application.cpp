@@ -1,7 +1,7 @@
 #include "Application.h"
 
 //todo
-//Clean up Mesh/Vertices code
+//Update other shaders so that the constant buffer is correct (maybe worth finding some sort of #include for common elements?)
 //Do a general cleanup of code
 //Add mouse support to InputManager
 //Add support for multiple textures
@@ -50,8 +50,6 @@ static LightVertex cubeVertices[] =
 
 };
 
-static Vertices cube = Vertices((void*)cubeVertices, sizeof(cubeVertices), sizeof(cubeVertices)/sizeof(cubeVertices[0]));
-
 static WORD cubeIndices[] =
 {
     0, 1, 2,
@@ -93,8 +91,6 @@ static WORD pyramidIndices[] =
     3,2,4,
     2,0,4
 };
-static Vertices pyramid = Vertices((void*)pyramidVertices, sizeof(pyramidVertices), sizeof(pyramidVertices) / sizeof(pyramidVertices[0]));
-
 
 static BasicVertex icosphereVertices[] =
 {
@@ -140,8 +136,6 @@ static WORD icosphereIndices[] =
    10,9,11,
 
 };
-static Vertices icosphere = Vertices((void*)icosphereVertices, sizeof(icosphereVertices), sizeof(icosphereVertices) / sizeof(icosphereVertices[0]));
-
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -230,8 +224,7 @@ Mesh* Application::GenerateMesh(int width, int height)
         indices.push_back(3 + 4 * i);
     }
 
-    Vertices* vertices = new Vertices(verticesVector.data(), verticesVector.size() * sizeof(BasicVertex), verticesVector.size(), true);
-    Mesh* mesh = new Mesh(vertices, indices.data(), indices.size());
+    Mesh* mesh = new Mesh(verticesVector.data(), sizeof(BasicVertex), verticesVector.size(), indices.data(), indices.size());
     return mesh;
 }
 
@@ -299,10 +292,10 @@ void Application::InitTextures()
 
 void Application::InitMeshes()
 {
-    _pCubeMesh = new Mesh(&cube, cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
+    _pCubeMesh = new Mesh(cubeVertices, sizeof(LightVertex), sizeof(cubeVertices) / sizeof(cubeVertices[0]), cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
     _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
-    _pPyramidMesh = new Mesh(&pyramid, pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
-    _pIcosphereMesh = new Mesh(&icosphere, icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
+    _pPyramidMesh = new Mesh(pyramidVertices, sizeof(BasicVertex), sizeof(pyramidVertices) / sizeof(pyramidVertices[0]), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
+    _pIcosphereMesh = new Mesh(icosphereVertices, sizeof(BasicVertex), sizeof(icosphereVertices) / sizeof(icosphereVertices[0]), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
     _pPlaneMesh = GenerateMesh(32, 8);
 }
 

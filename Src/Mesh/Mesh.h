@@ -1,21 +1,25 @@
 #pragma once
 #include <windows.h>
 #include "Structures.h"
-#include "Vertices.h"
 
 class Mesh
 {
 private:
-	Vertices* _vertices;
+	void* _vertices;
+	int _vertexCount;
+	int _vertexSize;
+
 	WORD* _indices;
 	int _indexCount;
 
 public:
-	Mesh(Vertices* vertices, WORD* indices, int indexCount);
+	Mesh(const void* vertices, int vertexSize, int vertexCount, const WORD* indices, int indexCount);
 	~Mesh();
 
-	Vertices* GetVertices();
+	const void* GetVertices();
 	int GetVertexCount();
+	int GetVertexSize();
+	int GetVerticesSize();
 	WORD* GetIndices();
 	int GetIndexCount();
 };

@@ -79,8 +79,7 @@ Mesh* OBJLoader::Load(char* filename, bool invertTexCoords)
 
 		if (!inFile.good())
 		{
-			Vertices* vertices = new Vertices(nullptr, 0, 0);
-			Mesh* mesh = new Mesh(vertices, nullptr, 0);
+			Mesh* mesh = new Mesh(nullptr, 0, 0, nullptr, 0);
 			return mesh;
 		}
 		else
@@ -219,8 +218,7 @@ Mesh* OBJLoader::Load(char* filename, bool invertTexCoords)
 			outbin.write((char*)indicesArray, sizeof(unsigned short) * numMeshIndices);
 			outbin.close();
 
-			Vertices* vertices = new Vertices(finalVerts, sizeof(LightVertex) * numMeshVertices, numMeshVertices, true);
-			Mesh* mesh = new Mesh(vertices, indicesArray, numIndices);
+			Mesh* mesh = new Mesh(finalVerts, sizeof(LightVertex), numMeshVertices, indicesArray, numIndices);
 
 			//This data has now been sent over to the GPU so we can delete this CPU-side stuff
 			delete [] indicesArray;
@@ -246,8 +244,7 @@ Mesh* OBJLoader::Load(char* filename, bool invertTexCoords)
 		binaryInFile.read((char*)finalVerts, sizeof(LightVertex) * numVertices);
 		binaryInFile.read((char*)indices, sizeof(unsigned short) * numIndices);		
 
-		Vertices* vertices = new Vertices(finalVerts, sizeof(LightVertex) * numVertices, numVertices, true);
-		Mesh* mesh = new Mesh(vertices, indices, numIndices);
+		Mesh* mesh = new Mesh(finalVerts, sizeof(LightVertex), numVertices, indices, numIndices);
 
 		//This data has now been sent over to the GPU so we can delete this CPU-side stuff
 		delete [] indices;

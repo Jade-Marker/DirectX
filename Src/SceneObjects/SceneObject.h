@@ -4,6 +4,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <directxcolors.h>
+#include <vector>
 #include "Structures.h"
 #include "Mesh.h"
 #include "Shader.h"

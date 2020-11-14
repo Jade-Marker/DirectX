@@ -12,7 +12,6 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Constants.h"
-#include "Vertices.h"
 #include "Camera.h"
 #include "OBJLoader.h"
 #include "Light.h"

@@ -1,27 +1,39 @@
 #include "Mesh.h"
 
-Mesh::Mesh(Vertices* vertices, WORD* indices, int indexCount):
-	_vertices(vertices), _indexCount(indexCount)
+Mesh::Mesh(const void* vertices, int vertexSize, int vertexCount, const WORD* indices, int indexCount):
+	_vertexCount(vertexCount), _vertexSize(vertexSize), _indexCount(indexCount)
 {
-	_indices = new WORD[_indexCount];
+	_vertices = new unsigned char[_vertexCount * _vertexSize];
+	memcpy(_vertices, vertices, vertexSize * vertexCount);
 
+	_indices = new WORD[_indexCount];
 	memcpy(_indices, indices, sizeof(WORD) * _indexCount);
 }
 
 Mesh::~Mesh()
 {
 	delete[] _indices;
-	if (_vertices->DeleteOnMeshDelete()) delete _vertices;
+	delete[] _vertices;
 }
 
-Vertices* Mesh::GetVertices()
+const void* Mesh::GetVertices()
 {
 	return _vertices;
 }
 
 int Mesh::GetVertexCount()
 {
-	return _vertices->GetCount();
+	return _vertexCount;
+}
+
+int Mesh::GetVertexSize()
+{
+	return _vertexSize;
+}
+
+int Mesh::GetVerticesSize()
+{
+	return _vertexSize * _vertexCount;
 }
 
 WORD* Mesh::GetIndices()
