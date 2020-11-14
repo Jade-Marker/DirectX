@@ -1,19 +1,19 @@
 #include "Application.h"
 
 //todo
-//Look through assignment brief and update todo list
-//Create Transform struct for position, scale and rotation
 //Clean up Mesh/Vertices code
-//Do a general cleanup of code before moving onto next step
+//Do a general cleanup of code
 //Add mouse support to InputManager
-//Create debug file log that can be output to in the same way as cout
-
 //Add support for multiple textures
-//Use the specular map for the crate
-//Create material class that contains textures/colors for diffuse, ambient and specular and make each sceneObject have a material
-//Potentially worth adding imGui
-//Add an InputManager class so that the input code in SceneObject can be cleaner
-//Add point, spotlight and directional light based on examples in chapter 7
+//Add support for specular maps
+//Create debug file log that can be output to in the same way as cout
+//Add Transform struct
+//Add Camera Manager
+//Swap to entity component system
+//Add Object loading via JSON
+//Add Custom component
+//Add Skybox
+
 
 static LightVertex cubeVertices[] =
 {
