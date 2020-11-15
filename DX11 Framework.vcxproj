@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Shaders\ShaderInclude.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
     <ClCompile Include="Src\Core\Application.cpp" />
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -394,6 +395,7 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Shaders\ShaderInclude.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Core\Application.h" />

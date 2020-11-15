@@ -13,8 +13,10 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
     dwShaderFlags |= D3DCOMPILE_DEBUG;
 #endif
 
+    ShaderInclude include;
+
     ID3DBlob* pErrorBlob;
-    hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
+    hr = D3DCompileFromFile(szFileName, nullptr, &include, szEntryPoint, szShaderModel,
         dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 
     if (FAILED(hr))

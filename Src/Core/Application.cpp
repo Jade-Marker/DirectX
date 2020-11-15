@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Update other shaders so that the constant buffer is correct (maybe worth finding some sort of #include for common elements?)
 //Do a general cleanup of code
 //Add mouse support to InputManager
 //Add support for multiple textures
@@ -396,10 +395,10 @@ void Application::InitSceneObjects()
 
     _sceneObjects.push_back(cube);
     _sceneObjects.push_back(fish);
-    //_sceneObjects.push_back(pyramid1);
-    //_sceneObjects.push_back(pyramid2);
-    //_sceneObjects.push_back(icosphere);
-    //_sceneObjects.push_back(plane);
+    _sceneObjects.push_back(pyramid1);
+    _sceneObjects.push_back(pyramid2);
+    _sceneObjects.push_back(icosphere);
+    _sceneObjects.push_back(plane);
 }
 
 void Application::InitLights()
