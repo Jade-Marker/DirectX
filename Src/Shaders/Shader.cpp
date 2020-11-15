@@ -21,10 +21,13 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
 
     if (FAILED(hr))
     {
-        if (pErrorBlob != nullptr)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+        if (hr != HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
+        {
+            if (pErrorBlob != nullptr)
+                OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
 
-        if (pErrorBlob) pErrorBlob->Release();
+            if (pErrorBlob) pErrorBlob->Release();
+        }
 
         return hr;
     }
@@ -45,57 +48,57 @@ Shader::Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLa
 
     if (FAILED(hr))
     {
-        MessageBox(nullptr,
-            L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-    }
-    else
-    {
-
-        // Create the vertex shader
-        hr = DeviceManager::GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-        if (FAILED(hr))
-        {
-            pVSBlob->Release();
-            MessageBox(nullptr,
-                L"Unable to create the vertex shader", L"Error", MB_OK);
-        }
+        if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
+            MessageBox(nullptr, L"The FX file cannot be found.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
         else
-        {
+            MessageBox(nullptr, L"The shader cannot be compiled. ", L"Error", MB_OK);
+        return;
+    }
 
-            // Compile the pixel shader
-            ID3DBlob* pPSBlob = nullptr;
-            hr = CompileShaderFromFile(shaderSource, "PS", "ps_5_0", &pPSBlob);
+    // Create the vertex shader
+    hr = DeviceManager::GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
 
-            if (FAILED(hr))
-            {
-                MessageBox(nullptr,
-                    L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-            }
-            else
-            {
+    if (FAILED(hr))
+    {
+        pVSBlob->Release();
+        MessageBox(nullptr,
+            L"Unable to create the vertex shader", L"Error", MB_OK);
+        return;
+    }
 
 
-                // Create the pixel shader
-                hr = DeviceManager::GetDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-                pPSBlob->Release();
+    // Compile the pixel shader
+    ID3DBlob* pPSBlob = nullptr;
+    hr = CompileShaderFromFile(shaderSource, "PS", "ps_5_0", &pPSBlob);
 
-                if (FAILED(hr))
-                    MessageBox(nullptr,
-                        L"Unable to create the pixel shader", L"Error", MB_OK);
-                else
-                {
-                    // Create the input layout
-                    hr = DeviceManager::GetDevice()->CreateInputLayout(layout, numLayoutElements, pVSBlob->GetBufferPointer(),
-                        pVSBlob->GetBufferSize(), &_pVertexLayout);
-                    pVSBlob->Release();
+    if (FAILED(hr))
+    {
+        MessageBox(nullptr,
+            L"The shader cannot be compiled. ", L"Error", MB_OK);
+        return;
+    }
 
-                    if (FAILED(hr))
-                        MessageBox(nullptr,
-                            L"Unable to create the layout", L"Error", MB_OK);
-                }
-            }
-        }
+    // Create the pixel shader
+    hr = DeviceManager::GetDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
+    pPSBlob->Release();
+
+    if (FAILED(hr))
+    {
+        MessageBox(nullptr,
+            L"Unable to create the pixel shader", L"Error", MB_OK);
+        return;
+    }
+
+    // Create the input layout
+    hr = DeviceManager::GetDevice()->CreateInputLayout(layout, numLayoutElements, pVSBlob->GetBufferPointer(),
+        pVSBlob->GetBufferSize(), &_pVertexLayout);
+    pVSBlob->Release();
+
+    if (FAILED(hr))
+    {
+        MessageBox(nullptr,
+            L"Unable to create the layout", L"Error", MB_OK);
+        return;
     }
 }
 

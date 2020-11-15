@@ -31,12 +31,7 @@ int Mesh::GetVertexSize()
 	return _vertexSize;
 }
 
-int Mesh::GetVerticesSize()
-{
-	return _vertexSize * _vertexCount;
-}
-
-WORD* Mesh::GetIndices()
+const WORD* Mesh::GetIndices()
 {
 	return _indices;
 }

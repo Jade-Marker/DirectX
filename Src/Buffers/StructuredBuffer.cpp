@@ -2,7 +2,8 @@
 
 void StructuredBuffer::InitializeBuffer(ID3D11Buffer*& pBuffer, ID3D11ShaderResourceView*& pView, const void* pInitialData, int count, int stride)
 {
-	HRESULT hr = Buffer::Initialise(count * stride, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ, D3D11_RESOURCE_MISC_BUFFER_STRUCTURED, stride, pInitialData, pBuffer);
+	HRESULT hr = Buffer::Initialise(count * stride, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 
+		D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ, D3D11_RESOURCE_MISC_BUFFER_STRUCTURED, stride, pInitialData, pBuffer);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC rvD;
 	ZeroMemory(&rvD, sizeof(rvD));

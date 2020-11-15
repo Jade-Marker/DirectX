@@ -38,6 +38,8 @@ private:
 	ID3D11Texture2D*		_pDepthStencilBuffer;
 	ID3D11BlendState*		_pBlendState;
 
+	float _clearColor[4];
+
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
@@ -57,6 +59,10 @@ private:
 	Mesh* _pPlaneMesh;
 
 	std::vector<Shader*> _shaders;
+	Shader* _dx11Shader;
+	Shader* _discardShader;
+	Shader* _basicShader;
+	Shader* _waterShader;
 
 	std::vector<Texture*> _crateTextures;
 	std::vector<Texture*> _fishTextures;
@@ -85,6 +91,7 @@ private:
 	Mesh* GenerateMesh(int width, int height);
 	void InitTextures();
 	void InitMeshes();
+	void InitShaders();
 	void InitConstantBufferVars();
 	void InitSceneObjects();
 	void InitLights();

@@ -19,8 +19,7 @@ public:
 	const void* GetVertices();
 	int GetVertexCount();
 	int GetVertexSize();
-	int GetVerticesSize();
-	WORD* GetIndices();
+	const WORD* GetIndices();
 	int GetIndexCount();
 };
 

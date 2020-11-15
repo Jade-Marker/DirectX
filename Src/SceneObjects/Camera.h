@@ -24,8 +24,6 @@ public:
 	Camera(const XMFLOAT3& position, const XMFLOAT3& direction, const XMFLOAT3& up,
 		float windowWidth, float windowHeight, float nearDepth, float farDepth);
 
-	//void Update();
-
 	void SetPosition(const XMFLOAT3& position);
 	void SetDirection(const XMFLOAT3& direction);
 	void SetUp(const XMFLOAT3& up);

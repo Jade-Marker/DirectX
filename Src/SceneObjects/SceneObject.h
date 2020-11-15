@@ -1,9 +1,6 @@
 #pragma once
-#include <windows.h>
 #include <d3d11_1.h>
-#include <d3dcompiler.h>
 #include <directxmath.h>
-#include <directxcolors.h>
 #include <vector>
 #include "Structures.h"
 #include "Mesh.h"
@@ -29,7 +26,6 @@ private:
 	
 	std::vector<Texture*> _textures;
 
-	bool _rasterKeyDown;
 	bool _yDirState;
 	bool _xDirState;
 

@@ -1,11 +1,5 @@
 #include "IndexBuffer.h"
 
-IndexBuffer::IndexBuffer()
-{
-
-}
-
-
 HRESULT IndexBuffer::Initialise(Mesh* mesh)
 {
     HRESULT hr = Buffer::Initialise(sizeof(WORD) * mesh->GetIndexCount(), D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, 0, 0, 0, mesh->GetIndices());

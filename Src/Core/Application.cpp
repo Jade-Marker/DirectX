@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Do a general cleanup of code
 //Add mouse support to InputManager
 //Add support for multiple textures
 //Add support for specular maps
@@ -62,22 +61,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-Application::Application()
+Application::Application():
+    _hInst(nullptr), _hWnd(nullptr), _driverType(D3D_DRIVER_TYPE_NULL), _featureLevel(D3D_FEATURE_LEVEL_11_0), _pSwapChain(nullptr), _pRenderTargetView(nullptr),
+    _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f },
+    _pCamera(nullptr), _pFishMesh(nullptr), _pPlaneMesh(nullptr), _pLightBuffer(nullptr)
 {
-    _hInst = nullptr;
-    _hWnd = nullptr;
-    _driverType = D3D_DRIVER_TYPE_NULL;
-    _featureLevel = D3D_FEATURE_LEVEL_11_0;
-    _pSwapChain = nullptr;
-    _pRenderTargetView = nullptr;
 
-    _pDepthStencilView = nullptr;
-    _pDepthStencilBuffer = nullptr;
-    _pBlendState = nullptr;
-    _pFishMesh = nullptr;
-    _pPlaneMesh = nullptr;
-
-    _pCamera = nullptr;
 }
 
 Application::~Application()
@@ -97,7 +86,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
 
-    _pCamera = new Camera(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
 
     if (FAILED(InitDevice()))
     {
@@ -110,7 +98,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitLights();
     InitMeshes();
     InitTextures();
+    InitShaders();
     InitSceneObjects();
+    _pCamera = new Camera(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
 
     return S_OK;
 }
@@ -118,37 +108,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 void Application::Update(float deltaTime)
 {
     _time += deltaTime;
-
-    static float timer = 0;
-    timer += deltaTime;
-
-    static float time = 0;
-    time += deltaTime;
-
-    if (timer >= 5.0f)
-    {
-        timer = 0;
-
-        PointLight light = PointLight(XMFLOAT3(0, 0.0f, 0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-            XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 1.0f, 1.0f, 1.0f);
-
-        _lights.push_back(light);
-
-        _pLightBuffer->Update(&_lights[_lights.size() - 1], sizeof(Light), (_lights.size() - 1) * sizeof(Light));
-    }
-
-    XMVECTOR position;
-    XMFLOAT3 offset;
-    XMFLOAT3 positionVec;
-
-    offset = XMFLOAT3(5.0f * sin(time), 0.0f, -10.0f);
-
-    position = XMLoadFloat3(&_pCamera->GetPosition());
-    position = XMLoadFloat3(&offset);
-
-    XMStoreFloat3(&positionVec, position);
-
-    _pCamera->SetPosition(positionVec);
 
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Update(deltaTime);
@@ -158,12 +117,7 @@ void Application::Update(float deltaTime)
 
 void Application::Draw()
 {
-    //
-    // Clear the back buffer
-    //
-
-    float ClearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f }; // red,green,blue,alpha
-    DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, _clearColor);
     DeviceManager::GetContext()->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
@@ -176,8 +130,8 @@ void Application::Draw()
     cb.EyePosW = _pCamera->GetPosition();
     cb.gTime = _time;
     cb.numLights = _lights.size();
-
     _globalConstantBuffer.Update(&cb);
+
 
     for (int i = 0; i < _shaders.size(); i++)
     {
@@ -185,12 +139,10 @@ void Application::Draw()
         _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
     }
 
+
     for (int i = 0; i < _sceneObjects.size(); i++)
         _sceneObjects[i]->Draw();
 
-    //
-    // Present our back buffer to our front buffer
-    //
 
     _pSwapChain->Present(0, 0);
 }
@@ -209,6 +161,7 @@ void Application::Resize(UINT width, UINT height)
             _pDepthStencilBuffer->Release();
             _pDepthStencilView->Release();
             InitDepthStencilBuffer();
+
             DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
             InitViewport();
@@ -405,15 +358,14 @@ void Application::InitDepthStencilBuffer()
 
 void Application::Cleanup()
 {
-    if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pSwapChain) _pSwapChain->Release();
-
+    if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-
-
-    if (_pLightBuffer) delete _pLightBuffer;
     if (_pBlendState) _pBlendState->Release();
+
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        delete _sceneObjects[i];
 
     if (_pFishMesh) delete _pFishMesh;
     if (_pPlaneMesh) delete _pPlaneMesh;
@@ -427,8 +379,7 @@ void Application::Cleanup()
     for (int i = 0; i < _fishTextures.size(); i++)
         delete _fishTextures[i];
 
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        delete _sceneObjects[i];
+    if (_pLightBuffer) delete _pLightBuffer;
 }
 
 Mesh* Application::GenerateMesh(int width, int height)
@@ -485,27 +436,8 @@ void Application::InitMeshes()
     _pPlaneMesh = GenerateMesh(32, 8);
 }
 
-void Application::InitConstantBufferVars()
+void Application::InitShaders()
 {
-    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _time = 0;
-}
-
-void Application::InitSceneObjects()
-{
-    SceneObject* cube;
-    SceneObject* fish;
-    SceneObject* pyramid1;
-    SceneObject* pyramid2;
-    SceneObject* icosphere;
-    SceneObject* plane;
-    Shader* _dx11Shader;
-    Shader* _discardShader;
-    Shader* _basicShader;
-    Shader* _waterShader;
-
     // Define the input layouts
     D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
     {
@@ -531,6 +463,24 @@ void Application::InitSceneObjects()
     _shaders.push_back(_discardShader);
     _shaders.push_back(_basicShader);
     _shaders.push_back(_waterShader);
+}
+
+void Application::InitConstantBufferVars()
+{
+    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _time = 0;
+}
+
+void Application::InitSceneObjects()
+{
+    SceneObject* cube;
+    SceneObject* fish;
+    SceneObject* pyramid1;
+    SceneObject* pyramid2;
+    SceneObject* icosphere;
+    SceneObject* plane;
 
     cube = new SceneObject(
         XMFLOAT3(0, 0, 5),
