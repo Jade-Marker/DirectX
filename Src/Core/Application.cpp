@@ -13,129 +13,6 @@
 //Add Custom component
 //Add Skybox
 
-
-static LightVertex cubeVertices[] =
-{
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,0.0f) },       //0
-    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(1.0f,0.0f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(0.0f,1.0f) },       //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,1.0f) },       //3
-
-    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //4
-    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //5
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //6
-    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //7
-
-    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //8
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //9
-    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //10
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //11
-
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //12
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,0.0f) },       //13
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //14
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(1.0f,1.0f) },       //15
-
-    { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-0.5773502692f, 0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,0.0f) },       //16
-    { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.5773502692f, 0.5773502692f, 0.5773502692f),     XMFLOAT2(1.0f,0.0f) },       //17
-    { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-0.5773502692f, 0.5773502692f, -0.5773502692f),   XMFLOAT2(0.0f,1.0f) },       //18
-    { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.5773502692f, 0.5773502692f, -0.5773502692f),    XMFLOAT2(1.0f,1.0f) },       //19
-
-
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-0.5773502692f, -0.5773502692f, 0.5773502692f),   XMFLOAT2(0.0f,0.0f) },       //20
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-0.5773502692f, -0.5773502692f, -0.5773502692f),  XMFLOAT2(1.0f,0.0f) },       //21
-    { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.5773502692f, -0.5773502692f, 0.5773502692f),    XMFLOAT2(0.0f,1.0f) },       //22
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.5773502692f, -0.5773502692f, -0.5773502692f),   XMFLOAT2(1.0f,1.0f) },       //23
-
-};
-
-static WORD cubeIndices[] =
-{
-    0, 1, 2,
-    2, 1, 3,
-
-    4, 5, 6,
-    6, 5, 7,
-
-    8, 9,10,
-    10,9,11,
-
-    12,13,14,
-    14,13,15,
-
-    16,17,18,
-    18,17,19,
-
-    20,21,22,
-    22,21,23
-};
-
-static BasicVertex pyramidVertices[] =
-{
-    { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //0
-    { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },       //1
-    { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },     //2
-    { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //3
-
-    { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },       //4
-};
-
-static WORD pyramidIndices[] =
-{
-    0,2,1,
-    1,2,3,
-
-    0,1,4,
-    1,3,4,
-    3,2,4,
-    2,0,4
-};
-
-static BasicVertex icosphereVertices[] =
-{
-    { XMFLOAT3( 0.0f,        -1.000000f,  0.000000f), XMFLOAT4(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
-    { XMFLOAT3(0.7236f,      -0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
-    { XMFLOAT3(-0.276385f,   -0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
-    { XMFLOAT3(-0.894425f,   -0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
-    { XMFLOAT3(-0.276385f,   -0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
-    { XMFLOAT3(0.723600f,    -0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
-    { XMFLOAT3(0.276385f,     0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
-    { XMFLOAT3(-0.723600f,    0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
-    { XMFLOAT3(-0.723600f,    0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
-    { XMFLOAT3(0.276385f,     0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
-    { XMFLOAT3(0.894425f,     0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
-    { XMFLOAT3(0.000000f,     1.000000f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
-};
-
-static WORD icosphereIndices[] =
-{
-   0, 1, 2,
-   1, 0, 5,
-   0, 2, 3,
-   0, 3, 4,
-
-   0, 4, 5,
-   1, 5, 10,
-   2, 1, 6,
-   3, 2, 7,
-
-   4, 3, 8,
-   5, 4, 9,
-   1, 10,6,
-   2, 6, 7,
-
-   3, 7, 8,
-   4, 8, 9,
-   5, 9,10,
-   6, 10,11,
-
-   7, 6, 11,
-   8, 7, 11,
-   9,8, 11,
-   10,9,11,
-
-};
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -185,87 +62,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-Mesh* Application::GenerateMesh(int width, int height)
-{
-    std::vector<BasicVertex> verticesVector;
-    std::vector<WORD> indices;
-
-   for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            float xLower, xUpper, yLower, yUpper;
-
-            xLower = -1.0f + (x * 2.0f);
-            xUpper = 1.0f + (x * 2.0f);
-            yLower = -1.0f + (y * 2.0f);
-            yUpper = 1.0f + (y * 2.0f);
-
-            BasicVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
-            BasicVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
-            BasicVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
-            BasicVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
-
-            verticesVector.push_back(vertex1);
-            verticesVector.push_back(vertex2);
-            verticesVector.push_back(vertex3);
-            verticesVector.push_back(vertex4);
-        }
-    }
-
-    for (int i = 0; i < width * height; i++)
-    {
-        indices.push_back(0 + 4 * i);
-        indices.push_back(1 + 4 * i);
-        indices.push_back(2 + 4 * i);
-        indices.push_back(2 + 4 * i);
-        indices.push_back(1 + 4 * i);
-        indices.push_back(3 + 4 * i);
-    }
-
-    Mesh* mesh = new Mesh(verticesVector.data(), sizeof(BasicVertex), verticesVector.size(), indices.data(), indices.size());
-    return mesh;
-}
-
 Application::Application()
 {
-	_hInst = nullptr;
-	_hWnd = nullptr;
-	_driverType = D3D_DRIVER_TYPE_NULL;
-	_featureLevel = D3D_FEATURE_LEVEL_11_0;
-	_pSwapChain = nullptr;
-	_pRenderTargetView = nullptr;
+    _hInst = nullptr;
+    _hWnd = nullptr;
+    _driverType = D3D_DRIVER_TYPE_NULL;
+    _featureLevel = D3D_FEATURE_LEVEL_11_0;
+    _pSwapChain = nullptr;
+    _pRenderTargetView = nullptr;
 
-    _pDepthStencilView   = nullptr;
+    _pDepthStencilView = nullptr;
     _pDepthStencilBuffer = nullptr;
-    _pBlendState        = nullptr;
-    _pCubeMesh           = nullptr;
-    _pFishMesh            = nullptr;
-    _pPyramidMesh        = nullptr;
-    _pIcosphereMesh      = nullptr;
-    _pPlaneMesh          = nullptr;
+    _pBlendState = nullptr;
+    _pFishMesh = nullptr;
+    _pPlaneMesh = nullptr;
 
-    _camera = nullptr;
+    _pCamera = nullptr;
 }
 
 Application::~Application()
 {
-	Cleanup();
+    Cleanup();
 }
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
     if (FAILED(InitWindow(hInstance, nCmdShow)))
-	{
+    {
         return E_FAIL;
-	}
+    }
 
     RECT rc;
     GetClientRect(_hWnd, &rc);
     _WindowWidth = rc.right - rc.left;
     _WindowHeight = rc.bottom - rc.top;
 
-    _camera = new Camera(XMFLOAT3(0.0f, 0.0f,-10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
+    _pCamera = new Camera(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
 
     if (FAILED(InitDevice()))
     {
@@ -280,141 +112,110 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitTextures();
     InitSceneObjects();
 
-	return S_OK;
+    return S_OK;
 }
 
-void Application::InitTextures()
+void Application::Update(float deltaTime)
 {
-    _crateTextures.push_back(new Texture(L"Res\\Textures\\Crate_COLOR.dds"));
-    _fishTextures.push_back(new Texture(L"Res\\Textures\\fish.dds"));
-}
+    _time += deltaTime;
 
-void Application::InitMeshes()
-{
-    _pCubeMesh = new Mesh(cubeVertices, sizeof(LightVertex), sizeof(cubeVertices) / sizeof(cubeVertices[0]), cubeIndices, sizeof(cubeIndices) / sizeof(WORD));
-    _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
-    _pPyramidMesh = new Mesh(pyramidVertices, sizeof(BasicVertex), sizeof(pyramidVertices) / sizeof(pyramidVertices[0]), pyramidIndices, sizeof(pyramidIndices) / sizeof(WORD));
-    _pIcosphereMesh = new Mesh(icosphereVertices, sizeof(BasicVertex), sizeof(icosphereVertices) / sizeof(icosphereVertices[0]), icosphereIndices, sizeof(icosphereIndices) / sizeof(WORD));
-    _pPlaneMesh = GenerateMesh(32, 8);
-}
+    static float timer = 0;
+    timer += deltaTime;
 
-void Application::InitConstantBufferVars()
-{
-    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _time = 0;
-}
+    static float time = 0;
+    time += deltaTime;
 
-void Application::InitSceneObjects()
-{
-    SceneObject* cube;
-    SceneObject* fish;
-    SceneObject* pyramid1;
-    SceneObject* pyramid2;
-    SceneObject* icosphere;
-    SceneObject* plane;
-    Shader* _dx11Shader;
-    Shader* _discardShader;
-    Shader* _basicShader;
-    Shader* _waterShader;
-
-    // Define the input layouts
-    D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
+    if (timer >= 5.0f)
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-    };
-    UINT numElementsLighting = ARRAYSIZE(lightingLayout);
+        timer = 0;
 
-    D3D11_INPUT_ELEMENT_DESC basicLayout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-    UINT numElementsBasic = ARRAYSIZE(basicLayout);
+        PointLight light = PointLight(XMFLOAT3(0, 0.0f, 0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+            XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 1.0f, 1.0f, 1.0f);
 
-    _dx11Shader = new Shader(L"Res\\Shaders\\DX11 Framework.fx", lightingLayout, numElementsLighting);
-    _discardShader = new Shader(L"Res\\Shaders\\Discard.fx", basicLayout, numElementsBasic);
-    _basicShader = new Shader(L"Res\\Shaders\\BasicShader.fx", basicLayout, numElementsBasic);
-    _waterShader = new Shader(L"Res\\Shaders\\Water.fx", basicLayout, numElementsBasic);
+        _lights.push_back(light);
 
-    _shaders.push_back(_dx11Shader);
-    _shaders.push_back(_discardShader);
-    _shaders.push_back(_basicShader);
-    _shaders.push_back(_waterShader);
+        _pLightBuffer->Update(&_lights[_lights.size() - 1], sizeof(Light), (_lights.size() - 1) * sizeof(Light));
+    }
 
-    cube = new SceneObject(
-        XMFLOAT3(0, 0, 5),
-        XMFLOAT3(0, 0, 0),
-        XMFLOAT3(2, 2, 2),
-        XMFLOAT3(0, 1, 0), nullptr, _pCubeMesh, false, _dx11Shader,
-        &_localConstantBuffer, _crateTextures
-    );
+    XMVECTOR position;
+    XMFLOAT3 offset;
+    XMFLOAT3 positionVec;
 
-    fish = new SceneObject(
-        XMFLOAT3(0, -6, 5),
-        XMFLOAT3(0, 0, 0),
-        XMFLOAT3(4, 4, 4),
-        XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
-        &_localConstantBuffer, _fishTextures
-    );
+    offset = XMFLOAT3(5.0f * sin(time), 0.0f, -10.0f);
 
-    pyramid1 = new SceneObject(
-        XMFLOAT3(5, 0, -3),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 2, 1),
-        XMFLOAT3(0, -1, 0), cube, _pPyramidMesh, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
-    );
+    position = XMLoadFloat3(&_pCamera->GetPosition());
+    position = XMLoadFloat3(&offset);
 
-    pyramid2 = new SceneObject(
-        XMFLOAT3(0, 6, 0),
-        XMFLOAT3(-5, 0, 3),
-        XMFLOAT3(1, 1, 1),
-        XMFLOAT3(0.27f, -3.0f, 6), cube, _pPyramidMesh, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
-    );
+    XMStoreFloat3(&positionVec, position);
 
-    icosphere = new SceneObject(
-        XMFLOAT3(-5, 0, 0),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 1, 1),
-        XMFLOAT3(-2, 0, 0.5f), cube, _pIcosphereMesh, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
-    );
+    _pCamera->SetPosition(positionVec);
 
-    plane = new SceneObject(
-        XMFLOAT3(-15, -9, 0),
-        XMFLOAT3(70, 0, 0),
-        XMFLOAT3(0.5f, 0.5f, 0.5f),
-        XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
-        &_localConstantBuffer, _blankTextures
-    );
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        _sceneObjects[i]->Update(deltaTime);
 
-    _sceneObjects.push_back(cube);
-    _sceneObjects.push_back(fish);
-    _sceneObjects.push_back(pyramid1);
-    _sceneObjects.push_back(pyramid2);
-    _sceneObjects.push_back(icosphere);
-    _sceneObjects.push_back(plane);
+    InputManager::Update();
 }
 
-void Application::InitLights()
+void Application::Draw()
 {
-    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
-        XMFLOAT4(0.0f, 0.4f, 0.0f, 0.4f), XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
-        XMFLOAT4(1.0f, 0.0f, 0.0f, 0.4f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
-        XMFLOAT4(0.0f, 0.0f, 0.4f, 0.4f), XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
+    //
+    // Clear the back buffer
+    //
 
-    _lights.push_back(greenPointLight);
-    _lights.push_back(redPointLight);
-    _lights.push_back(basicDirectional);
+    float ClearColor[4] = { 0.0f, 0.3f, 0.3f, 1.0f }; // red,green,blue,alpha
+    DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+    DeviceManager::GetContext()->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    _pLightBuffer = new StructuredBuffer(_lights.data(), _lights.size(), sizeof(Light));
+
+    GlobalConstantBuffer cb;
+    cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&_pCamera->GetViewMatrix()));
+    cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&_pCamera->GetProjectionMatrix()));
+    cb.DiffuseMtrl = _diffuseMaterial;
+    cb.AmbientMtrl = _ambientMaterial;
+    cb.SpecularMtrl = _specularMaterial;
+    cb.EyePosW = _pCamera->GetPosition();
+    cb.gTime = _time;
+    cb.numLights = _lights.size();
+
+    _globalConstantBuffer.Update(&cb);
+
+    for (int i = 0; i < _shaders.size(); i++)
+    {
+        _globalConstantBuffer.Bind(_shaders[i], cGlobalConstantBufferSlot);
+        _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
+    }
+
+    for (int i = 0; i < _sceneObjects.size(); i++)
+        _sceneObjects[i]->Draw();
+
+    //
+    // Present our back buffer to our front buffer
+    //
+
+    _pSwapChain->Present(0, 0);
+}
+
+void Application::Resize(UINT width, UINT height)
+{
+    if (width != 0 && height != 0)
+    {
+        _WindowWidth = width;
+        _WindowHeight = height;
+
+        if (_pCamera != nullptr)
+        {
+            ResizeRenderTargetView();
+
+            _pDepthStencilBuffer->Release();
+            _pDepthStencilView->Release();
+            InitDepthStencilBuffer();
+            DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
+
+            InitViewport();
+
+            _pCamera->Reshape(_WindowWidth, _WindowHeight);
+        }
+    }
 }
 
 HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
@@ -428,7 +229,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
     wcex.cbWndExtra = sizeof(LONG_PTR);
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW );
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = nullptr;
     wcex.lpszClassName = L"TutorialWindowClass";
@@ -438,13 +239,13 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
     // Create window
     _hInst = hInstance;
-    RECT rc = {0, 0, 640, 480};
+    RECT rc = { 0, 0, 640, 480 };
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-                         CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-                         this);
+        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
+        this);
     if (!_hWnd)
-		return E_FAIL;
+        return E_FAIL;
 
     ShowWindow(_hWnd, nCmdShow);
 
@@ -477,7 +278,7 @@ HRESULT Application::InitDevice()
         D3D_FEATURE_LEVEL_10_0,
     };
 
-	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
+    UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
@@ -556,7 +357,7 @@ HRESULT Application::InitDevice()
     float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     DeviceManager::GetContext()->OMSetBlendState(_pBlendState, blendFactors, 0xFFFFFFFF);
 
-	// Create the local constant buffer
+    // Create the local constant buffer
     hr = _localConstantBuffer.Initialise(sizeof(LocalConstantBuffer));
 
     if (FAILED(hr))
@@ -614,11 +415,8 @@ void Application::Cleanup()
     if (_pLightBuffer) delete _pLightBuffer;
     if (_pBlendState) _pBlendState->Release();
 
-    if(_pCubeMesh) delete _pCubeMesh;
-    if(_pFishMesh) delete _pFishMesh;
-    if(_pPyramidMesh) delete _pPyramidMesh;
-    if(_pIcosphereMesh) delete _pIcosphereMesh;
-    if(_pPlaneMesh) delete _pPlaneMesh;
+    if (_pFishMesh) delete _pFishMesh;
+    if (_pPlaneMesh) delete _pPlaneMesh;
 
     for (int i = 0; i < _shaders.size(); i++)
         delete _shaders[i];
@@ -633,107 +431,177 @@ void Application::Cleanup()
         delete _sceneObjects[i];
 }
 
-void Application::Update(float deltaTime)
+Mesh* Application::GenerateMesh(int width, int height)
 {
-    _time += deltaTime;    
+    std::vector<BasicVertex> verticesVector;
+    std::vector<WORD> indices;
 
-    static float timer = 0;
-    timer += deltaTime;
-
-    static float time = 0;
-    time += deltaTime;
-
-    if (timer >= 5.0f)
+   for (int y = 0; y < height; y++)
     {
-        timer = 0;
-
-        PointLight light = PointLight(XMFLOAT3(0, 0.0f, 0), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-            XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 1.0f, 1.0f, 1.0f);
-
-        _lights.push_back(light);
-
-        _pLightBuffer->Update(&_lights[_lights.size() - 1], sizeof(Light), (_lights.size() - 1) * sizeof(Light));
-    }
-
-    XMVECTOR position;
-    XMFLOAT3 offset;
-    XMFLOAT3 positionVec;
-
-    offset = XMFLOAT3(5.0f * sin(time), 0.0f, -10.0f);
-
-    position = XMLoadFloat3(&_camera->GetPosition());
-    position = XMLoadFloat3(&offset);
-
-    XMStoreFloat3(&positionVec, position);
-
-    _camera->SetPosition(positionVec);
-
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        _sceneObjects[i]->Update(deltaTime);
-
-    InputManager::Update();
-}
-
-void Application::Draw()
-{
-    //
-    // Clear the back buffer
-    //
-
-    float ClearColor[4] = {0.0f, 0.3f, 0.3f, 1.0f}; // red,green,blue,alpha
-    DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    DeviceManager::GetContext()->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-
-    GlobalConstantBuffer cb;
-    cb.ViewMatrix           = XMMatrixTranspose(XMLoadFloat4x4(&_camera->GetViewMatrix()));
-    cb.ProjectionMatrix     = XMMatrixTranspose(XMLoadFloat4x4(&_camera->GetProjectionMatrix()));
-    cb.DiffuseMtrl     = _diffuseMaterial;
-    cb.AmbientMtrl     = _ambientMaterial;
-    cb.SpecularMtrl    = _specularMaterial;
-    cb.EyePosW         = _camera->GetPosition();
-    cb.gTime           = _time;
-    cb.numLights = _lights.size();
-
-    _globalConstantBuffer.Update(&cb);
-
-    for (int i = 0; i < _shaders.size(); i++)
-    {
-        _globalConstantBuffer.Bind(_shaders[i], cGlobalConstantBufferSlot);
-        _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
-    }
-
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        _sceneObjects[i]->Draw();
-
-    //
-    // Present our back buffer to our front buffer
-    //
-
-    _pSwapChain->Present(0, 0);
-}
-
-void Application::Resize(UINT width, UINT height)
-{
-    if (width != 0 && height != 0)
-    {
-        _WindowWidth = width;
-        _WindowHeight = height;
-
-        if (_camera != nullptr)
+        for (int x = 0; x < width; x++)
         {
-            ResizeRenderTargetView();
+            float xLower, xUpper, yLower, yUpper;
 
-            _pDepthStencilBuffer->Release();
-            _pDepthStencilView->Release();
-            InitDepthStencilBuffer();
-            DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
+            xLower = -1.0f + (x * 2.0f);
+            xUpper = 1.0f + (x * 2.0f);
+            yLower = -1.0f + (y * 2.0f);
+            yUpper = 1.0f + (y * 2.0f);
 
-            InitViewport();
+            BasicVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
+            BasicVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
+            BasicVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
+            BasicVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
 
-            _camera->Reshape(_WindowWidth, _WindowHeight);
+            verticesVector.push_back(vertex1);
+            verticesVector.push_back(vertex2);
+            verticesVector.push_back(vertex3);
+            verticesVector.push_back(vertex4);
         }
     }
+
+    for (int i = 0; i < width * height; i++)
+    {
+        indices.push_back(0 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(3 + 4 * i);
+    }
+
+    Mesh* mesh = new Mesh(verticesVector.data(), sizeof(BasicVertex), verticesVector.size(), indices.data(), indices.size());
+    return mesh;
+}
+
+void Application::InitTextures()
+{
+    _crateTextures.push_back(new Texture(L"Res\\Textures\\Crate_COLOR.dds"));
+    _fishTextures.push_back(new Texture(L"Res\\Textures\\fish.dds"));
+}
+
+void Application::InitMeshes()
+{
+    _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
+    _pPlaneMesh = GenerateMesh(32, 8);
+}
+
+void Application::InitConstantBufferVars()
+{
+    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    _time = 0;
+}
+
+void Application::InitSceneObjects()
+{
+    SceneObject* cube;
+    SceneObject* fish;
+    SceneObject* pyramid1;
+    SceneObject* pyramid2;
+    SceneObject* icosphere;
+    SceneObject* plane;
+    Shader* _dx11Shader;
+    Shader* _discardShader;
+    Shader* _basicShader;
+    Shader* _waterShader;
+
+    // Define the input layouts
+    D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    UINT numElementsLighting = ARRAYSIZE(lightingLayout);
+
+    D3D11_INPUT_ELEMENT_DESC basicLayout[] =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+    UINT numElementsBasic = ARRAYSIZE(basicLayout);
+
+    _dx11Shader = new Shader(L"Res\\Shaders\\DX11 Framework.fx", lightingLayout, numElementsLighting);
+    _discardShader = new Shader(L"Res\\Shaders\\Discard.fx", basicLayout, numElementsBasic);
+    _basicShader = new Shader(L"Res\\Shaders\\BasicShader.fx", basicLayout, numElementsBasic);
+    _waterShader = new Shader(L"Res\\Shaders\\Water.fx", basicLayout, numElementsBasic);
+
+    _shaders.push_back(_dx11Shader);
+    _shaders.push_back(_discardShader);
+    _shaders.push_back(_basicShader);
+    _shaders.push_back(_waterShader);
+
+    cube = new SceneObject(
+        XMFLOAT3(0, 0, 5),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(2, 2, 2),
+        XMFLOAT3(0, 1, 0), nullptr, &Meshes::Cube, false, _dx11Shader,
+        &_localConstantBuffer, _crateTextures
+    );
+
+    fish = new SceneObject(
+        XMFLOAT3(0, -6, 5),
+        XMFLOAT3(0, 0, 0),
+        XMFLOAT3(4, 4, 4),
+        XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
+        &_localConstantBuffer, _fishTextures
+    );
+
+    pyramid1 = new SceneObject(
+        XMFLOAT3(5, 0, -3),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(1, 2, 1),
+        XMFLOAT3(0, -1, 0), cube, &Meshes::Pyramid, false, _basicShader,
+        &_localConstantBuffer, _blankTextures
+    );
+
+    pyramid2 = new SceneObject(
+        XMFLOAT3(0, 6, 0),
+        XMFLOAT3(-5, 0, 3),
+        XMFLOAT3(1, 1, 1),
+        XMFLOAT3(0.27f, -3.0f, 6), cube, &Meshes::Pyramid, false, _basicShader,
+        &_localConstantBuffer, _blankTextures
+    );
+
+    icosphere = new SceneObject(
+        XMFLOAT3(-5, 0, 0),
+        XMFLOAT3(30, 0, 20),
+        XMFLOAT3(1, 1, 1),
+        XMFLOAT3(-2, 0, 0.5f), cube, &Meshes::Icosphere, false, _basicShader,
+        &_localConstantBuffer, _blankTextures
+    );
+
+    plane = new SceneObject(
+        XMFLOAT3(-15, -9, 0),
+        XMFLOAT3(70, 0, 0),
+        XMFLOAT3(0.5f, 0.5f, 0.5f),
+        XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
+        &_localConstantBuffer, _blankTextures
+    );
+
+    _sceneObjects.push_back(cube);
+    _sceneObjects.push_back(fish);
+    _sceneObjects.push_back(pyramid1);
+    _sceneObjects.push_back(pyramid2);
+    _sceneObjects.push_back(icosphere);
+    _sceneObjects.push_back(plane);
+}
+
+void Application::InitLights()
+{
+    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
+        XMFLOAT4(0.0f, 0.4f, 0.0f, 0.4f), XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
+        XMFLOAT4(1.0f, 0.0f, 0.0f, 0.4f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
+        XMFLOAT4(0.0f, 0.0f, 0.4f, 0.4f), XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
+
+    _lights.push_back(greenPointLight);
+    _lights.push_back(redPointLight);
+    _lights.push_back(basicDirectional);
+
+    _pLightBuffer = new StructuredBuffer(_lights.data(), _lights.size(), sizeof(Light));
 }
 
 void Application::ResizeRenderTargetView()

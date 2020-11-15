@@ -395,6 +395,7 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Mesh\Meshes.h" />
     <ClInclude Include="Src\Shaders\ShaderInclude.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="resource.h" />

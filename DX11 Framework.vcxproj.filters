@@ -33,6 +33,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
     <ClInclude Include="Src\Shaders\ShaderInclude.h" />
+    <ClInclude Include="Src\Mesh\Meshes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
