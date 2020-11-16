@@ -1,13 +1,10 @@
 #pragma once
-#include <DirectXMath.h>
+#include "Structures.h"
 
-using namespace DirectX;
 class Camera
 {
 private:
-	XMFLOAT3 _position;
-	XMFLOAT3 _direction;
-	XMFLOAT3 _up;
+	Transform _transform;
 
 	float _windowWidth;
 	float _windowHeight;
@@ -21,12 +18,8 @@ private:
 	void UpdateProjection();
 
 public:
-	Camera(const XMFLOAT3& position, const XMFLOAT3& direction, const XMFLOAT3& up,
+	Camera(const Transform& transform,
 		float windowWidth, float windowHeight, float nearDepth, float farDepth);
-
-	void SetPosition(const XMFLOAT3& position);
-	void SetDirection(const XMFLOAT3& direction);
-	void SetUp(const XMFLOAT3& up);
 
 	const XMFLOAT3& GetPosition();
 	const XMFLOAT3& GetDirection();

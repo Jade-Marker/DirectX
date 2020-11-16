@@ -29,9 +29,7 @@ private:
 	bool _yDirState;
 	bool _xDirState;
 
-	XMFLOAT3 _position;
-	XMFLOAT3 _angle;
-	XMFLOAT3 _scale;
+	Transform _transform;
 	XMFLOAT3 _tScale;
 
 	Mesh* _mesh;
@@ -40,7 +38,7 @@ private:
 	SceneObject* _parent;
 
 public:
-	SceneObject(XMFLOAT3 position, XMFLOAT3 angle, XMFLOAT3 scale, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
+	SceneObject(const Transform& transform, XMFLOAT3 tScale, SceneObject* parent, Mesh* mesh, bool startInWireFrame, Shader* shader,
 		ConstantBuffer* pLocalConstantBuffer, std::vector<Texture*> textures);
 	~SceneObject();
 	void Draw();

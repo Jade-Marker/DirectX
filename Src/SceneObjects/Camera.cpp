@@ -2,11 +2,7 @@
 
 void Camera::UpdateView()
 {
-    XMVECTOR position = XMLoadFloat3(&_position);
-    XMVECTOR direction = XMLoadFloat3(&_direction);
-    XMVECTOR up = XMLoadFloat3(&_up);
-
-    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(position, position + direction, up));
+    XMStoreFloat4x4(&_view, XMMatrixInverse(nullptr, _transform.GetWorldMatrix()));
 }
 
 void Camera::UpdateProjection()
@@ -14,44 +10,40 @@ void Camera::UpdateProjection()
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _windowWidth / _windowHeight, _nearDepth, _farDepth));
 }
 
-Camera::Camera(const XMFLOAT3& position, const XMFLOAT3& direction, const XMFLOAT3& up, float windowWidth, float windowHeight, float nearDepth, float farDepth):
-    _position(position), _direction(direction), _up(up), _windowWidth(windowWidth), _windowHeight(windowHeight), _nearDepth(nearDepth), _farDepth(farDepth)
+Camera::Camera(const Transform& transform, float windowWidth, float windowHeight, float nearDepth, float farDepth):
+    _transform(transform), _windowWidth(windowWidth), _windowHeight(windowHeight), _nearDepth(nearDepth), _farDepth(farDepth)
 {
     UpdateView();
     UpdateProjection();
 }
 
-void Camera::SetPosition(const XMFLOAT3& position)
-{
-    _position = position;
-    UpdateView();
-}
-
-void Camera::SetDirection(const XMFLOAT3& direction)
-{
-    _direction = direction;
-    UpdateView();
-}
-
-void Camera::SetUp(const XMFLOAT3& up)
-{
-    _up = up;
-    UpdateView();
-}
-
 const XMFLOAT3& Camera::GetPosition()
 {
-    return _position;
+    return _transform.Position;
 }
 
 const XMFLOAT3& Camera::GetDirection()
 {
-    return _direction;
+    XMFLOAT3 direction = XMFLOAT3(0, 0, 1);
+    XMVECTOR directionVec = XMLoadFloat3(&direction);
+
+    directionVec = XMVector3Transform(directionVec, _transform.GetRotationMatrix());
+
+    XMStoreFloat3(&direction, directionVec);
+
+    return direction;
 }
 
 const XMFLOAT3& Camera::GetUp()
 {
-    return _up;
+    XMFLOAT3 up = XMFLOAT3(0, 1, 0);
+    XMVECTOR upVec = XMLoadFloat3(&up);
+
+    upVec = XMVector3Transform(upVec, _transform.GetRotationMatrix());
+
+    XMStoreFloat3(&up, upVec);
+
+    return up;
 }
 
 const XMFLOAT4X4& Camera::GetViewMatrix()

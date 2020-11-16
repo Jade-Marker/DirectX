@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <cstring>
 using namespace DirectX;
 
 struct BasicVertex
@@ -36,4 +37,45 @@ struct GlobalConstantBuffer
 	float gTime;
 
 	int numLights;
+};
+
+struct Transform
+{
+	XMFLOAT3 Position;
+	XMFLOAT3 Rotation;
+	XMFLOAT3 Scale;
+
+	Transform(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale)
+	{
+		Position = position;
+		Rotation = rotation;
+		Scale = scale;
+	}
+
+	void Translate(const XMFLOAT3& translation)
+	{
+		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + XMLoadFloat3(&translation));
+	}
+
+	void Rotate(const XMFLOAT3& rotation)
+	{
+		XMStoreFloat3(&Rotation, XMLoadFloat3(&Rotation) + XMLoadFloat3(&rotation));
+	}
+
+	XMMATRIX GetWorldMatrix()
+	{
+		DirectX::XMMATRIX world =
+			DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
+			GetRotationMatrix() *
+			DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&Position)) *
+			DirectX::XMMatrixIdentity();
+
+		return world;
+	}
+
+	XMMATRIX GetRotationMatrix()
+	{
+		DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation));
+		return rotation;
+	}
 };

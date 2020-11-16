@@ -1,13 +1,12 @@
 #include "Application.h"
 
 //todo
+//Swap to entity component system
 //Add mouse support to InputManager
 //Add support for multiple textures
 //Add support for specular maps
 //Create debug file log that can be output to in the same way as cout
-//Add Transform struct
 //Add Camera Manager
-//Swap to entity component system
 //Add Object loading via JSON
 //Add Custom component
 //Add Skybox
@@ -100,7 +99,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitTextures();
     InitShaders();
     InitSceneObjects();
-    _pCamera = new Camera(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 1), XMFLOAT3(0, 1, 0), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
+    _pCamera = new Camera(Transform(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
+
 
     return S_OK;
 }
@@ -483,49 +483,37 @@ void Application::InitSceneObjects()
     SceneObject* plane;
 
     cube = new SceneObject(
-        XMFLOAT3(0, 0, 5),
-        XMFLOAT3(0, 0, 0),
-        XMFLOAT3(2, 2, 2),
+        Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)),
         XMFLOAT3(0, 1, 0), nullptr, &Meshes::Cube, false, _dx11Shader,
         &_localConstantBuffer, _crateTextures
     );
 
     fish = new SceneObject(
-        XMFLOAT3(0, -6, 5),
-        XMFLOAT3(0, 0, 0),
-        XMFLOAT3(4, 4, 4),
+        Transform(XMFLOAT3(0, -6, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(4, 4, 4)),
         XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
         &_localConstantBuffer, _fishTextures
     );
 
     pyramid1 = new SceneObject(
-        XMFLOAT3(5, 0, -3),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 2, 1),
+        Transform(XMFLOAT3(5, 0, -3), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 2, 1)),
         XMFLOAT3(0, -1, 0), cube, &Meshes::Pyramid, false, _basicShader,
         &_localConstantBuffer, _blankTextures
     );
 
     pyramid2 = new SceneObject(
-        XMFLOAT3(0, 6, 0),
-        XMFLOAT3(-5, 0, 3),
-        XMFLOAT3(1, 1, 1),
+        Transform(XMFLOAT3(0, 6, 0), XMFLOAT3(-5, 0, 3), XMFLOAT3(1, 1, 1)),
         XMFLOAT3(0.27f, -3.0f, 6), cube, &Meshes::Pyramid, false, _basicShader,
         &_localConstantBuffer, _blankTextures
     );
 
     icosphere = new SceneObject(
-        XMFLOAT3(-5, 0, 0),
-        XMFLOAT3(30, 0, 20),
-        XMFLOAT3(1, 1, 1),
+        Transform(XMFLOAT3(-5, 0, 0), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 1, 1)),
         XMFLOAT3(-2, 0, 0.5f), cube, &Meshes::Icosphere, false, _basicShader,
         &_localConstantBuffer, _blankTextures
     );
 
     plane = new SceneObject(
-        XMFLOAT3(-15, -9, 0),
-        XMFLOAT3(70, 0, 0),
-        XMFLOAT3(0.5f, 0.5f, 0.5f),
+        Transform(XMFLOAT3(-15, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)),
         XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
         &_localConstantBuffer, _blankTextures
     );
