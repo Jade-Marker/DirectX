@@ -1,8 +1,8 @@
 #pragma once
 #include <windows.h>
-#include "Structures.h"
+#include "Component.h"
 
-class Mesh
+class Mesh : public Component
 {
 private:
 	void* _vertices;

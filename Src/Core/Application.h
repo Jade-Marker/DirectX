@@ -8,7 +8,7 @@
 #include <vector>
 #include "Structures.h"
 #include "resource.h"
-#include "SceneObject.h"
+#include "Entity.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Constants.h"
@@ -22,6 +22,11 @@
 #include "ConstantBuffer.h"
 #include "InputManager.h"
 #include "Meshes.h"
+#include "Material.h"
+#include "Renderer.h"
+#include "RasterState.h"
+#include "Rotator.h"
+#include "RenderingBuffers.h"
 
 using namespace DirectX;
 
@@ -54,7 +59,7 @@ private:
 
 	Camera* _pCamera;
 
-	std::vector<SceneObject*> _sceneObjects;
+	std::vector<Entity*> _entities;
 	Mesh* _pFishMesh;
 	Mesh* _pPlaneMesh;
 

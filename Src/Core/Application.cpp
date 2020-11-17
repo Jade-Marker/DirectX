@@ -1,7 +1,8 @@
 #include "Application.h"
 
 //todo
-//Swap to entity component system
+//Make localBuffer part of RenderingBuffers instead of Renderer
+//Make camera a component
 //Add mouse support to InputManager
 //Add support for multiple textures
 //Add support for specular maps
@@ -109,8 +110,8 @@ void Application::Update(float deltaTime)
 {
     _time += deltaTime;
 
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        _sceneObjects[i]->Update(deltaTime);
+    for (int i = 0; i < _entities.size(); i++)
+        _entities[i]->Update(deltaTime);
 
     InputManager::Update();
 }
@@ -140,8 +141,8 @@ void Application::Draw()
     }
 
 
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        _sceneObjects[i]->Draw();
+    for (int i = 0; i < _entities.size(); i++)
+        _entities[i]->Draw();
 
 
     _pSwapChain->Present(0, 0);
@@ -364,8 +365,8 @@ void Application::Cleanup()
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
     if (_pBlendState) _pBlendState->Release();
 
-    for (int i = 0; i < _sceneObjects.size(); i++)
-        delete _sceneObjects[i];
+    for (int i = 0; i < _entities.size(); i++)
+        delete _entities[i];
 
     if (_pFishMesh) delete _pFishMesh;
     if (_pPlaneMesh) delete _pPlaneMesh;
@@ -475,55 +476,49 @@ void Application::InitConstantBufferVars()
 
 void Application::InitSceneObjects()
 {
-    SceneObject* cube;
-    SceneObject* fish;
-    SceneObject* pyramid1;
-    SceneObject* pyramid2;
-    SceneObject* icosphere;
-    SceneObject* plane;
+    Entity* cube;
+    Entity* fish;
+    Entity* pyramid1;
+    Entity* pyramid2;
+    Entity* icosphere;
+    Entity* plane;
 
-    cube = new SceneObject(
-        Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)),
-        XMFLOAT3(0, 1, 0), nullptr, &Meshes::Cube, false, _dx11Shader,
-        &_localConstantBuffer, _crateTextures
+    cube = new Entity(
+        Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)), nullptr,
+        std::vector<Component*> {new Material(_dx11Shader, _crateTextures), &Meshes::Cube, new Renderer(&_localConstantBuffer), new RasterState(false), new Rotator(XMFLOAT3(0, 1, 0)), new RenderingBuffers()}
     );
 
-    fish = new SceneObject(
-        Transform(XMFLOAT3(0, -6, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(4, 4, 4)),
-        XMFLOAT3(0, .5f, 0), nullptr, _pFishMesh, false, _dx11Shader,
-        &_localConstantBuffer, _fishTextures
+    fish = new Entity(
+        Transform(XMFLOAT3(0, -6, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(4, 4, 4)), nullptr,
+        std::vector<Component*> {new Material(_dx11Shader, _fishTextures), _pFishMesh, new Renderer(&_localConstantBuffer), new RasterState(false), new Rotator(XMFLOAT3(0, .5f, 0)), new RenderingBuffers()}
     );
 
-    pyramid1 = new SceneObject(
-        Transform(XMFLOAT3(5, 0, -3), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 2, 1)),
-        XMFLOAT3(0, -1, 0), cube, &Meshes::Pyramid, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
+    pyramid1 = new Entity(
+        Transform(XMFLOAT3(5, 0, -3), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 2, 1)), cube,
+        std::vector<Component*> {new Material(_basicShader, _blankTextures), &Meshes::Pyramid, new Renderer(&_localConstantBuffer), new RasterState(false), new Rotator(XMFLOAT3(0, -1, 0)), new RenderingBuffers()}
     );
 
-    pyramid2 = new SceneObject(
-        Transform(XMFLOAT3(0, 6, 0), XMFLOAT3(-5, 0, 3), XMFLOAT3(1, 1, 1)),
-        XMFLOAT3(0.27f, -3.0f, 6), cube, &Meshes::Pyramid, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
+    pyramid2 = new Entity(
+        Transform(XMFLOAT3(0, 6, 0), XMFLOAT3(-5, 0, 3), XMFLOAT3(1, 1, 1)), cube,
+        std::vector<Component*> {new Material(_basicShader, _blankTextures), &Meshes::Pyramid, new Renderer(&_localConstantBuffer), new RasterState(false), new Rotator(XMFLOAT3(0.27f, -3.0f, 6)), new RenderingBuffers()}
     );
 
-    icosphere = new SceneObject(
-        Transform(XMFLOAT3(-5, 0, 0), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 1, 1)),
-        XMFLOAT3(-2, 0, 0.5f), cube, &Meshes::Icosphere, false, _basicShader,
-        &_localConstantBuffer, _blankTextures
+    icosphere = new Entity(
+        Transform(XMFLOAT3(-5, 0, 0), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 1, 1)), cube,
+        std::vector<Component*> {new Material(_basicShader, _blankTextures), &Meshes::Icosphere, new Renderer(&_localConstantBuffer), new RasterState(false), new Rotator(XMFLOAT3(-2, 0, 0.5f)), new RenderingBuffers()}
     );
 
-    plane = new SceneObject(
-        Transform(XMFLOAT3(-15, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)),
-        XMFLOAT3(0, 0, 0), nullptr, _pPlaneMesh, false, _waterShader,
-        &_localConstantBuffer, _blankTextures
+    plane = new Entity(
+        Transform(XMFLOAT3(-15, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)), nullptr,
+        std::vector<Component*> {new Material(_waterShader, _blankTextures), _pPlaneMesh, new Renderer(&_localConstantBuffer), new RasterState(false), new RenderingBuffers()}
     );
 
-    _sceneObjects.push_back(cube);
-    _sceneObjects.push_back(fish);
-    _sceneObjects.push_back(pyramid1);
-    _sceneObjects.push_back(pyramid2);
-    _sceneObjects.push_back(icosphere);
-    _sceneObjects.push_back(plane);
+    _entities.push_back(cube);
+    _entities.push_back(fish);
+    _entities.push_back(pyramid1);
+    _entities.push_back(pyramid2);
+    _entities.push_back(icosphere);
+    _entities.push_back(plane);
 }
 
 void Application::InitLights()

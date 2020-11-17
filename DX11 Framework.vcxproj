@@ -373,6 +373,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\SceneObjects\RenderingBuffers.cpp" />
+    <ClCompile Include="Src\SceneObjects\Rotator.cpp" />
+    <ClCompile Include="Src\SceneObjects\RasterState.cpp" />
+    <ClCompile Include="Src\SceneObjects\Renderer.cpp" />
+    <ClCompile Include="Src\SceneObjects\Material.cpp" />
+    <ClCompile Include="Src\SceneObjects\Component.cpp" />
     <ClCompile Include="Src\Shaders\ShaderInclude.cpp" />
     <ClCompile Include="Src\Managers\InputManager.cpp" />
     <ClCompile Include="Src\Core\Application.cpp" />
@@ -387,7 +393,7 @@
     <ClCompile Include="Src\Mesh\Mesh.cpp" />
     <ClCompile Include="extern\OBJLoader.cpp" />
     <ClCompile Include="Src\Lights\PointLight.cpp" />
-    <ClCompile Include="Src\SceneObjects\SceneObject.cpp" />
+    <ClCompile Include="Src\SceneObjects\Entity.cpp" />
     <ClCompile Include="Src\Core\DX11 Framework.cpp" />
     <ClCompile Include="Src\Shaders\Shader.cpp" />
     <ClCompile Include="Src\Buffers\StructuredBuffer.cpp" />
@@ -395,6 +401,12 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\SceneObjects\RenderingBuffers.h" />
+    <ClInclude Include="Src\SceneObjects\Rotator.h" />
+    <ClInclude Include="Src\SceneObjects\RasterState.h" />
+    <ClInclude Include="Src\SceneObjects\Renderer.h" />
+    <ClInclude Include="Src\SceneObjects\Material.h" />
+    <ClInclude Include="Src\SceneObjects\Component.h" />
     <ClInclude Include="Src\Mesh\Meshes.h" />
     <ClInclude Include="Src\Shaders\ShaderInclude.h" />
     <ClInclude Include="Src\Managers\InputManager.h" />
@@ -412,7 +424,7 @@
     <ClInclude Include="Src\Mesh\Mesh.h" />
     <ClInclude Include="extern\OBJLoader.h" />
     <ClInclude Include="Src\Lights\PointLight.h" />
-    <ClInclude Include="Src\SceneObjects\SceneObject.h" />
+    <ClInclude Include="Src\SceneObjects\Entity.h" />
     <ClInclude Include="Src\Shaders\Shader.h" />
     <ClInclude Include="Src\Buffers\StructuredBuffer.h" />
     <ClInclude Include="Src\Core\Structures.h" />
