@@ -1,10 +1,5 @@
 #include "Renderer.h"
 
-Renderer::Renderer(ConstantBuffer* pLocalConstantBuffer):
-    _pLocalConstantBuffer(pLocalConstantBuffer)
-{
-}
-
 void Renderer::Start()
 {
     _pMesh = _parent->GetComponent<Mesh>();
@@ -17,17 +12,12 @@ void Renderer::Draw()
 {
     if (_pMesh && _pMaterial && _pRasterState && _pRenderingBuffers)
     {
-        _pRenderingBuffers->BindBuffers();
+        _pRenderingBuffers->BindBuffers(_pMaterial->GetShader());
 
         _pMaterial->GetShader()->SetShader();
         _pMaterial->GetShader()->SetInputLayout();
 
-        _pRasterState->SetRasterState();
-
-        LocalConstantBuffer cb;
-        cb.WorldMatrix = XMMatrixTranspose(_parent->GetWorldMatrix());
-        _pLocalConstantBuffer->Update(&cb);
-        _pLocalConstantBuffer->Bind(_pMaterial->GetShader(), cLocalConstantBufferSlot);
+        _pRasterState->SetRasterState();   
 
         for (int i = 0; i < _pMaterial->GetTextures().size(); i++)
             _pMaterial->GetTextures()[i]->Bind(_pMaterial->GetShader(), i);
