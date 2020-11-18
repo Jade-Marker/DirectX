@@ -1,11 +1,10 @@
 #pragma once
 #include "Structures.h"
+#include "Component.h"
 
-class Camera
+class Camera : public Component
 {
 private:
-	Transform _transform;
-
 	float _windowWidth;
 	float _windowHeight;
 	float _nearDepth;
@@ -18,8 +17,10 @@ private:
 	void UpdateProjection();
 
 public:
-	Camera(const Transform& transform,
-		float windowWidth, float windowHeight, float nearDepth, float farDepth);
+	Camera(float windowWidth, float windowHeight, float nearDepth, float farDepth);
+
+	virtual void Start();
+	virtual void Update(float deltaTime);
 
 	const XMFLOAT3& GetPosition();
 	const XMFLOAT3& GetDirection();

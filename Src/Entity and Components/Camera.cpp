@@ -2,7 +2,7 @@
 
 void Camera::UpdateView()
 {
-    XMStoreFloat4x4(&_view, XMMatrixInverse(nullptr, _transform.GetWorldMatrix()));
+    XMStoreFloat4x4(&_view, XMMatrixInverse(nullptr, _parent->GetWorldMatrix()));
 }
 
 void Camera::UpdateProjection()
@@ -10,16 +10,26 @@ void Camera::UpdateProjection()
     XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _windowWidth / _windowHeight, _nearDepth, _farDepth));
 }
 
-Camera::Camera(const Transform& transform, float windowWidth, float windowHeight, float nearDepth, float farDepth):
-    _transform(transform), _windowWidth(windowWidth), _windowHeight(windowHeight), _nearDepth(nearDepth), _farDepth(farDepth)
+Camera::Camera(float windowWidth, float windowHeight, float nearDepth, float farDepth):
+    _windowWidth(windowWidth), _windowHeight(windowHeight), _nearDepth(nearDepth), _farDepth(farDepth)
+{
+    
+}
+
+void Camera::Start()
 {
     UpdateView();
     UpdateProjection();
 }
 
+void Camera::Update(float deltaTime)
+{
+    UpdateView();
+}
+
 const XMFLOAT3& Camera::GetPosition()
 {
-    return _transform.Position;
+    return _parent->GetTransform().Position;
 }
 
 const XMFLOAT3& Camera::GetDirection()
@@ -27,7 +37,7 @@ const XMFLOAT3& Camera::GetDirection()
     XMFLOAT3 direction = XMFLOAT3(0, 0, 1);
     XMVECTOR directionVec = XMLoadFloat3(&direction);
 
-    directionVec = XMVector3Transform(directionVec, _transform.GetRotationMatrix());
+    directionVec = XMVector3Transform(directionVec, _parent->GetTransform().GetRotationMatrix());
 
     XMStoreFloat3(&direction, directionVec);
 
@@ -39,7 +49,7 @@ const XMFLOAT3& Camera::GetUp()
     XMFLOAT3 up = XMFLOAT3(0, 1, 0);
     XMVECTOR upVec = XMLoadFloat3(&up);
 
-    upVec = XMVector3Transform(upVec, _transform.GetRotationMatrix());
+    upVec = XMVector3Transform(upVec, _parent->GetTransform().GetRotationMatrix());
 
     XMStoreFloat3(&up, upVec);
 

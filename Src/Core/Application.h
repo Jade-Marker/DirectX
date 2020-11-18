@@ -27,6 +27,7 @@
 #include "RasterState.h"
 #include "Rotator.h"
 #include "RenderingBuffers.h"
+#include "CameraManager.h"
 
 using namespace DirectX;
 
@@ -56,8 +57,6 @@ private:
 	XMFLOAT4				_ambientMaterial;
 	XMFLOAT4				_specularMaterial;
 	float					_time;
-
-	Camera* _pCamera;
 
 	std::vector<Entity*> _entities;
 	Mesh* _pFishMesh;
@@ -98,7 +97,7 @@ private:
 	void InitMeshes();
 	void InitShaders();
 	void InitConstantBufferVars();
-	void InitSceneObjects();
+	void InitEntities();
 	void InitLights();
 	void ResizeRenderTargetView();
 };

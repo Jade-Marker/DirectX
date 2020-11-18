@@ -1,7 +1,7 @@
 #include "Application.h"
 
 //todo
-//Make camera a component
+//Sort memory issue with Entities
 //Add mouse support to InputManager
 //Add support for multiple textures
 //Add support for specular maps
@@ -63,7 +63,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 Application::Application():
     _hInst(nullptr), _hWnd(nullptr), _driverType(D3D_DRIVER_TYPE_NULL), _featureLevel(D3D_FEATURE_LEVEL_11_0), _pSwapChain(nullptr), _pRenderTargetView(nullptr),
     _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f },
-    _pCamera(nullptr), _pFishMesh(nullptr), _pPlaneMesh(nullptr), _pLightBuffer(nullptr)
+    _pFishMesh(nullptr), _pPlaneMesh(nullptr), _pLightBuffer(nullptr)
 {
 
 }
@@ -98,9 +98,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitMeshes();
     InitTextures();
     InitShaders();
-    InitSceneObjects();
-    _pCamera = new Camera(Transform(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), _WindowWidth, _WindowHeight, 0.1f, 100.0f);
-
+    InitEntities();
 
     return S_OK;
 }
@@ -122,12 +120,12 @@ void Application::Draw()
 
 
     GlobalConstantBuffer cb;
-    cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&_pCamera->GetViewMatrix()));
-    cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&_pCamera->GetProjectionMatrix()));
+    cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetViewMatrix()));
+    cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetProjectionMatrix()));
     cb.DiffuseMtrl = _diffuseMaterial;
     cb.AmbientMtrl = _ambientMaterial;
     cb.SpecularMtrl = _specularMaterial;
-    cb.EyePosW = _pCamera->GetPosition();
+    cb.EyePosW = CameraManager::GetMainCamera()->GetPosition();
     cb.gTime = _time;
     cb.numLights = _lights.size();
     _globalConstantBuffer.Update(&cb);
@@ -154,7 +152,7 @@ void Application::Resize(UINT width, UINT height)
         _WindowWidth = width;
         _WindowHeight = height;
 
-        if (_pCamera != nullptr)
+        if (CameraManager::GetMainCamera() != nullptr)
         {
             ResizeRenderTargetView();
 
@@ -166,7 +164,7 @@ void Application::Resize(UINT width, UINT height)
 
             InitViewport();
 
-            _pCamera->Reshape(_WindowWidth, _WindowHeight);
+            CameraManager::GetMainCamera()->Reshape(_WindowWidth, _WindowHeight);
         }
     }
 }
@@ -473,7 +471,7 @@ void Application::InitConstantBufferVars()
     _time = 0;
 }
 
-void Application::InitSceneObjects()
+void Application::InitEntities()
 {
     Entity* cube;
     Entity* fish;
@@ -481,6 +479,7 @@ void Application::InitSceneObjects()
     Entity* pyramid2;
     Entity* icosphere;
     Entity* plane;
+    Entity* cameraEntity;
 
     cube = new Entity(
         Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)), nullptr,
@@ -512,12 +511,20 @@ void Application::InitSceneObjects()
         std::vector<Component*> {new Material(_waterShader, _blankTextures), _pPlaneMesh, new Renderer(), new RasterState(false), new RenderingBuffers(&_localConstantBuffer)}
     );
 
+    Camera* camera = new Camera(_WindowWidth, _WindowHeight, 0.1f, 100.0f);
+    CameraManager::SetMainCamera(camera);
+
+    cameraEntity = new Entity(Transform(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), nullptr,
+        std::vector<Component*> {camera}
+    );
+
     _entities.push_back(cube);
     _entities.push_back(fish);
     _entities.push_back(pyramid1);
     _entities.push_back(pyramid2);
     _entities.push_back(icosphere);
     _entities.push_back(plane);
+    _entities.push_back(cameraEntity);
 }
 
 void Application::InitLights()
