@@ -434,6 +434,12 @@
     <ClInclude Include="Src\Buffers\VertexBuffer.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Res\Shaders\DX11 Framework.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <EnableDebuggingInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EnableDebuggingInformation>
+    </FxCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

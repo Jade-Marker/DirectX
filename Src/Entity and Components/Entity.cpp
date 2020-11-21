@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include "Component.h"
+#include "CameraManager.h"
 
 Entity::Entity(const Transform& transform, Entity* parent, std::vector<Component*> components) :
 	_transform(transform), _parent(parent), _components(components)
@@ -38,4 +39,17 @@ XMMATRIX Entity::GetWorldMatrix()
 Transform& Entity::GetTransform()
 {
     return _transform;
+}
+
+bool Entity::CompareDistance(Entity* object, Entity* other)
+{
+    XMVECTOR objectPos;
+    XMVECTOR otherPos;
+    XMVECTOR blank;
+    XMMatrixDecompose(&blank, &blank, &objectPos, object->GetWorldMatrix());
+    XMMatrixDecompose(&blank, &blank, &otherPos, other->GetWorldMatrix());
+
+    XMVECTOR cameraPos = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
+
+    return (XMVector3LengthSq(cameraPos - objectPos).m128_f32[0] < XMVector3LengthSq(cameraPos - otherPos).m128_f32[0]);
 }

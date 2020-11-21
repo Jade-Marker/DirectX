@@ -6,6 +6,7 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include <vector>
+#include <algorithm>
 #include "Structures.h"
 #include "resource.h"
 #include "Entity.h"

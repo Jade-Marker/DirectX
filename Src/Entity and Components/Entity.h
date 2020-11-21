@@ -23,6 +23,8 @@ public:
 	T* GetComponent();
 
 	Transform& GetTransform();
+
+	static bool CompareDistance(Entity* object, Entity* other);
 };
 
 template<typename T>

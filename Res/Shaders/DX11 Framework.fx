@@ -113,7 +113,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
     float4 textureColor = txDiffuse.Sample(samLinear, input.Tex);
 
     color.rgb = sumOfLights * textureColor;
-    color.a = DiffuseMtrl.a;
+    color.a = textureColor.a;
 
     return color;
 }

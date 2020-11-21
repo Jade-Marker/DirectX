@@ -8,12 +8,16 @@ class RasterState :
 {
 private:
 	ID3D11RasterizerState* _rasterState;
-	ID3D11RasterizerState* _solidRasterState;
+	ID3D11RasterizerState* _backFaceRasterState;
+	ID3D11RasterizerState* _frontFaceRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
 
 public:
 	RasterState(bool startInWireFrame);
+	~RasterState();
 	virtual void Update(float deltaTime);
 	void SetRasterState();
+	void BackFaceCullState();
+	void FrontFaceCullState();
 };
 
