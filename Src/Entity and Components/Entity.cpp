@@ -12,6 +12,12 @@ Entity::Entity(const Transform& transform, Entity* parent, std::vector<Component
         _components[i]->Start();
 }
 
+Entity::~Entity()
+{
+    for (int i = 0; i < _components.size(); i++)
+        if (_components[i]->DeleteOnEntityDelete()) delete _components[i];
+}
+
 void Entity::Draw()
 {
     for (int i = 0; i < _components.size(); i++)

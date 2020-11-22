@@ -15,6 +15,7 @@ private:
 
 public:
 	Entity(const Transform& transform, Entity* parent, std::vector<Component*> components);
+	~Entity();
 	void Draw();
 	void Update(float deltaTime);
 	XMMATRIX GetWorldMatrix();

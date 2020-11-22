@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 Mesh::Mesh(const void* vertices, int vertexSize, int vertexCount, const WORD* indices, int indexCount):
-	_vertexCount(vertexCount), _vertexSize(vertexSize), _indexCount(indexCount)
+	_vertexCount(vertexCount), _vertexSize(vertexSize), _indexCount(indexCount), Component(false)
 {
 	_vertices = new unsigned char[_vertexCount * _vertexSize];
 	memcpy(_vertices, vertices, vertexSize * vertexCount);

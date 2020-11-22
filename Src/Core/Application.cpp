@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Sort memory issue with Entities
 //Add mouse support to InputManager
 //Sort constant buffer materials
 //Add support for multiple textures
