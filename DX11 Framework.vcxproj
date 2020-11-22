@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Managers\DebugLogManager.cpp" />
     <ClCompile Include="Src\Managers\CameraManager.cpp" />
     <ClCompile Include="Src\Entity and Components\RenderingBuffers.cpp" />
     <ClCompile Include="Src\Entity and Components\Rotator.cpp" />
@@ -402,6 +403,7 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Managers\DebugLogManager.h" />
     <ClInclude Include="Src\Managers\CameraManager.h" />
     <ClInclude Include="Src\Entity and Components\RenderingBuffers.h" />
     <ClInclude Include="Src\Entity and Components\Rotator.h" />

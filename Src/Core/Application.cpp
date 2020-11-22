@@ -5,7 +5,6 @@
 //Sort constant buffer materials
 //Add support for multiple textures
 //Add support for specular maps
-//Create debug file log that can be output to in the same way as cout
 //Add Camera Manager
 //Add Object loading via JSON
 //Add Custom component
@@ -99,6 +98,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitTextures();
     InitShaders();
     InitEntities();
+
+    DebugLogManager::Clear();
+    DebugLogManager::Log("Starting up");
 
     return S_OK;
 }
@@ -391,6 +393,8 @@ void Application::Cleanup()
         delete _fishTextures[i];
 
     if (_pLightBuffer) delete _pLightBuffer;
+
+    DebugLogManager::Log("Closing");
 }
 
 Mesh* Application::GenerateMesh(int width, int height)

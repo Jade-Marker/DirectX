@@ -41,6 +41,7 @@
     <ClInclude Include="Src\Entity and Components\Mesh.h" />
     <ClInclude Include="Src\Core\Meshes.h" />
     <ClInclude Include="Src\Managers\CameraManager.h" />
+    <ClInclude Include="Src\Managers\DebugLogManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Src\Entity and Components\Rotator.cpp" />
     <ClCompile Include="Src\Entity and Components\Mesh.cpp" />
     <ClCompile Include="Src\Managers\CameraManager.cpp" />
+    <ClCompile Include="Src\Managers\DebugLogManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

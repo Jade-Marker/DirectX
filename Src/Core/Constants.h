@@ -7,3 +7,4 @@ const int cLightBufferSlot = 1;
 
 const std::string cResourcesPath = "Res";
 const std::string cShadersPath = cResourcesPath + "\\Shaders";
+const std::string cLogPath = "log.txt";
