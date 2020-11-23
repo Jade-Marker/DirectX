@@ -81,3 +81,13 @@ void Camera::Reshape(float windowWidth, float windowHeight)
     _windowHeight = windowHeight;
     UpdateProjection();
 }
+
+float Camera::GetWidth()
+{
+    return _windowWidth;
+}
+
+float Camera::GetHeight()
+{
+    return _windowHeight;
+}

@@ -31,5 +31,8 @@ public:
 
 	void Reshape(float windowWidth, float windowHeight, float nearDepth, float farDepth);
 	void Reshape(float windowWidth, float windowHeight);
+
+	float GetWidth();
+	float GetHeight();
 };
 

@@ -1,7 +1,9 @@
 #include "Application.h"
 
 //todo
-//Add mouse support to InputManager
+//Fix wireframe mode for transparent objects
+//Add basic camera controller
+//Add object picking/raycast
 //Sort constant buffer materials
 //Add support for multiple textures
 //Add support for specular maps
@@ -18,6 +20,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     UINT width;
     UINT height;
+
+    int x, y;
 
     static Application* app;
 
@@ -50,6 +54,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_KEYUP:
             InputManager::KeyUp((char)wParam);
+            break;
+
+        case WM_LBUTTONDOWN:
+            InputManager::KeyDown(VK_LBUTTON);
+            break;
+
+        case WM_LBUTTONUP:
+            InputManager::KeyUp(VK_LBUTTON);
+            break;
+        
+        case WM_RBUTTONDOWN:
+            InputManager::KeyDown(VK_RBUTTON);
+            break;
+
+        case WM_RBUTTONUP:
+            InputManager::KeyUp(VK_RBUTTON);
+            break;
+
+        case WM_MOUSEMOVE:
+            x = GET_X_LPARAM(lParam);
+            y = GET_Y_LPARAM(lParam);
+            InputManager::MouseMove(x, y);
+            break;
+
+        case WM_SETFOCUS:
+            InputManager::FocusChange(true);
+            break;
+
+        case WM_KILLFOCUS:
+            InputManager::FocusChange(false);
+            break;
+
+        case WM_MOVE:
+            x = GET_X_LPARAM(lParam);
+            y = GET_Y_LPARAM(lParam);
+            InputManager::WindowMove(x, y);
             break;
 
         default:
@@ -101,6 +141,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     DebugLogManager::Clear();
     DebugLogManager::Log("Starting up");
+
+    InputManager::Initialise();
 
     return S_OK;
 }
