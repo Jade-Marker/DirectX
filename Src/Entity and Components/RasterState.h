@@ -11,6 +11,7 @@ private:
 	ID3D11RasterizerState* _backFaceRasterState;
 	ID3D11RasterizerState* _frontFaceRasterState;
 	ID3D11RasterizerState* _wireframeRasterState;
+	bool _wireframeMode;
 
 public:
 	RasterState(bool startInWireFrame);
@@ -19,5 +20,7 @@ public:
 	void SetRasterState();
 	void BackFaceCullState();
 	void FrontFaceCullState();
+	void WireframeState();
+	bool IsWireframe();
 };
 

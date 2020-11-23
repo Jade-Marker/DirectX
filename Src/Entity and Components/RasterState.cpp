@@ -1,6 +1,7 @@
 #include "RasterState.h"
 
-RasterState::RasterState(bool startInWireFrame)
+RasterState::RasterState(bool startInWireFrame):
+    _wireframeMode(startInWireFrame)
 {
     HRESULT hr;
     D3D11_RASTERIZER_DESC desc;
@@ -17,11 +18,6 @@ RasterState::RasterState(bool startInWireFrame)
     desc.FillMode = D3D11_FILL_SOLID;
     desc.CullMode = D3D11_CULL_FRONT;
     hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_frontFaceRasterState);
-
-    if (startInWireFrame)
-        _rasterState = _wireframeRasterState;
-    else
-        _rasterState = _backFaceRasterState;
 }
 
 RasterState::~RasterState()
@@ -35,10 +31,7 @@ void RasterState::Update(float deltaTime)
 {
     if (InputManager::GetKeyDown(VK_UP))
     {
-        if (_rasterState == _wireframeRasterState)
-            _rasterState = _backFaceRasterState;
-        else
-            _rasterState = _wireframeRasterState;
+        _wireframeMode = !_wireframeMode;
     }
 }
 
@@ -57,4 +50,15 @@ void RasterState::FrontFaceCullState()
 {
     _rasterState = _frontFaceRasterState;
     SetRasterState();
+}
+
+void RasterState::WireframeState()
+{
+    _rasterState = _wireframeRasterState;
+    SetRasterState();
+}
+
+bool RasterState::IsWireframe()
+{
+    return _wireframeMode;
 }

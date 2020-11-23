@@ -17,20 +17,26 @@ void Renderer::Draw()
         _pMaterial->GetShader()->SetShader();
         _pMaterial->GetShader()->SetInputLayout();
 
-        _pRasterState->SetRasterState();   
-
         for (int i = 0; i < _pMaterial->GetTextures().size(); i++)
             _pMaterial->GetTextures()[i]->Bind(_pMaterial->GetShader(), i);
 
-        if(!_pMaterial->IsTransparent())
+        if (_pRasterState->IsWireframe())
+        {
+            _pRasterState->WireframeState();
             DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+        }
         else
         {
-            _pRasterState->FrontFaceCullState();        
-            DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+            if (!_pMaterial->IsTransparent())
+                DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+            else
+            {
+                _pRasterState->FrontFaceCullState();
+                DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
 
-            _pRasterState->BackFaceCullState();
-            DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+                _pRasterState->BackFaceCullState();
+                DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+            }
         }
     }
 }

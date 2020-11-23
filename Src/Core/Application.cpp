@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Fix wireframe mode for transparent objects
 //Add basic camera controller
 //Add object picking/raycast
 //Sort constant buffer materials
