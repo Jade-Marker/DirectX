@@ -19,13 +19,13 @@ void Rotator::Update(float deltaTime)
 
     _parent->GetTransform().Rotation.z += _tScale.z * deltaTime;
 
-    if (InputManager::GetKeyDown('A'))
+    if (InputManager::GetKeyDown('J'))
         _xDirState = true;
-    else if (InputManager::GetKeyDown('D'))
+    else if (InputManager::GetKeyDown('L'))
         _xDirState = false;
 
-    if (InputManager::GetKeyDown('W'))
+    if (InputManager::GetKeyDown('I'))
         _yDirState = true;
-    else if (InputManager::GetKeyDown('S'))
+    else if (InputManager::GetKeyDown('K'))
         _yDirState = false;
 }

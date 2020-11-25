@@ -42,6 +42,7 @@
     <ClInclude Include="Src\Core\Meshes.h" />
     <ClInclude Include="Src\Managers\CameraManager.h" />
     <ClInclude Include="Src\Managers\DebugLogManager.h" />
+    <ClInclude Include="Src\Entity and Components\CameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="Src\Entity and Components\Mesh.cpp" />
     <ClCompile Include="Src\Managers\CameraManager.cpp" />
     <ClCompile Include="Src\Managers\DebugLogManager.cpp" />
+    <ClCompile Include="Src\Entity and Components\CameraController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

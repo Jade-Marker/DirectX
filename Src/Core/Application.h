@@ -31,6 +31,7 @@
 #include "RenderingBuffers.h"
 #include "CameraManager.h"
 #include "DebugLogManager.h"
+#include "CameraController.h"
 
 using namespace DirectX;
 

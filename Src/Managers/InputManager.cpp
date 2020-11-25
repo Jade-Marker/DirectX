@@ -38,11 +38,16 @@ void InputManager::MouseMove(int x, int y)
 {
 	InputManager* instance = GetInstance();
 	
-	instance->_deltaMouseX = x - instance->_mouseX;
-	instance->_deltaMouseY = y - instance->_mouseY;
+	if (instance->_hasFocus)
+	{
+		instance->_deltaMouseX = x - (int)(CameraManager::GetMainCamera()->GetWidth() / 2.0f);
+		instance->_deltaMouseY = y - (int)(CameraManager::GetMainCamera()->GetHeight() / 2.0f);
 
-	instance->_mouseX = x;
-	instance->_mouseY = y;
+		instance->_mouseX = x;
+		instance->_mouseY = y;
+
+		SetCursorPos((int)(CameraManager::GetMainCamera()->GetWidth() / 2.0f) + instance->_windowX, (int)(CameraManager::GetMainCamera()->GetHeight() / 2.0f) + instance->_windowY);
+	}
 }
 
 void InputManager::FocusChange(bool hasFocus)
@@ -99,8 +104,8 @@ void InputManager::Update()
 			instance->_keysDown[i] = false;
 	}
 
-	if (instance->_hasFocus)
-		SetCursorPos((int)(CameraManager::GetMainCamera()->GetWidth() / 2.0f) + instance->_windowX, (int)(CameraManager::GetMainCamera()->GetHeight() / 2.0f) + instance->_windowY);
+	instance->_deltaMouseX = 0;
+	instance->_deltaMouseY = 0;
 }
 
 void InputManager::Initialise()

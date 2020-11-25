@@ -57,9 +57,19 @@ struct Transform
 		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + XMLoadFloat3(&translation));
 	}
 
+	void Translate(const XMVECTOR& translation)
+	{
+		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + translation);
+	}
+
 	void Rotate(const XMFLOAT3& rotation)
 	{
 		XMStoreFloat3(&Rotation, XMLoadFloat3(&Rotation) + XMLoadFloat3(&rotation));
+	}
+
+	void Rotate(const XMVECTOR& rotation)
+	{
+		XMStoreFloat3(&Rotation, XMLoadFloat3(&Rotation) + rotation);
 	}
 
 	XMMATRIX GetWorldMatrix()

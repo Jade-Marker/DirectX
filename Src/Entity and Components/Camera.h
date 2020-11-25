@@ -25,6 +25,7 @@ public:
 	const XMFLOAT3& GetPosition();
 	const XMFLOAT3& GetDirection();
 	const XMFLOAT3& GetUp();
+	const XMFLOAT3& GetRight();
 
 	const XMFLOAT4X4& GetViewMatrix();
 	const XMFLOAT4X4& GetProjectionMatrix();

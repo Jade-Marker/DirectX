@@ -1,7 +1,7 @@
 #include "Application.h"
 
 //todo
-//Add basic camera controller
+//Fix transparency issue seen when viewing box from top
 //Add object picking/raycast
 //Sort constant buffer materials
 //Add support for multiple textures
@@ -573,7 +573,7 @@ void Application::InitEntities()
     CameraManager::SetMainCamera(camera);
 
     cameraEntity = new Entity(Transform(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), nullptr,
-        std::vector<Component*> {camera}
+        std::vector<Component*> {camera, new CameraController()}
     );
 
     _entities.push_back(cube);

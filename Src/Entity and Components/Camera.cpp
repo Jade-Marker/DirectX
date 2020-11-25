@@ -56,6 +56,18 @@ const XMFLOAT3& Camera::GetUp()
     return up;
 }
 
+const XMFLOAT3& Camera::GetRight()
+{
+    XMFLOAT3 right = XMFLOAT3(1, 0, 0);
+    XMVECTOR rightVec = XMLoadFloat3(&right);
+
+    rightVec = XMVector3Transform(rightVec, _parent->GetTransform().GetRotationMatrix());
+
+    XMStoreFloat3(&right, rightVec);
+
+    return right;
+}
+
 const XMFLOAT4X4& Camera::GetViewMatrix()
 {
     return _view;
