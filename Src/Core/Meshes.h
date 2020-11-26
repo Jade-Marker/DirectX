@@ -137,4 +137,6 @@ namespace Meshes
     static Mesh Cube = Mesh(Vertices::cubeVertices, sizeof(LightVertex), sizeof(Vertices::cubeVertices) / sizeof(Vertices::cubeVertices[0]), Indices::cubeIndices, sizeof(Indices::cubeIndices) / sizeof(WORD));
     static Mesh Pyramid = Mesh(Vertices::pyramidVertices, sizeof(BasicVertex), sizeof(Vertices::pyramidVertices) / sizeof(Vertices::pyramidVertices[0]), Indices::pyramidIndices, sizeof(Indices::pyramidIndices) / sizeof(WORD));
     static Mesh Icosphere = Mesh(Vertices::icosphereVertices, sizeof(BasicVertex), sizeof(Vertices::icosphereVertices) / sizeof(Vertices::icosphereVertices[0]), Indices::icosphereIndices, sizeof(Indices::icosphereIndices) / sizeof(WORD));
+    
+    Mesh* GeneratePlane(int width, int height);
 }

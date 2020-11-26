@@ -1,0 +1,43 @@
+#include "Meshes.h"
+
+Mesh* Meshes::GeneratePlane(int width, int height)
+{
+    std::vector<BasicVertex> verticesVector;
+    std::vector<WORD> indices;
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            float xLower, xUpper, yLower, yUpper;
+
+            xLower = -1.0f + (x * 2.0f) - width;
+            xUpper = 1.0f + (x * 2.0f) - width;
+            yLower = -1.0f + (y * 2.0f);
+            yUpper = 1.0f + (y * 2.0f);
+
+            BasicVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
+            BasicVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
+            BasicVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
+            BasicVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
+
+            verticesVector.push_back(vertex1);
+            verticesVector.push_back(vertex2);
+            verticesVector.push_back(vertex3);
+            verticesVector.push_back(vertex4);
+        }
+    }
+
+    for (int i = 0; i < width * height; i++)
+    {
+        indices.push_back(0 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(2 + 4 * i);
+        indices.push_back(1 + 4 * i);
+        indices.push_back(3 + 4 * i);
+    }
+
+    Mesh* mesh = new Mesh(verticesVector.data(), sizeof(BasicVertex), verticesVector.size(), indices.data(), indices.size());
+    return mesh;
+}

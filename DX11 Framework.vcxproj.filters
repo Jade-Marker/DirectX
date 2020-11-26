@@ -74,6 +74,7 @@
     <ClCompile Include="Src\Managers\CameraManager.cpp" />
     <ClCompile Include="Src\Managers\DebugLogManager.cpp" />
     <ClCompile Include="Src\Entity and Components\CameraController.cpp" />
+    <ClCompile Include="Src\Core\Meshes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Fix transparency issue seen when viewing box from top
 //Add object picking/raycast
 //Sort constant buffer materials
 //Add support for multiple textures
@@ -438,48 +437,6 @@ void Application::Cleanup()
     DebugLogManager::Log("Closing");
 }
 
-Mesh* Application::GenerateMesh(int width, int height)
-{
-    std::vector<BasicVertex> verticesVector;
-    std::vector<WORD> indices;
-
-   for (int y = 0; y < height; y++)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            float xLower, xUpper, yLower, yUpper;
-
-            xLower = -1.0f + (x * 2.0f);
-            xUpper = 1.0f + (x * 2.0f);
-            yLower = -1.0f + (y * 2.0f);
-            yUpper = 1.0f + (y * 2.0f);
-
-            BasicVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
-            BasicVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
-            BasicVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
-            BasicVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
-
-            verticesVector.push_back(vertex1);
-            verticesVector.push_back(vertex2);
-            verticesVector.push_back(vertex3);
-            verticesVector.push_back(vertex4);
-        }
-    }
-
-    for (int i = 0; i < width * height; i++)
-    {
-        indices.push_back(0 + 4 * i);
-        indices.push_back(1 + 4 * i);
-        indices.push_back(2 + 4 * i);
-        indices.push_back(2 + 4 * i);
-        indices.push_back(1 + 4 * i);
-        indices.push_back(3 + 4 * i);
-    }
-
-    Mesh* mesh = new Mesh(verticesVector.data(), sizeof(BasicVertex), verticesVector.size(), indices.data(), indices.size());
-    return mesh;
-}
-
 void Application::InitTextures()
 {
     _crateTextures.push_back(new Texture(L"Res\\Textures\\ChainLink(2).dds"));
@@ -489,7 +446,7 @@ void Application::InitTextures()
 void Application::InitMeshes()
 {
     _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
-    _pPlaneMesh = GenerateMesh(32, 8);
+    _pPlaneMesh = Meshes::GeneratePlane(32, 8);
 }
 
 void Application::InitShaders()
@@ -565,7 +522,7 @@ void Application::InitEntities()
     );
 
     plane = new Entity(
-        Transform(XMFLOAT3(-15, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)), nullptr,
+        Transform(XMFLOAT3(0, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)), nullptr,
         std::vector<Component*> {new Material(_waterShader, _blankTextures, true), _pPlaneMesh, new Renderer(), new RasterState(false), new RenderingBuffers(&_localConstantBuffer)}
     );
 

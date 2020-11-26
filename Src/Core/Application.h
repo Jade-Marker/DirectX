@@ -96,7 +96,6 @@ private:
 	void InitDepthStencilBuffer();
 	void Cleanup();
 
-	Mesh* GenerateMesh(int width, int height);
 	void InitTextures();
 	void InitMeshes();
 	void InitShaders();

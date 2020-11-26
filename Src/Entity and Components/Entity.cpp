@@ -57,5 +57,5 @@ bool Entity::CompareDistance(Entity* object, Entity* other)
 
     XMVECTOR cameraPos = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
 
-    return (XMVector3LengthSq(cameraPos - objectPos).m128_f32[0] < XMVector3LengthSq(cameraPos - otherPos).m128_f32[0]);
+    return (XMVector3LengthSq(cameraPos - objectPos).m128_f32[0] > XMVector3LengthSq(cameraPos - otherPos).m128_f32[0]);
 }

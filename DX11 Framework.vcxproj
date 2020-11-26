@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Core\Meshes.cpp" />
     <ClCompile Include="Src\Entity and Components\CameraController.cpp" />
     <ClCompile Include="Src\Managers\DebugLogManager.cpp" />
     <ClCompile Include="Src\Managers\CameraManager.cpp" />
