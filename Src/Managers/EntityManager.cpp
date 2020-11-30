@@ -7,12 +7,6 @@ EntityManager* EntityManager::GetInstance()
 	return &instance;
 }
 
-EntityManager::~EntityManager()
-{
-	for (int i = 0; i < _entities.size(); i++)
-		delete _entities[i];
-}
-
 void EntityManager::AddEntity(Entity* entity)
 {
 	EntityManager* instance = GetInstance();
@@ -25,4 +19,14 @@ const std::vector<Entity*>& EntityManager::GetEntities()
 	EntityManager* instance = GetInstance();
 
 	return instance->_entities;
+}
+
+void EntityManager::ClearEntities()
+{
+	EntityManager* instance = GetInstance();
+
+	for (int i = 0; i < instance->_entities.size(); i++)
+		delete instance->_entities[i];
+
+	instance->_entities.clear();
 }

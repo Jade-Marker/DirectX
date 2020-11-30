@@ -417,6 +417,8 @@ void Application::Cleanup()
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
     if (_pBlendState) _pBlendState->Release();
 
+    EntityManager::ClearEntities();
+
     if (_pFishMesh) delete _pFishMesh;
     if (_pPlaneMesh) delete _pPlaneMesh;
 
