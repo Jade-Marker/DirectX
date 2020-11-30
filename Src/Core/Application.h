@@ -32,6 +32,8 @@
 #include "CameraManager.h"
 #include "DebugLogManager.h"
 #include "CameraController.h"
+#include "EntityManager.h"
+#include "SelectionHide.h"
 
 using namespace DirectX;
 
@@ -62,7 +64,6 @@ private:
 	XMFLOAT4				_specularMaterial;
 	float					_time;
 
-	std::vector<Entity*> _entities;
 	Mesh* _pFishMesh;
 	Mesh* _pPlaneMesh;
 

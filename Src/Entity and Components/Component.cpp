@@ -22,6 +22,10 @@ void Component::Update(float deltaTime)
 {
 }
 
+void Component::OnSelected()
+{
+}
+
 bool Component::DeleteOnEntityDelete()
 {
 	return _deleteOnEntityDelete;

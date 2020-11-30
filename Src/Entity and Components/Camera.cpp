@@ -32,7 +32,7 @@ const XMFLOAT3& Camera::GetPosition()
     return _parent->GetTransform().Position;
 }
 
-const XMFLOAT3& Camera::GetDirection()
+XMFLOAT3 Camera::GetDirection()
 {
     XMFLOAT3 direction = XMFLOAT3(0, 0, 1);
     XMVECTOR directionVec = XMLoadFloat3(&direction);
@@ -44,7 +44,7 @@ const XMFLOAT3& Camera::GetDirection()
     return direction;
 }
 
-const XMFLOAT3& Camera::GetUp()
+XMFLOAT3 Camera::GetUp()
 {
     XMFLOAT3 up = XMFLOAT3(0, 1, 0);
     XMVECTOR upVec = XMLoadFloat3(&up);
@@ -56,7 +56,7 @@ const XMFLOAT3& Camera::GetUp()
     return up;
 }
 
-const XMFLOAT3& Camera::GetRight()
+XMFLOAT3 Camera::GetRight()
 {
     XMFLOAT3 right = XMFLOAT3(1, 0, 0);
     XMVECTOR rightVec = XMLoadFloat3(&right);

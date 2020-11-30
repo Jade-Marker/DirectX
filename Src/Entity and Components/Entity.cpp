@@ -30,6 +30,12 @@ void Entity::Update(float deltaTime)
         _components[i]->Update(deltaTime);
 }
 
+void Entity::OnSelected()
+{
+    for (int i = 0; i < _components.size(); i++)
+        _components[i]->OnSelected();
+}
+
 XMMATRIX Entity::GetWorldMatrix()
 {
     DirectX::XMMATRIX world = _transform.GetWorldMatrix();

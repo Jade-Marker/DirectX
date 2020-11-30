@@ -32,7 +32,7 @@ void CameraController::HandleMovement(float deltaTime)
 	_parent->GetTransform().Translate(offset);
 }
 
-void CameraController::HandleRotation(float deltaTime)
+void CameraController::HandleRotation()
 {
 	XMVECTOR rotation = XMVectorSet(0, 0, 0, 0);
 	int deltaX, deltaY;
@@ -45,6 +45,44 @@ void CameraController::HandleRotation(float deltaTime)
 	_parent->GetTransform().Rotate(rotation);
 }
 
+void CameraController::HandleSelection()
+{
+	if (InputManager::GetKeyDown(VK_LBUTTON))
+	{
+		std::vector<Entity*> entities = EntityManager::GetEntities();
+		Entity* selectedObject = nullptr;
+		float minDistance = std::numeric_limits<float>::infinity();
+		XMVECTOR rayOrigin = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
+		XMVECTOR rayDirection = XMLoadFloat3(&CameraManager::GetMainCamera()->GetDirection());
+
+		for (int i = 0; i < entities.size(); i++)
+		{
+			Mesh* pMesh = entities[i]->GetComponent<Mesh>();
+			if (pMesh)
+			{
+				BoundingBox boundingBox = BoundingBox(pMesh->GetBoundingCenter(), pMesh->GetBoundingSize());
+
+				boundingBox.Transform(boundingBox, entities[i]->GetWorldMatrix());
+
+				float distance;
+				if (boundingBox.Intersects(rayOrigin, rayDirection, distance))
+				{
+					if (distance < minDistance)
+					{
+						minDistance = distance;
+						selectedObject = entities[i];
+					}
+				}
+			}
+		}
+
+		if (selectedObject != nullptr && selectedObject != _parent)
+		{
+			selectedObject->OnSelected();
+		}
+	}
+}
+
 CameraController::CameraController():
 	cMoveSpeed(0.25f), cRotSpeed(0.001f)
 {
@@ -53,5 +91,6 @@ CameraController::CameraController():
 void CameraController::Update(float deltaTime)
 {
 	HandleMovement(deltaTime);
-	HandleRotation(deltaTime);
+	HandleRotation();
+	HandleSelection();
 }

@@ -18,6 +18,7 @@ public:
 	~Entity();
 	void Draw();
 	void Update(float deltaTime);
+	void OnSelected();
 	XMMATRIX GetWorldMatrix();
 
 	template<typename T>
