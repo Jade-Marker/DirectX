@@ -59,9 +59,6 @@ private:
 	ConstantBuffer			_localConstantBuffer;
 	ConstantBuffer			_globalConstantBuffer;
 
-	XMFLOAT4				_diffuseMaterial;
-	XMFLOAT4				_ambientMaterial;
-	XMFLOAT4				_specularMaterial;
 	float					_time;
 
 	Mesh* _pFishMesh;

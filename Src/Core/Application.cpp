@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Sort constant buffer materials
 //Add support for multiple textures
 //Add Object loading via JSON
 //Add support for specular maps
@@ -163,9 +162,6 @@ void Application::Draw()
     GlobalConstantBuffer cb;
     cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetViewMatrix()));
     cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetProjectionMatrix()));
-    cb.DiffuseMtrl = _diffuseMaterial;
-    cb.AmbientMtrl = _ambientMaterial;
-    cb.SpecularMtrl = _specularMaterial;
     cb.EyePosW = CameraManager::GetMainCamera()->GetPosition();
     cb.gTime = _time;
     cb.numLights = _lights.size();
@@ -479,9 +475,6 @@ void Application::InitShaders()
 
 void Application::InitConstantBufferVars()
 {
-    _diffuseMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _ambientMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    _specularMaterial = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     _time = 0;
 }
 
@@ -497,32 +490,32 @@ void Application::InitEntities()
 
     cube = new Entity(
         Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)), nullptr,
-        std::vector<Component*> {new Material(_dx11Shader, _crateTextures, true), &Meshes::Cube, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, 1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_dx11Shader, _crateTextures, true, XMFLOAT4(1,1,1,1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Cube, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, 1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     fish = new Entity(
         Transform(XMFLOAT3(0, -6, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(4, 4, 4)), nullptr,
-        std::vector<Component*> {new Material(_dx11Shader, _fishTextures, false), _pFishMesh, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, .5f, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_dx11Shader, _fishTextures, false, XMFLOAT4(0, 1, 0, 1), XMFLOAT4(0, 1, 0, 1), XMFLOAT4(0, 1, 0, 1)), _pFishMesh, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, .5f, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     pyramid1 = new Entity(
         Transform(XMFLOAT3(5, 0, -3), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 2, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, _blankTextures, false), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, -1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_basicShader, _blankTextures, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, -1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     pyramid2 = new Entity(
         Transform(XMFLOAT3(0, 6, 0), XMFLOAT3(-5, 0, 3), XMFLOAT3(1, 1, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, _blankTextures, false), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0.27f, -3.0f, 6)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_basicShader, _blankTextures, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0.27f, -3.0f, 6)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     icosphere = new Entity(
         Transform(XMFLOAT3(-5, 0, 0), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 1, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, _blankTextures, false), &Meshes::Icosphere, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(-2, 0, 0.5f)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_basicShader, _blankTextures, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Icosphere, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(-2, 0, 0.5f)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     plane = new Entity(
         Transform(XMFLOAT3(0, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)), nullptr,
-        std::vector<Component*> {new Material(_waterShader, _blankTextures, true), _pPlaneMesh, new Renderer(), new RasterState(false), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
+        std::vector<Component*> {new Material(_waterShader, _blankTextures, true, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), _pPlaneMesh, new Renderer(), new RasterState(false), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
     );
 
     Camera* camera = new Camera(_WindowWidth, _WindowHeight, 0.1f, 100.0f);

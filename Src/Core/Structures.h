@@ -24,15 +24,15 @@ struct LightVertex
 struct LocalConstantBuffer
 {
 	XMMATRIX WorldMatrix;
+	XMFLOAT4 DiffuseMtrl;
+	XMFLOAT4 AmbientMtrl;
+	XMFLOAT4 SpecularMtrl;
 };
 
 struct GlobalConstantBuffer
 {
 	XMMATRIX ViewMatrix;
 	XMMATRIX ProjectionMatrix;
-	XMFLOAT4 DiffuseMtrl;
-	XMFLOAT4 AmbientMtrl;
-	XMFLOAT4 SpecularMtrl;
 	XMFLOAT3 EyePosW;
 	float gTime;
 
