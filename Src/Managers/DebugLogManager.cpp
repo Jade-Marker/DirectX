@@ -17,6 +17,12 @@ DebugLogManager* DebugLogManager::GetInstance()
 	return &instance;
 }
 
+void DebugLogManager::Initialise()
+{
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+}
+
 void DebugLogManager::Log(std::string message)
 {
 	DebugLogManager* instance = GetInstance();
@@ -25,7 +31,11 @@ void DebugLogManager::Log(std::string message)
 	std::tm time;
 	localtime_s(&time, &currentTime);
 
-	instance->_debugLog << "[" << std::put_time(&time, "%H:%M:%S") << "]"<< message << std::endl;
+	std::stringstream formattedMessage;
+	formattedMessage << "[" << std::put_time(&time, "%H:%M:%S") << "]" << message << std::endl;
+
+	instance->_debugLog << formattedMessage.str();
+	std::cout << formattedMessage.str();
 }
 
 void DebugLogManager::Clear()
@@ -34,5 +44,35 @@ void DebugLogManager::Clear()
 
 	instance->_debugLog.close();
 	instance->_debugLog.open(cLogPath, std::ios::trunc);
+}
 
+DebugStream& DebugLogManager::GetStream()
+{
+	DebugLogManager* instance = DebugLogManager::GetInstance();
+
+	return instance->_debugStream;
+}
+
+void DebugStream::Output(std::string message)
+{
+	DebugLogManager* instance = DebugLogManager::GetInstance();
+
+	instance->Log(message);
+}
+
+DebugStream::DebugStream():
+	std::ostream(nullptr)
+{
+}
+
+DebugStream& DebugStream::operator<<(const char* value)
+{
+	Output(value);
+	return *this;
+}
+
+DebugStream& DebugStream::operator<<(const std::string value)
+{
+	Output(value);
+	return *this;
 }

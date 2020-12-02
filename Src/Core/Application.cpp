@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Update DebugLogManager so that it outputs to the console as well
 //Add Object loading via JSON
 //Add support for specular maps
 //Add Custom component
@@ -134,8 +133,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     InitShaders();
     InitEntities();
 
+    DebugLogManager::Initialise();
     DebugLogManager::Clear();
     DebugLogManager::Log("Starting up");
+    DebugLogManager::GetStream() << "Hello world!";
+    DebugLogManager::GetStream() << 25;
 
     InputManager::Initialise();
 
