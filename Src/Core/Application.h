@@ -70,9 +70,10 @@ private:
 	Shader* _basicShader;
 	Shader* _waterShader;
 
-	std::vector<Texture*> _crateTextures;
-	std::vector<Texture*> _fishTextures;
-	std::vector<Texture*> _blankTextures;
+	Texture* _crateColour;
+	Texture* _crateSpecular;
+	Texture* _fishColour;
+	Texture* _fishAmbient;
 
 	StructuredBuffer* _pLightBuffer;
 	std::vector<Light>		_lights;

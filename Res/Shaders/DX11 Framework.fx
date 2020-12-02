@@ -19,10 +19,14 @@ struct Light
     float SpecularStrength;
 };
 
-StructuredBuffer<Light> lightsBuffer : register(t1);
+StructuredBuffer<Light> lightsBuffer : register(t3);
 
 Texture2D txDiffuse : register(t0);
-SamplerState samLinear : register(s0);
+Texture2D txAmbient : register(t1);
+Texture2D txSpecular : register(t2);
+SamplerState samDiffuse : register(s0);
+SamplerState samAmbient : register(s1);
+SamplerState samSpecular : register(s2);
 
 //--------------------------------------------------------------------------------------
 struct VS_OUTPUT
@@ -62,39 +66,72 @@ VS_OUTPUT VS(VS_INPUT input)
     return output;
 }
 
-float3 CalculateColor(VS_OUTPUT input, Light light)
+float GetDistanceScale(VS_OUTPUT input, Light light)
 {
-    float3 toEye = normalize(EyePosW - input.PosW);
-
-    float3 normalizedNorm = normalize(input.Norm);
-
     float distanceScale;
-    float3 lightDirection;
 
     if (light.LightPosW.w == 1.0f)
     {
         distanceScale = 1.0f / distance(input.PosW, light.LightPosW);
-        lightDirection = normalize(light.LightPosW - input.PosW);
     }
     else
     {
         distanceScale = 1.0f;
+    }
+
+    return distanceScale;
+}
+
+float3 GetLightDirection(VS_OUTPUT input, Light light)
+{
+    float3 lightDirection;
+
+    if (light.LightPosW.w == 1.0f)
+    {
+        lightDirection = normalize(light.LightPosW - input.PosW);
+    }
+    else
+    {
         lightDirection = light.LightDir;
     }
 
+    return lightDirection;
+}
+
+float3 CalculateDiffuse(VS_OUTPUT input, Light light)
+{
+    float distanceScale = GetDistanceScale(input, light);
+    float3 lightDirection = GetLightDirection(input, light);
+
+    float diffuseAmount = max(dot(lightDirection, input.Norm), 0.0f) * distanceScale * light.DiffuseStrength;
+    float3 diffuse = diffuseAmount * (DiffuseMtrl * light.DiffuseLight).rgb;
+
+    return diffuse;
+}
+
+float3 CalculateAmbient(VS_OUTPUT input, Light light)
+{
+    float distanceScale = GetDistanceScale(input, light);
+    float3 ambient = AmbientMtrl * light.AmbientLight * distanceScale * light.AmbientStrength;
+
+    return ambient;
+}
+
+float3 CalculateSpecular(VS_OUTPUT input, Light light)
+{
+    float3 toEye = normalize(EyePosW - input.PosW);
+
+    float distanceScale = GetDistanceScale(input, light);
+    float3 lightDirection = GetLightDirection(input, light);
+
     //Compute the reflection vector
-    float3 r = reflect(-lightDirection, normalizedNorm);
+    float3 r = reflect(-lightDirection, input.Norm);
 
     //Determine how much (if any) specular light makes it into the eye
     float specularAmount = pow(max(dot(r, toEye), 0.0f), light.SpecularPower) * distanceScale * light.SpecularStrength;
-
-    //Compute diffuse, ambient and specular components
-    float3 ambient = AmbientMtrl * light.AmbientLight * distanceScale * light.AmbientStrength;
-    float diffuseAmount = max(dot(lightDirection, normalizedNorm), 0.0f) * distanceScale * light.DiffuseStrength;
-    float3 diffuse = diffuseAmount * (DiffuseMtrl * light.DiffuseLight).rgb;
     float3 specular = specularAmount * (SpecularMtrl * light.SpecularLight).rgb;
 
-    return (diffuse + ambient + specular);
+    return specular;
 }
 
 //--------------------------------------------------------------------------------------
@@ -104,16 +141,24 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color;
     
-    float3 sumOfLights = (0,0,0);
+    input.Norm = normalize(input.Norm);
+
+    float3 sumOfDiffuse = (0,0,0);
+    float3 sumOfAmbient = (0,0,0);
+    float3 sumOfSpecular = (0,0,0);
     for (uint i = 0; i < numLights; i++)
     {
-        sumOfLights += CalculateColor(input, lightsBuffer[i]);
+        sumOfDiffuse += CalculateDiffuse(input, lightsBuffer[i]);
+        sumOfAmbient += CalculateAmbient(input, lightsBuffer[i]);
+        sumOfSpecular += CalculateSpecular(input, lightsBuffer[i]);
     }
 
-    float4 textureColor = txDiffuse.Sample(samLinear, input.Tex);
+    float4 diffuseColor = txDiffuse.Sample(samDiffuse, input.Tex);
+    float4 ambientColor = txAmbient.Sample(samAmbient, input.Tex);
+    float4 specularColor = txSpecular.Sample(samSpecular, input.Tex);
 
-    color.rgb = sumOfLights * textureColor;
-    color.a = textureColor.a;
+    color.rgb = sumOfDiffuse * diffuseColor + (sumOfAmbient * ambientColor) * diffuseColor + sumOfSpecular * specularColor;
+    color.a = diffuseColor.a;
 
     return color;
 }

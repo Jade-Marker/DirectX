@@ -13,8 +13,10 @@ private:
 	RasterState* _pRasterState;
 	RenderingBuffers* _pRenderingBuffers;
 
+private:
+	void BindTexture(Texture* texture, int slot);
+
 public:
 	virtual void Start();
 	virtual void Draw();
 };
-

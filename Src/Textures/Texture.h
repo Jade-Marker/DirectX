@@ -12,8 +12,12 @@ private:
 
 public:
 	Texture(const WCHAR* filePath);
+	Texture();
 	~Texture();
 
+	void Load(const WCHAR* filePath);
 	void Bind(Shader* shader, UINT slot);
-};
+	void Unbind(Shader* shader, UINT slot);
 
+	static Texture* const GetDefault();
+};

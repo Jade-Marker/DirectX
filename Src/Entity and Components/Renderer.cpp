@@ -1,5 +1,13 @@
 #include "Renderer.h"
 
+void Renderer::BindTexture(Texture* texture, int slot)
+{
+    if (texture)
+        texture->Bind(_pMaterial->GetShader(), slot);
+    else
+       Texture::GetDefault()->Bind(_pMaterial->GetShader(), slot);
+}
+
 void Renderer::Start()
 {
     _pMesh = _parent->GetComponent<Mesh>();
@@ -17,8 +25,9 @@ void Renderer::Draw()
         _pMaterial->GetShader()->SetShader();
         _pMaterial->GetShader()->SetInputLayout();
 
-        for (int i = 0; i < _pMaterial->GetTextures().size(); i++)
-            _pMaterial->GetTextures()[i]->Bind(_pMaterial->GetShader(), i);
+        BindTexture(_pMaterial->GetDiffuseTexture(), cDiffuseSlot);
+        BindTexture(_pMaterial->GetAmbientTexture(), cAmbientSlot);
+        BindTexture(_pMaterial->GetSpecularTexture(), cSpecularSlot);
 
         if (_pRasterState->IsWireframe())
         {
