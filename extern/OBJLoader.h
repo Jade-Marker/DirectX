@@ -16,7 +16,7 @@ using namespace DirectX;
 namespace OBJLoader
 {
 	//The only method you'll need to call
-	Mesh* Load(char* filename, bool invertTexCoords = true);
+	Mesh* Load(const char* filename, bool invertTexCoords = true);
 
 	//Helper methods for the above method
 	//Searhes to see if a similar vertex already exists in the buffer -- if true, we re-use that index

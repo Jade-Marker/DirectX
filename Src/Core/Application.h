@@ -34,6 +34,7 @@
 #include "CameraController.h"
 #include "EntityManager.h"
 #include "SelectionHide.h"
+#include "Scene.h"
 
 using namespace DirectX;
 
@@ -61,19 +62,9 @@ private:
 
 	float					_time;
 
-	Mesh* _pFishMesh;
-	Mesh* _pPlaneMesh;
-
+	std::vector<Mesh*> _meshes;
 	std::vector<Shader*> _shaders;
-	Shader* _dx11Shader;
-	Shader* _discardShader;
-	Shader* _basicShader;
-	Shader* _waterShader;
-
-	Texture* _crateColour;
-	Texture* _crateSpecular;
-	Texture* _fishColour;
-	Texture* _fishAmbient;
+	std::vector<Texture*> _textures;
 
 	StructuredBuffer* _pLightBuffer;
 	std::vector<Light>		_lights;
@@ -95,11 +86,12 @@ private:
 	void InitDepthStencilBuffer();
 	void Cleanup();
 
-	void InitTextures();
-	void InitMeshes();
-	void InitShaders();
+	void InitTextures(const Scene& scene);
+	void InitMeshes(const Scene& scene);
+	void InitShaders(const Scene& scene);
 	void InitConstantBufferVars();
-	void InitEntities();
+	void InitEntities(const Scene& scene);
+	Entity* LoadEntity(LoadedEntity entity);
 	void InitLights();
 	void ResizeRenderTargetView();
 };

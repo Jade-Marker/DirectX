@@ -1,10 +1,10 @@
 #include "Application.h"
 
 //todo
-//Add Object loading via JSON
-//Add support for specular maps
+//Add lighting to object loading (maybe make lights a component)
 //Add Custom component
 //Add Skybox
+//Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -96,7 +96,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 Application::Application():
     _hInst(nullptr), _hWnd(nullptr), _driverType(D3D_DRIVER_TYPE_NULL), _featureLevel(D3D_FEATURE_LEVEL_11_0), _pSwapChain(nullptr), _pRenderTargetView(nullptr),
     _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f },
-    _pFishMesh(nullptr), _pPlaneMesh(nullptr), _pLightBuffer(nullptr)
+    _pLightBuffer(nullptr)
 {
 
 }
@@ -128,12 +128,22 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     InitConstantBufferVars();
     InitLights();
-    InitMeshes();
-    InitTextures();
-    InitShaders();
-    InitEntities();
 
-    DebugLogManager::Initialise();
+    json j;
+    std::ifstream file = std::ifstream("Scene.txt");
+    j << file;
+    file.close();
+
+    Scene scene = j.get<Scene>();
+
+    InitMeshes(scene);
+    InitTextures(scene);
+    InitShaders(scene);
+    InitEntities(scene);
+
+    scene.CleanUp();
+
+    DebugLogManager::Initialise(false);
     DebugLogManager::Clear();
     DebugLogManager::Log("Starting up");
     DebugLogManager::GetStream() << "Hello world!";
@@ -417,38 +427,44 @@ void Application::Cleanup()
 
     EntityManager::ClearEntities();
 
-    if (_pFishMesh) delete _pFishMesh;
-    if (_pPlaneMesh) delete _pPlaneMesh;
+    for (int i = 0; i < _meshes.size(); i++)
+    {
+        if((_meshes[i] != &Meshes::Cube) && (_meshes[i] != &Meshes::Icosphere) && (_meshes[i] != &Meshes::Pyramid))
+            delete _meshes[i];
+    }
 
     for (int i = 0; i < _shaders.size(); i++)
         delete _shaders[i];
 
-    if(_crateColour) delete _crateColour;
-    if(_crateSpecular) delete _crateSpecular;
-    if(_fishColour) delete _fishColour;
-    if(_fishAmbient) delete _fishAmbient;
+    for (int i = 0; i < _textures.size(); i++)
+        delete _textures[i];
 
     if (_pLightBuffer) delete _pLightBuffer;
 
     DebugLogManager::Log("Closing");
 }
 
-void Application::InitTextures()
+void Application::InitTextures(const Scene& scene)
 {
-    _crateColour = new Texture(L"Res\\Textures\\Crate_COLOR.dds");
-    _crateSpecular = new Texture(L"Res\\Textures\\Crate_SPEC.dds");
-
-    _fishColour = new Texture(L"Res\\Textures\\fish.dds");
-    _fishAmbient = new Texture(L"Res\\Textures\\fishAmbient.dds");
+    for (int i = 0; i < scene.texturePaths.size(); i++)
+    {
+        std::wstring wideFilePath = std::wstring(scene.texturePaths[i].begin(), scene.texturePaths[i].end()).c_str();
+        _textures.push_back(new Texture(wideFilePath.c_str()));
+    }
 }
 
-void Application::InitMeshes()
+void Application::InitMeshes(const Scene& scene)
 {
-    _pFishMesh = OBJLoader::Load("Res\\Models\\fish.obj", true);
-    _pPlaneMesh = Meshes::GeneratePlane(32, 8);
+    _meshes.push_back(Meshes::GeneratePlane(32, 8));
+    _meshes.push_back(&Meshes::Pyramid);
+    _meshes.push_back(&Meshes::Icosphere);
+    _meshes.push_back(&Meshes::Cube);
+
+    for (int i = 0; i < scene.modelsPaths.size(); i++)
+        _meshes.push_back(OBJLoader::Load(scene.modelsPaths[i].c_str(), true));
 }
 
-void Application::InitShaders()
+void Application::InitShaders(const Scene& scene)
 {
     // Define the input layouts
     D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
@@ -465,16 +481,23 @@ void Application::InitShaders()
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
     UINT numElementsBasic = ARRAYSIZE(basicLayout);
+    
+    for (int i = 0; i < scene.shaderPaths.size(); i++)
+    {
+        Shader* shader;
+        std::wstring wideFilePath = std::wstring(scene.shaderPaths[i].path.begin(), scene.shaderPaths[i].path.end()).c_str();
+        switch (scene.shaderPaths[i].type)
+        {
+            case LIGHT:
+                shader = new Shader(wideFilePath.c_str(), lightingLayout, numElementsLighting);
+                break;
+            case COLOR:
+                shader = new Shader(wideFilePath.c_str(), basicLayout, numElementsBasic);
+                break;
+        }
 
-    _dx11Shader = new Shader(L"Res\\Shaders\\DX11 Framework.fx", lightingLayout, numElementsLighting);
-    _discardShader = new Shader(L"Res\\Shaders\\Discard.fx", basicLayout, numElementsBasic);
-    _basicShader = new Shader(L"Res\\Shaders\\BasicShader.fx", basicLayout, numElementsBasic);
-    _waterShader = new Shader(L"Res\\Shaders\\Water.fx", basicLayout, numElementsBasic);
-
-    _shaders.push_back(_dx11Shader);
-    _shaders.push_back(_discardShader);
-    _shaders.push_back(_basicShader);
-    _shaders.push_back(_waterShader);
+        _shaders.push_back(shader);
+    }
 }
 
 void Application::InitConstantBufferVars()
@@ -482,74 +505,114 @@ void Application::InitConstantBufferVars()
     _time = 0;
 }
 
-void Application::InitEntities()
+void Application::InitEntities(const Scene& scene)
 {
-    Entity* cube;
-    Entity* fish;
-    Entity* pyramid1;
-    Entity* pyramid2;
-    Entity* icosphere;
-    Entity* plane;
-    Entity* cameraEntity;
+    for (int i = 0; i < scene.loadedEntities.size(); i++)
+    {
+        Entity* newEntity = LoadEntity(scene.loadedEntities[i]);
+        EntityManager::AddEntity(newEntity);
+    }
 
-    cube = new Entity(
-        Transform(XMFLOAT3(0, 0, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(2, 2, 2)), nullptr,
-        std::vector<Component*> {new Material(_dx11Shader, _crateColour, nullptr, _crateSpecular, true, XMFLOAT4(1,1,1,1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Cube, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, 1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+    std::vector<Entity*> entities = EntityManager::GetEntities();
+    for (int i = 0; i < scene.loadedEntities.size(); i++)
+    {
+        if (scene.loadedEntities[i].parent != -1)
+            entities[i]->ChangeParent(entities[scene.loadedEntities[i].parent]);
+    }
+}
 
-    fish = new Entity(
-        Transform(XMFLOAT3(0, -6, 5), XMFLOAT3(0, 0, 0), XMFLOAT3(4, 4, 4)), nullptr,
-        std::vector<Component*> {new Material(_dx11Shader, _fishColour, _fishAmbient, _fishAmbient, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), _pFishMesh, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, .5f, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+Entity* Application::LoadEntity(LoadedEntity entity)
+{
+    std::vector<Component*> components;
+    for (int i = 0; i < entity.components.size(); i++)
+    {
+        Component* component;
 
-    pyramid1 = new Entity(
-        Transform(XMFLOAT3(5, 0, -3), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 2, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, nullptr, nullptr, nullptr, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0, -1, 0)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+        LoadedMaterial* material;
+        LoadedMesh* mesh;
+        LoadedRasterState* raster;
+        LoadedRotator* rotator;
+        LoadedCamera* camera;
+        Texture* diffuse = nullptr;
+        Texture* specular = nullptr;
+        Texture* ambient = nullptr;
 
-    pyramid2 = new Entity(
-        Transform(XMFLOAT3(0, 6, 0), XMFLOAT3(-5, 0, 3), XMFLOAT3(1, 1, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, nullptr, nullptr, nullptr, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Pyramid, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(0.27f, -3.0f, 6)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+        switch (entity.components[i]->type)
+        {
+        case MATERIAL:
+            material = (LoadedMaterial*)entity.components[i];
 
-    icosphere = new Entity(
-        Transform(XMFLOAT3(-5, 0, 0), XMFLOAT3(30, 0, 20), XMFLOAT3(1, 1, 1)), cube,
-        std::vector<Component*> {new Material(_basicShader, nullptr, nullptr, nullptr, false, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), &Meshes::Icosphere, new Renderer(), new RasterState(false), new Rotator(XMFLOAT3(-2, 0, 0.5f)), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+            if (material->diffuse != -1)
+                diffuse = _textures[material->diffuse];
 
-    plane = new Entity(
-        Transform(XMFLOAT3(0, -9, 0), XMFLOAT3(70, 0, 0), XMFLOAT3(0.5f, 0.5f, 0.5f)), nullptr,
-        std::vector<Component*> {new Material(_waterShader, nullptr, nullptr, nullptr, true, XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1), XMFLOAT4(1, 1, 1, 1)), _pPlaneMesh, new Renderer(), new RasterState(false), new RenderingBuffers(&_localConstantBuffer), new SelectionHide()}
-    );
+            if (material->ambient != -1)
+                ambient = _textures[material->ambient];
 
-    Camera* camera = new Camera(_WindowWidth, _WindowHeight, 0.1f, 100.0f);
-    CameraManager::SetMainCamera(camera);
+            if (material->specular != -1)
+                specular = _textures[material->specular];
 
-    cameraEntity = new Entity(Transform(XMFLOAT3(0.0f, 0.0f, -10.0f), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), nullptr,
-        std::vector<Component*> {camera, new CameraController()}
-    );
+            component = new Material(_shaders[material->shader], diffuse, ambient, specular, material->isTransparent,
+                material->diffuseMtrl, material->ambientMtrl, material->specularMtrl);
+            break;
 
-    EntityManager::AddEntity(cube);
-    EntityManager::AddEntity(fish);
-    EntityManager::AddEntity(pyramid1);
-    EntityManager::AddEntity(pyramid2);
-    EntityManager::AddEntity(icosphere);
-    EntityManager::AddEntity(cameraEntity);
-    EntityManager::AddEntity(plane);
+        case MESH:
+            mesh = (LoadedMesh*)entity.components[i];
+            component = _meshes[mesh->mesh];
+            break;
+
+        case RENDERER:
+            component = new Renderer();
+            break;
+
+        case RASTER_STATE:
+            raster = (LoadedRasterState*)entity.components[i];
+            component = new RasterState(raster->startInWireframe);
+            break;
+
+        case ROTATOR:
+            rotator = (LoadedRotator*)entity.components[i];
+            component = new Rotator(rotator->tScale);
+            break;
+
+        case RENDERING_BUFFER:
+            component = new RenderingBuffers(&_localConstantBuffer);
+            break;
+
+        case SELECTION_HIDE:
+            component = new SelectionHide();
+            break;
+
+        case CAMERA:
+            camera = (LoadedCamera*)entity.components[i];
+            component = new Camera(_WindowWidth, _WindowHeight, camera->nearDepth, camera->farDepth);
+            CameraManager::SetMainCamera((Camera*)component);
+            break;
+
+        case CAMERA_CONTROLLER:
+            component = new CameraController();
+            break;
+        }
+
+        components.push_back(component);
+    }
+
+    Entity* newEntity = new Entity(entity.transform, nullptr, components);
+
+    return newEntity;
 }
 
 void Application::InitLights()
 {
-    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),
-        XMFLOAT4(0.0f, 0.4f, 0.0f, 0.4f), XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),
-        XMFLOAT4(1.0f, 0.0f, 0.0f, 0.4f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),
-        XMFLOAT4(0.0f, 0.0f, 0.4f, 0.4f), XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
+    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
+    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
 
     _lights.push_back(greenPointLight);
-    _lights.push_back(redPointLight);
-    _lights.push_back(basicDirectional);
+    //_lights.push_back(redPointLight);
+    //_lights.push_back(basicDirectional);
 
     _pLightBuffer = new StructuredBuffer(_lights.data(), _lights.size(), sizeof(Light));
 }

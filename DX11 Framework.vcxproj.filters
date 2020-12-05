@@ -45,6 +45,8 @@
     <ClInclude Include="Src\Entity and Components\CameraController.h" />
     <ClInclude Include="Src\Managers\EntityManager.h" />
     <ClInclude Include="Src\Entity and Components\SelectionHide.h" />
+    <ClInclude Include="extern\json.hpp" />
+    <ClInclude Include="Src\Core\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -79,6 +81,7 @@
     <ClCompile Include="Src\Core\Meshes.cpp" />
     <ClCompile Include="Src\Managers\EntityManager.cpp" />
     <ClCompile Include="Src\Entity and Components\SelectionHide.cpp" />
+    <ClCompile Include="Src\Core\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

@@ -52,6 +52,13 @@ struct Transform
 		Scale = scale;
 	}
 
+	Transform()
+	{
+		Position = XMFLOAT3(0, 0, 0);
+		Rotation = XMFLOAT3(0, 0, 0);
+		Scale = XMFLOAT3(0, 0, 0);
+	}
+
 	void Translate(const XMFLOAT3& translation)
 	{
 		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + XMLoadFloat3(&translation));

@@ -34,7 +34,7 @@ private:
 	friend class DebugStream;
 
 public:
-	static void Initialise();
+	static void Initialise(bool openConsole);
 	static void Log(std::string message);
 	static void Clear();
 

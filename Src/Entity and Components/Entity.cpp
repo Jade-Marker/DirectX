@@ -48,6 +48,11 @@ XMMATRIX Entity::GetWorldMatrix()
     return world;
 }
 
+void Entity::ChangeParent(Entity* parent)
+{
+    _parent = parent;
+}
+
 Transform& Entity::GetTransform()
 {
     return _transform;

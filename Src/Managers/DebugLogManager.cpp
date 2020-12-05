@@ -17,10 +17,13 @@ DebugLogManager* DebugLogManager::GetInstance()
 	return &instance;
 }
 
-void DebugLogManager::Initialise()
+void DebugLogManager::Initialise(bool openConsole)
 {
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
+	if (openConsole)
+	{
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+	}
 }
 
 void DebugLogManager::Log(std::string message)

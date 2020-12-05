@@ -13,13 +13,13 @@ private:
 	ID3D11InputLayout* _pVertexLayout;
 
 private:
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+	HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT CreateVertexShader();
 	HRESULT CreatePixelShader();
 
 
 public:
-	Shader(WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements);
+	Shader(const WCHAR* shaderSource, D3D11_INPUT_ELEMENT_DESC* layout, UINT numLayoutElements);
 	~Shader();
 	void SetInputLayout();
 	void SetShader();

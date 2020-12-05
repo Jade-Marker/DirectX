@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Core\Scene.cpp" />
     <ClCompile Include="Src\Entity and Components\SelectionHide.cpp" />
     <ClCompile Include="Src\Managers\EntityManager.cpp" />
     <ClCompile Include="Src\Core\Meshes.cpp" />
@@ -407,6 +408,8 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="extern\json.hpp" />
+    <ClInclude Include="Src\Core\Scene.h" />
     <ClInclude Include="Src\Entity and Components\SelectionHide.h" />
     <ClInclude Include="Src\Managers\EntityManager.h" />
     <ClInclude Include="Src\Entity and Components\CameraController.h" />

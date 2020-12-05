@@ -21,6 +21,8 @@ public:
 	void OnSelected();
 	XMMATRIX GetWorldMatrix();
 
+	void ChangeParent(Entity* parent);
+
 	template<typename T>
 	T* GetComponent();
 
