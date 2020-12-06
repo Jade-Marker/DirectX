@@ -373,6 +373,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
+    <ClCompile Include="Src\Managers\LightManager.cpp" />
     <ClCompile Include="Src\Core\Scene.cpp" />
     <ClCompile Include="Src\Entity and Components\SelectionHide.cpp" />
     <ClCompile Include="Src\Managers\EntityManager.cpp" />
@@ -409,6 +411,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extern\json.hpp" />
+    <ClInclude Include="Src\Entity and Components\LightComponent.h" />
+    <ClInclude Include="Src\Managers\LightManager.h" />
     <ClInclude Include="Src\Core\Scene.h" />
     <ClInclude Include="Src\Entity and Components\SelectionHide.h" />
     <ClInclude Include="Src\Managers\EntityManager.h" />

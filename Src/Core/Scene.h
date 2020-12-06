@@ -2,11 +2,12 @@
 #include "Structures.h"
 #include <vector>
 #include "json.hpp"
+#include "Light.h"
 using json = nlohmann::json;
 
 enum ComponentType
 {
-	MATERIAL, MESH, RENDERER, RASTER_STATE, ROTATOR, RENDERING_BUFFER, SELECTION_HIDE, CAMERA, CAMERA_CONTROLLER, NO_TYPE
+	MATERIAL, MESH, RENDERER, RASTER_STATE, ROTATOR, RENDERING_BUFFER, SELECTION_HIDE, CAMERA, CAMERA_CONTROLLER, SCENE_LIGHT, NO_TYPE
 };
 
 struct LoadedComponent
@@ -94,6 +95,16 @@ struct LoadedCamera :LoadedComponent
 	{}
 };
 
+struct LoadedLight :LoadedComponent
+{
+	Light sceneLight;
+
+	LoadedLight() :
+		LoadedComponent(SCENE_LIGHT)
+	{}
+};
+
+
 struct LoadedEntity
 {
 	Transform transform;
@@ -155,6 +166,7 @@ void to_json(json& j, const Transform& transform);
 void to_json(json& j, const LoadedComponent& component);
 void to_json(json& j, const LoadedShader& shader);
 void to_json(json& j, const Scene& scene);
+void to_json(json& j, LoadedLight& light);
 
 void from_json(const json& j, std::vector<LoadedComponent*>& components);
 void from_json(const json& j, LoadedMaterial& material);
@@ -167,3 +179,4 @@ void from_json(const json& j, Transform& transform);
 void from_json(const json& j, LoadedComponent& component);
 void from_json(const json& j, LoadedShader& shader);
 void from_json(const json& j, Scene& scene);
+void from_json(const json& j, LoadedLight& light);

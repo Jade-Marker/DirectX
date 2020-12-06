@@ -3,6 +3,7 @@ const int cLocalConstantBufferSlot  = 0;
 const int cGlobalConstantBufferSlot  = 1;
 
 const int cLightBufferSlot = 3;
+const int cInitMaxNumLights = 5;
 
 const int cDiffuseSlot = 0;
 const int cAmbientSlot = 1;

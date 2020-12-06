@@ -1,9 +1,8 @@
 #include "Application.h"
 
 //todo
-//Add lighting to object loading (maybe make lights a component)
-//Add Custom component
 //Add Skybox
+//Add Custom component
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -95,8 +94,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 Application::Application():
     _hInst(nullptr), _hWnd(nullptr), _driverType(D3D_DRIVER_TYPE_NULL), _featureLevel(D3D_FEATURE_LEVEL_11_0), _pSwapChain(nullptr), _pRenderTargetView(nullptr),
-    _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f },
-    _pLightBuffer(nullptr)
+    _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f }
 {
 
 }
@@ -127,7 +125,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
     InitConstantBufferVars();
-    InitLights();
 
     json j;
     std::ifstream file = std::ifstream("Scene.txt");
@@ -163,6 +160,7 @@ void Application::Update(float deltaTime)
         entities[i]->Update(deltaTime);
 
     InputManager::Update();
+    LightManager::UpdateLights();
 }
 
 void Application::Draw()
@@ -176,14 +174,14 @@ void Application::Draw()
     cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetProjectionMatrix()));
     cb.EyePosW = CameraManager::GetMainCamera()->GetPosition();
     cb.gTime = _time;
-    cb.numLights = _lights.size();
+    cb.numLights = LightManager::GetNumLights();
     _globalConstantBuffer.Update(&cb);
 
 
     for (int i = 0; i < _shaders.size(); i++)
     {
         _globalConstantBuffer.Bind(_shaders[i], cGlobalConstantBufferSlot);
-        _pLightBuffer->Bind(_shaders[i], cLightBufferSlot);
+        LightManager::Bind(_shaders[i], cLightBufferSlot);
     }
 
     std::vector<Entity*> _transparentObjects;
@@ -439,8 +437,6 @@ void Application::Cleanup()
     for (int i = 0; i < _textures.size(); i++)
         delete _textures[i];
 
-    if (_pLightBuffer) delete _pLightBuffer;
-
     DebugLogManager::Log("Closing");
 }
 
@@ -533,6 +529,7 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         LoadedRasterState* raster;
         LoadedRotator* rotator;
         LoadedCamera* camera;
+        LoadedLight* light;
         Texture* diffuse = nullptr;
         Texture* specular = nullptr;
         Texture* ambient = nullptr;
@@ -591,6 +588,11 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         case CAMERA_CONTROLLER:
             component = new CameraController();
             break;
+
+        case SCENE_LIGHT:
+            light = (LoadedLight*)entity.components[i];
+            component = new LightComponent(light->sceneLight);
+            break;
         }
 
         components.push_back(component);
@@ -599,22 +601,6 @@ Entity* Application::LoadEntity(LoadedEntity entity)
     Entity* newEntity = new Entity(entity.transform, nullptr, components);
 
     return newEntity;
-}
-
-void Application::InitLights()
-{
-    Light greenPointLight = PointLight(XMFLOAT3(30, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light redPointLight = PointLight(XMFLOAT3(-30, 0.0f, -6.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f, 10.0f, 5.0f, 10.0f);
-    Light basicDirectional = DirectionalLight(XMFLOAT3(0.25f, 0.5f, -1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-        XMFLOAT4(1.0f, 1.0f, 1.0f, 0.4f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 1.25f, 0.2f, 0.2f, 1.25f);
-
-    _lights.push_back(greenPointLight);
-    //_lights.push_back(redPointLight);
-    //_lights.push_back(basicDirectional);
-
-    _pLightBuffer = new StructuredBuffer(_lights.data(), _lights.size(), sizeof(Light));
 }
 
 void Application::ResizeRenderTargetView()

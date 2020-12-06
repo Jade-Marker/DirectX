@@ -47,6 +47,8 @@
     <ClInclude Include="Src\Entity and Components\SelectionHide.h" />
     <ClInclude Include="extern\json.hpp" />
     <ClInclude Include="Src\Core\Scene.h" />
+    <ClInclude Include="Src\Managers\LightManager.h" />
+    <ClInclude Include="Src\Entity and Components\LightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -82,6 +84,8 @@
     <ClCompile Include="Src\Managers\EntityManager.cpp" />
     <ClCompile Include="Src\Entity and Components\SelectionHide.cpp" />
     <ClCompile Include="Src\Core\Scene.cpp" />
+    <ClCompile Include="Src\Managers\LightManager.cpp" />
+    <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

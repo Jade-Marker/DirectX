@@ -62,6 +62,10 @@ void to_json(json& j, const std::vector<LoadedComponent*>& components)
 			j += json{ *(LoadedCamera*)components[i] };
 			break;
 
+		case SCENE_LIGHT:
+			j += json{ *(LoadedLight*)components[i] };
+			break;
+
 		default:
 			j += json{ *components[i] };
 			break;
@@ -120,6 +124,13 @@ void to_json(json& j, const Scene& scene)
 	j = json{ {"version", scene.version}, {"shaderPaths", scene.shaderPaths}, {"modelsPaths", scene.modelsPaths}, {"texturePaths", scene.texturePaths}, {"loadedEntities", scene.loadedEntities} };
 }
 
+void to_json(json& j, LoadedLight& light)
+{
+	j = json{ {"type", light.type}, {"Position", light.sceneLight.GetPosition() }, {"Direction", light.sceneLight.GetDirection() }, {"Diffuse", light.sceneLight.GetDiffuseColor() }, {"Ambient", light.sceneLight.GetAmbientColor() },
+	{"Specular", light.sceneLight.GetSpecularColor() }, {"SpecularPower", light.sceneLight.GetSpecularPower() }, 
+	{"DiffuseStrength", light.sceneLight.GetDiffuseStrength() }, {"AmbientStrength", light.sceneLight.GetAmbientStrength() }, {"SpecularStrength", light.sceneLight.GetSpecularStrength() }, };
+}
+
 void from_json(const json& j, std::vector<LoadedComponent*>& components)
 {
 	for (int i = 0; i < j.size(); i++)
@@ -132,6 +143,7 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		LoadedRasterState rasterState;
 		LoadedRotator rotator;
 		LoadedCamera camera;
+		LoadedLight light;
 
 		switch (component.type)
 		{
@@ -158,6 +170,11 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		case CAMERA:
 			camera = j[i][0];
 			pComponent = new LoadedCamera(camera);
+			break;
+		
+		case SCENE_LIGHT:
+			light = j[i][0];
+			pComponent = new LoadedLight(light);
 			break;
 
 		default:
@@ -239,4 +256,17 @@ void from_json(const json& j, Scene& scene)
 	scene.modelsPaths = j["modelsPaths"].get<std::vector<std::string>>();
 	scene.texturePaths = j["texturePaths"].get<std::vector<std::string>>();
 	scene.loadedEntities = j["loadedEntities"].get<std::vector<LoadedEntity>>();
+}
+
+void from_json(const json& j, LoadedLight& light)
+{
+	light.sceneLight.SetPosition(j["Position"]);
+	light.sceneLight.SetDirection(j["Direction"]);
+	light.sceneLight.SetDiffuse(j["Diffuse"]);
+	light.sceneLight.SetAmbient(j["Ambient"]);
+	light.sceneLight.SetSpecular(j["Specular"]);
+	light.sceneLight.SetSpecularPower(j["SpecularPower"]);
+	light.sceneLight.SetDiffuseStrength(j["DiffuseStrength"]);
+	light.sceneLight.SetAmbientStrength(j["AmbientStrength"]);
+	light.sceneLight.SetSpecularStrength(j["SpecularStrength"]);
 }

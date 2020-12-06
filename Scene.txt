@@ -545,6 +545,67 @@
                     "z": 1.0
                 }
             }
+        },
+        {
+            "components": [
+                [
+                    {
+                        "Ambient": {
+                            "w": 0.4000000059604645,
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "AmbientStrength": 5.0,
+                        "Diffuse": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "DiffuseStrength": 10.0,
+                        "Direction": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Position": {
+                            "w": 1.0,
+                            "x": 30.0,
+                            "y": 0.0,
+                            "z": -6.0
+                        },
+                        "Specular": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "SpecularPower": 10.0,
+                        "SpecularStrength": 10.0,
+                        "type": 9
+                    }
+                ]
+            ],
+            "parent": 0,
+            "transform": {
+                "Position": {
+                    "x": 5.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
         }
     ],
     "modelsPaths": [

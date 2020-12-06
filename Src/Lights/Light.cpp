@@ -7,6 +7,12 @@ Light::Light(const XMFLOAT4& position, const XMFLOAT4& direction, const XMFLOAT4
 {
 }
 
+Light::Light():
+    _position(XMFLOAT4(0,0,0,0)), _direction(XMFLOAT4(0, 0, 0, 0)), _diffuseColor(XMFLOAT4(0, 0, 0, 0)), _ambientColor(XMFLOAT4(0, 0, 0, 0)), 
+    _specularColor(XMFLOAT4(0, 0, 0, 0)), _specularPower(0.0f), _diffuseStrength(0.0f), _ambientStrength(0.0f), _specularStrength(0.0f)
+{
+}
+
 const XMFLOAT4& Light::GetPosition()
 {
     return _position;

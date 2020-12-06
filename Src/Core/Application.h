@@ -35,6 +35,8 @@
 #include "EntityManager.h"
 #include "SelectionHide.h"
 #include "Scene.h"
+#include "LightManager.h"
+#include "LightComponent.h"
 
 using namespace DirectX;
 
@@ -66,9 +68,6 @@ private:
 	std::vector<Shader*> _shaders;
 	std::vector<Texture*> _textures;
 
-	StructuredBuffer* _pLightBuffer;
-	std::vector<Light>		_lights;
-
 public:
 	Application();
 	~Application();
@@ -92,6 +91,5 @@ private:
 	void InitConstantBufferVars();
 	void InitEntities(const Scene& scene);
 	Entity* LoadEntity(LoadedEntity entity);
-	void InitLights();
 	void ResizeRenderTargetView();
 };

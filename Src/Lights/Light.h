@@ -19,6 +19,7 @@ private:
 public:
 	Light(const XMFLOAT4& position, const XMFLOAT4& direction, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
 		float specularPower, float diffuseStrength, float ambientStrength, float specularStrength);
+	Light();
 
 	const XMFLOAT4& GetPosition();
 	const XMFLOAT4& GetDirection();
