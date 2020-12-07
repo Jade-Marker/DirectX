@@ -58,7 +58,7 @@ void CameraController::HandleSelection()
 		for (int i = 0; i < entities.size(); i++)
 		{
 			Mesh* pMesh = entities[i]->GetComponent<Mesh>();
-			if (pMesh)
+			if (pMesh && entities[i]->IsSelectable())
 			{
 				BoundingBox boundingBox = BoundingBox(pMesh->GetBoundingCenter(), pMesh->GetBoundingSize());
 

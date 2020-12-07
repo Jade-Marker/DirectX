@@ -2,8 +2,8 @@
 #include "Component.h"
 #include "CameraManager.h"
 
-Entity::Entity(const Transform& transform, Entity* parent, std::vector<Component*> components) :
-	_transform(transform), _parent(parent), _components(components)
+Entity::Entity(const Transform& transform, Entity* parent, std::vector<Component*> components, bool isSelectable) :
+	_transform(transform), _parent(parent), _components(components), _isSelectable(isSelectable)
 {
     for (int i = 0; i < _components.size(); i++)
         _components[i]->Initialise(this);
@@ -56,6 +56,11 @@ void Entity::ChangeParent(Entity* parent)
 Transform& Entity::GetTransform()
 {
     return _transform;
+}
+
+bool Entity::IsSelectable()
+{
+	return _isSelectable;
 }
 
 bool Entity::CompareDistance(Entity* object, Entity* other)

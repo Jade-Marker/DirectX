@@ -12,9 +12,10 @@ private:
 	Transform _transform;
 	Entity* _parent;
 	std::vector<Component*> _components;
+	bool _isSelectable;
 
 public:
-	Entity(const Transform& transform, Entity* parent, std::vector<Component*> components);
+	Entity(const Transform& transform, Entity* parent, std::vector<Component*> components, bool isSelectable);
 	~Entity();
 	void Draw();
 	void Update(float deltaTime);
@@ -27,6 +28,7 @@ public:
 	T* GetComponent();
 
 	Transform& GetTransform();
+	bool IsSelectable();
 
 	static bool CompareDistance(Entity* object, Entity* other);
 };

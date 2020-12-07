@@ -110,14 +110,15 @@ struct LoadedEntity
 	Transform transform;
 	int parent;
 	std::vector<LoadedComponent*> components;
+	bool selectable;
 
-	LoadedEntity(Transform transform, int parent, std::vector<LoadedComponent*> components) :
-		transform(transform), parent(parent), components(components)
+	LoadedEntity(Transform transform, int parent, std::vector<LoadedComponent*> components, bool selectable) :
+		transform(transform), parent(parent), components(components), selectable(selectable)
 	{
 	}
 
 	LoadedEntity() :
-		transform(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0)), parent(-1)
+		transform(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0)), parent(-1), selectable(false)
 	{}
 };
 

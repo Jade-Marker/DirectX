@@ -101,7 +101,7 @@ void to_json(json& j, const LoadedCamera& camera)
 
 void to_json(json& j, const LoadedEntity& entity)
 {
-	j = json{ {"transform", entity.transform}, {"parent", entity.parent}, {"components", entity.components} };
+	j = json{ {"transform", entity.transform}, {"parent", entity.parent}, {"components", entity.components}, {"isSelectable", entity.selectable} };
 }
 
 void to_json(json& j, const Transform& transform)
@@ -229,6 +229,7 @@ void from_json(const json& j, LoadedEntity& entity)
 	entity.transform = j["transform"];
 	entity.parent = j["parent"];
 	entity.components = j["components"];
+	entity.selectable = j["isSelectable"];
 }
 
 void from_json(const json& j, Transform& transform)

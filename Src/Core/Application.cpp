@@ -1,10 +1,12 @@
 #include "Application.h"
 
 //todo
-//Update entity so that some entities aren't selectable
 //Should ID3D11RasterizerState's be shared across RasterState components?
-//Sort credits
+//Add ground plane
+//Update camera controller to have multiple speeds
 //Add Custom component
+//Add different cameras, so that the following are provided "(Fixed viewpoints (H1 Top-down and H2 Static), I1 A third person view and a view I2 first person fixed to the user-controlled object are provided)"
+//Sort credits
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -614,7 +616,7 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         components.push_back(component);
     }
 
-    Entity* newEntity = new Entity(entity.transform, nullptr, components);
+    Entity* newEntity = new Entity(entity.transform, nullptr, components, entity.selectable);
 
     return newEntity;
 }
