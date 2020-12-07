@@ -6,7 +6,7 @@
 class RasterState :
 	public Component
 {
-private:
+protected:
 	ID3D11RasterizerState* _rasterState;
 	ID3D11RasterizerState* _backFaceRasterState;
 	ID3D11RasterizerState* _frontFaceRasterState;
@@ -21,6 +21,6 @@ public:
 	void BackFaceCullState();
 	void FrontFaceCullState();
 	void WireframeState();
-	bool IsWireframe();
+	virtual bool IsWireframe();
 };
 

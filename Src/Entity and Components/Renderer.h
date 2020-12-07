@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "RasterState.h"
+#include "SkyboxRasterState.h"
 #include "RenderingBuffers.h"
 class Renderer :
 	public Component
@@ -12,6 +13,7 @@ private:
 	Material* _pMaterial;
 	RasterState* _pRasterState;
 	RenderingBuffers* _pRenderingBuffers;
+	bool _isSkybox;
 
 private:
 	void BindTexture(Texture* texture, int slot);

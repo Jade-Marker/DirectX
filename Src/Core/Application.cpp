@@ -1,7 +1,9 @@
 #include "Application.h"
 
 //todo
-//Add Skybox
+//Update entity so that some entities aren't selectable
+//Should ID3D11RasterizerState's be shared across RasterState components?
+//Sort credits
 //Add Custom component
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
 
@@ -398,21 +400,30 @@ void Application::InitViewport()
 
 void Application::InitDepthStencilBuffer()
 {
-    D3D11_TEXTURE2D_DESC depthStencilDesc;
-    depthStencilDesc.Width = _WindowWidth;
-    depthStencilDesc.Height = _WindowHeight;
-    depthStencilDesc.MipLevels = 1;
-    depthStencilDesc.ArraySize = 1;
-    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    depthStencilDesc.CPUAccessFlags = 0;
-    depthStencilDesc.MiscFlags = 0;
+    D3D11_TEXTURE2D_DESC depthStencilBufferDesc;
+    depthStencilBufferDesc.Width = _WindowWidth;
+    depthStencilBufferDesc.Height = _WindowHeight;
+    depthStencilBufferDesc.MipLevels = 1;
+    depthStencilBufferDesc.ArraySize = 1;
+    depthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilBufferDesc.SampleDesc.Count = 1;
+    depthStencilBufferDesc.SampleDesc.Quality = 0;
+    depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilBufferDesc.CPUAccessFlags = 0;
+    depthStencilBufferDesc.MiscFlags = 0;
 
-    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
+    D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+    ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+    depthStencilDesc.DepthEnable = true;
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilBufferDesc, nullptr, &_pDepthStencilBuffer);
     DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+
+    DeviceManager::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &_pDepthStencilState);
+    DeviceManager::GetContext()->OMSetDepthStencilState(_pDepthStencilState, 0);
 }
 
 void Application::Cleanup()
@@ -421,6 +432,7 @@ void Application::Cleanup()
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
+    if (_pDepthStencilState) _pDepthStencilState->Release();
     if (_pBlendState) _pBlendState->Release();
 
     EntityManager::ClearEntities();
@@ -592,6 +604,10 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         case SCENE_LIGHT:
             light = (LoadedLight*)entity.components[i];
             component = new LightComponent(light->sceneLight);
+            break;
+
+        case SKYBOX_RASTER_STATE:
+            component = new SkyboxRasterState();
             break;
         }
 

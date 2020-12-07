@@ -14,6 +14,9 @@ void Renderer::Start()
     _pMaterial = _parent->GetComponent<Material>();
     _pRasterState = _parent->GetComponent<RasterState>();
     _pRenderingBuffers = _parent->GetComponent<RenderingBuffers>();
+
+    if (dynamic_cast<SkyboxRasterState*>(_pRasterState) != nullptr)
+        _isSkybox = true;
 }
 
 void Renderer::Draw()
@@ -37,7 +40,14 @@ void Renderer::Draw()
         else
         {
             if (!_pMaterial->IsTransparent())
+            {
+                if (_isSkybox)
+                    ((SkyboxRasterState*)_pRasterState)->SkyboxState();
+                else
+                    _pRasterState->BackFaceCullState();
+
                 DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
+            }
             else
             {
                 _pRasterState->FrontFaceCullState();

@@ -373,6 +373,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Entity and Components\SkyboxRasterState.cpp" />
     <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
     <ClCompile Include="Src\Managers\LightManager.cpp" />
     <ClCompile Include="Src\Core\Scene.cpp" />
@@ -411,6 +412,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extern\json.hpp" />
+    <ClInclude Include="Src\Entity and Components\SkyboxRasterState.h" />
     <ClInclude Include="Src\Entity and Components\LightComponent.h" />
     <ClInclude Include="Src\Managers\LightManager.h" />
     <ClInclude Include="Src\Core\Scene.h" />

@@ -37,6 +37,7 @@
 #include "Scene.h"
 #include "LightManager.h"
 #include "LightComponent.h"
+#include "SkyboxRasterState.h"
 
 using namespace DirectX;
 
@@ -51,6 +52,7 @@ private:
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D*		_pDepthStencilBuffer;
+	ID3D11DepthStencilState*_pDepthStencilState;
 	ID3D11BlendState*		_pBlendState;
 
 	float _clearColor[4];

@@ -453,7 +453,7 @@
                             "y": 1.0,
                             "z": 1.0
                         },
-                        "isTransparent": false,
+                        "isTransparent": true,
                         "shader": 3,
                         "specular": -1,
                         "specularMtrl": {
@@ -552,16 +552,16 @@
                     {
                         "Ambient": {
                             "w": 0.4000000059604645,
-                            "x": 0.0,
+                            "x": 1.0,
                             "y": 1.0,
-                            "z": 0.0
+                            "z": 1.0
                         },
                         "AmbientStrength": 5.0,
                         "Diffuse": {
                             "w": 1.0,
-                            "x": 0.0,
+                            "x": 1.0,
                             "y": 1.0,
-                            "z": 0.0
+                            "z": 1.0
                         },
                         "DiffuseStrength": 10.0,
                         "Direction": {
@@ -578,9 +578,9 @@
                         },
                         "Specular": {
                             "w": 1.0,
-                            "x": 0.0,
+                            "x": 1.0,
                             "y": 1.0,
-                            "z": 0.0
+                            "z": 1.0
                         },
                         "SpecularPower": 10.0,
                         "SpecularStrength": 10.0,
@@ -606,10 +606,81 @@
                     "z": 1.0
                 }
             }
+        },
+		{
+            "components":[ 
+			[
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 4,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 4,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 3,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "type": 10
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
         }
     ],
     "modelsPaths": [
-        "Res\\Models\\fish.obj"
+        "Res\\Models\\fish.obj"		
     ],
     "shaderPaths": [
         {
@@ -627,13 +698,18 @@
         {
             "path": "Res\\Shaders\\Water.fx",
             "type": 1
+        },
+		{
+            "path": "Res\\Shaders\\Skybox.fx",
+            "type": 0
         }
     ],
     "texturePaths": [
         "Res\\Textures\\Crate_COLOR.dds",
         "Res\\Textures\\Crate_SPEC.dds",
         "Res\\Textures\\fish.dds",
-        "Res\\Textures\\fishAmbient.dds"
+        "Res\\Textures\\fishAmbient.dds",
+        "Res\\Textures\\StormSkybox.dds"
     ],
     "version": 1.0
 }

@@ -1,0 +1,2 @@
+Skybox images: https://opengameart.org/content/stormy-days-skybox
+texassemble: https://github.com/Microsoft/DirectXTex/wiki/Texassemble
