@@ -1,29 +1,34 @@
 #include "SkyboxRasterState.h"
 
-SkyboxRasterState::SkyboxRasterState() :
-	RasterState(false), _skyboxRasterState(nullptr)
+ID3D11RasterizerState* SkyboxRasterState::GetSkyboxState()
 {
-	HRESULT hr;
-	D3D11_RASTERIZER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+	ID3D11RasterizerState* skyboxRaster = nullptr;
 
-	desc.FillMode = D3D11_FILL_SOLID;
-	desc.CullMode = D3D11_CULL_NONE;
-	hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_skyboxRasterState);
+	if (skyboxRaster == nullptr)
+		CreateRasterState(D3D11_FILL_SOLID, D3D11_CULL_NONE, skyboxRaster);
+
+	return skyboxRaster;
 }
 
-SkyboxRasterState::~SkyboxRasterState()
+SkyboxRasterState::SkyboxRasterState() :
+	RasterState(false)
 {
-	_skyboxRasterState->Release();
+	
 }
 
 void SkyboxRasterState::SkyboxState()
 {
-	_rasterState = _skyboxRasterState;
-	SetRasterState();
+	SetRasterState(GetSkyboxState());
 }
 
 bool SkyboxRasterState::IsWireframe()
 {
 	return false;
+}
+
+void SkyboxRasterState::DeallocateStates()
+{
+	GetSkyboxState()->Release();
+
+	RasterState::DeallocateStates();
 }

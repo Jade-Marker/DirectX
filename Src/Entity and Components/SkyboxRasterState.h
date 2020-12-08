@@ -4,12 +4,13 @@ class SkyboxRasterState :
 	public RasterState
 {
 private:
-	ID3D11RasterizerState* _skyboxRasterState;
+	static ID3D11RasterizerState* GetSkyboxState();
 
 public:
 	SkyboxRasterState();
-	~SkyboxRasterState();
 	void SkyboxState();
 	virtual bool IsWireframe();
+
+	static void DeallocateStates();
 };
 

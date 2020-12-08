@@ -1,30 +1,54 @@
 #include "RasterState.h"
 
-RasterState::RasterState(bool startInWireFrame):
-    _wireframeMode(startInWireFrame)
+void RasterState::SetRasterState(ID3D11RasterizerState* state)
+{
+    _rasterState = state;
+    DeviceManager::GetContext()->RSSetState(_rasterState);
+}
+
+void RasterState::CreateRasterState(D3D11_FILL_MODE fillMode, D3D11_CULL_MODE cullMode, ID3D11RasterizerState*& rasterState)
 {
     HRESULT hr;
     D3D11_RASTERIZER_DESC desc;
     ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
-
-    desc.FillMode = D3D11_FILL_WIREFRAME;
-    desc.CullMode = D3D11_CULL_NONE;
-    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_wireframeRasterState);
-
-    desc.FillMode = D3D11_FILL_SOLID;
-    desc.CullMode = D3D11_CULL_BACK;
-    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_backFaceRasterState);
-
-    desc.FillMode = D3D11_FILL_SOLID;
-    desc.CullMode = D3D11_CULL_FRONT;
-    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &_frontFaceRasterState);
+    desc.FillMode = fillMode;
+    desc.CullMode = cullMode;
+    hr = DeviceManager::GetDevice()->CreateRasterizerState(&desc, &rasterState);
 }
 
-RasterState::~RasterState()
+ID3D11RasterizerState* RasterState::GetBackFaceState()
 {
-    _wireframeRasterState->Release();
-    _backFaceRasterState->Release();
-    _frontFaceRasterState->Release();
+    static ID3D11RasterizerState* backfaceState = nullptr;
+
+    if (backfaceState == nullptr)
+        CreateRasterState(D3D11_FILL_SOLID, D3D11_CULL_BACK, backfaceState);
+
+    return backfaceState;
+}
+
+ID3D11RasterizerState* RasterState::GetFrontFaceState()
+{
+    static ID3D11RasterizerState* frontfaceState = nullptr;
+
+    if (frontfaceState == nullptr)
+        CreateRasterState(D3D11_FILL_SOLID, D3D11_CULL_FRONT, frontfaceState);
+
+    return frontfaceState;
+}
+
+ID3D11RasterizerState* RasterState::GetWireframeState()
+{
+    static ID3D11RasterizerState* wireframeState = nullptr;
+
+    if (wireframeState == nullptr)
+        CreateRasterState(D3D11_FILL_WIREFRAME, D3D11_CULL_NONE, wireframeState);
+
+    return wireframeState;
+}
+
+RasterState::RasterState(bool startInWireFrame):
+    _wireframeMode(startInWireFrame), _rasterState(nullptr)
+{
 }
 
 void RasterState::Update(float deltaTime)
@@ -35,30 +59,29 @@ void RasterState::Update(float deltaTime)
     }
 }
 
-void RasterState::SetRasterState()
-{
-    DeviceManager::GetContext()->RSSetState(_rasterState);
-}
-
 void RasterState::BackFaceCullState()
 {
-    _rasterState = _backFaceRasterState;
-    SetRasterState();
+    SetRasterState(GetBackFaceState());
 }
 
 void RasterState::FrontFaceCullState()
 {
-    _rasterState = _frontFaceRasterState;
-    SetRasterState();
+    SetRasterState(GetFrontFaceState());
 }
 
 void RasterState::WireframeState()
 {
-    _rasterState = _wireframeRasterState;
-    SetRasterState();
+    SetRasterState(GetWireframeState());
 }
 
 bool RasterState::IsWireframe()
 {
     return _wireframeMode;
+}
+
+void RasterState::DeallocateStates()
+{
+    GetWireframeState()->Release();
+    GetBackFaceState()->Release();
+    GetFrontFaceState()->Release();
 }

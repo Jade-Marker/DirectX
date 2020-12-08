@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Should ID3D11RasterizerState's be shared across RasterState components?
 //Add ground plane
 //Update camera controller to have multiple speeds
 //Add Custom component
@@ -450,6 +449,8 @@ void Application::Cleanup()
 
     for (int i = 0; i < _textures.size(); i++)
         delete _textures[i];
+
+    SkyboxRasterState::DeallocateStates();
 
     DebugLogManager::Log("Closing");
 }
