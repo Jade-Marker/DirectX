@@ -10,6 +10,7 @@ class CameraController :
 private:
 	const float cMoveSpeed;
 	const float cRotSpeed;
+	const float cRunningScale;
 
 	void HandleMovement(float deltaTime);
 	void HandleRotation();

@@ -52,7 +52,8 @@ private:
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D*		_pDepthStencilBuffer;
-	ID3D11DepthStencilState*_pDepthStencilState;
+	ID3D11DepthStencilState*_pSkyBoxDepthStencilState;
+	ID3D11DepthStencilState*_pDefaultDepthStencilState;
 	ID3D11BlendState*		_pBlendState;
 
 	float _clearColor[4];
@@ -85,6 +86,7 @@ private:
 	HRESULT InitDevice();
 	void InitViewport();
 	void InitDepthStencilBuffer();
+	void InitDepthStencilStates();
 	void Cleanup();
 
 	void InitTextures(const Scene& scene);

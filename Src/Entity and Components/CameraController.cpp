@@ -4,6 +4,8 @@ void CameraController::HandleMovement(float deltaTime)
 {
 	XMVECTOR offset = XMVectorSet(0, 0, 0, 0);
 
+	bool isRunning = InputManager::GetKey(VK_SHIFT);
+
 	if (InputManager::GetKey('W'))
 	{
 		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetDirection();
@@ -29,6 +31,10 @@ void CameraController::HandleMovement(float deltaTime)
 	}
 
 	offset = XMVector3Normalize(offset) * cMoveSpeed;
+
+	if (isRunning)
+		offset *= cRunningScale;
+
 	_parent->GetTransform().Translate(offset);
 }
 
@@ -84,7 +90,7 @@ void CameraController::HandleSelection()
 }
 
 CameraController::CameraController():
-	cMoveSpeed(0.25f), cRotSpeed(0.001f)
+	cMoveSpeed(0.25f), cRotSpeed(0.001f), cRunningScale(4.0f)
 {
 }
 

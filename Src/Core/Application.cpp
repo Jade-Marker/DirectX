@@ -2,7 +2,6 @@
 
 //todo
 //Add ground plane
-//Update camera controller to have multiple speeds
 //Add Custom component
 //Add different cameras, so that the following are provided "(Fixed viewpoints (H1 Top-down and H2 Static), I1 A third person view and a view I2 first person fixed to the user-controlled object are provided)"
 //Sort credits
@@ -198,7 +197,17 @@ void Application::Draw()
         if (material != nullptr && material->IsTransparent())
             _transparentObjects.push_back(entities[i]);
         else
-            entities[i]->Draw();
+        {
+            SkyboxRasterState* skyboxRaster = entities[i]->GetComponent<SkyboxRasterState>();
+            if (skyboxRaster != nullptr)
+            {
+                DeviceManager::GetContext()->OMSetDepthStencilState(_pSkyBoxDepthStencilState, 0);
+                entities[i]->Draw();
+                DeviceManager::GetContext()->OMSetDepthStencilState(_pDefaultDepthStencilState, 0);
+            }
+            else
+                entities[i]->Draw();
+        }
     }
 
     std::sort(_transparentObjects.begin(), _transparentObjects.end(), Entity::CompareDistance);
@@ -342,6 +351,7 @@ HRESULT Application::InitDevice()
 
     //Set up the depth stencil buffer
     InitDepthStencilBuffer();
+    InitDepthStencilStates();
 
     DeviceManager::GetContext()->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
 
@@ -414,17 +424,23 @@ void Application::InitDepthStencilBuffer()
     depthStencilBufferDesc.CPUAccessFlags = 0;
     depthStencilBufferDesc.MiscFlags = 0;
 
+    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilBufferDesc, nullptr, &_pDepthStencilBuffer);
+    DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+}
+
+void Application::InitDepthStencilStates()
+{
     D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
     ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
     depthStencilDesc.DepthEnable = true;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+    DeviceManager::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &_pSkyBoxDepthStencilState);
 
-    DeviceManager::GetDevice()->CreateTexture2D(&depthStencilBufferDesc, nullptr, &_pDepthStencilBuffer);
-    DeviceManager::GetDevice()->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+    DeviceManager::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &_pDefaultDepthStencilState);
 
-    DeviceManager::GetDevice()->CreateDepthStencilState(&depthStencilDesc, &_pDepthStencilState);
-    DeviceManager::GetContext()->OMSetDepthStencilState(_pDepthStencilState, 0);
+    DeviceManager::GetContext()->OMSetDepthStencilState(_pDefaultDepthStencilState, 0);
 }
 
 void Application::Cleanup()
@@ -433,7 +449,8 @@ void Application::Cleanup()
     if (_pRenderTargetView) _pRenderTargetView->Release();
     if (_pDepthStencilView) _pDepthStencilView->Release();
     if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-    if (_pDepthStencilState) _pDepthStencilState->Release();
+    if (_pSkyBoxDepthStencilState) _pSkyBoxDepthStencilState->Release();
+    if (_pSkyBoxDepthStencilState) _pDefaultDepthStencilState->Release();
     if (_pBlendState) _pBlendState->Release();
 
     EntityManager::ClearEntities();
