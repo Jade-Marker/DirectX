@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Add ground plane
 //Add Custom component
 //Add different cameras, so that the following are provided "(Fixed viewpoints (H1 Top-down and H2 Static), I1 A third person view and a view I2 first person fixed to the user-controlled object are provided)"
 //Sort credits
