@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 enum ComponentType
 {
-	MATERIAL, MESH, RENDERER, RASTER_STATE, ROTATOR, RENDERING_BUFFER, SELECTION_HIDE, CAMERA, CAMERA_CONTROLLER, SCENE_LIGHT, SKYBOX_RASTER_STATE, NO_TYPE
+	MATERIAL, MESH, RENDERER, RASTER_STATE, ROTATOR, RENDERING_BUFFER, SELECTION_HIDE, CAMERA, CAMERA_CONTROLLER, SCENE_LIGHT, SKYBOX_RASTER_STATE, CUSTOM_COMPONENT, NO_TYPE
 };
 
 struct LoadedComponent
@@ -104,6 +104,14 @@ struct LoadedLight :LoadedComponent
 	{}
 };
 
+struct LoadedCustomComponent : LoadedComponent
+{
+	std::string filePath;
+
+	LoadedCustomComponent() :
+		LoadedComponent(CUSTOM_COMPONENT)
+	{}
+};
 
 struct LoadedEntity
 {
@@ -181,3 +189,4 @@ void from_json(const json& j, LoadedComponent& component);
 void from_json(const json& j, LoadedShader& shader);
 void from_json(const json& j, Scene& scene);
 void from_json(const json& j, LoadedLight& light);
+void from_json(const json& j, LoadedCustomComponent& customComponent);

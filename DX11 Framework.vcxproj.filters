@@ -50,6 +50,15 @@
     <ClInclude Include="Src\Managers\LightManager.h" />
     <ClInclude Include="Src\Entity and Components\LightComponent.h" />
     <ClInclude Include="Src\Entity and Components\SkyboxRasterState.h" />
+    <ClInclude Include="extern\Lua\include\lauxlib.h" />
+    <ClInclude Include="extern\Lua\include\lua.h" />
+    <ClInclude Include="extern\Lua\include\lua.hpp" />
+    <ClInclude Include="extern\Lua\include\luaconf.h" />
+    <ClInclude Include="extern\Lua\include\lualib.h" />
+    <ClInclude Include="extern\sol\config.hpp" />
+    <ClInclude Include="extern\sol\forward.hpp" />
+    <ClInclude Include="extern\sol\sol.hpp" />
+    <ClInclude Include="Src\Entity and Components\CustomComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -88,6 +97,7 @@
     <ClCompile Include="Src\Managers\LightManager.cpp" />
     <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
     <ClCompile Include="Src\Entity and Components\SkyboxRasterState.cpp" />
+    <ClCompile Include="Src\Entity and Components\CustomComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

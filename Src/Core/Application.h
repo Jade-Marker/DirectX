@@ -38,6 +38,7 @@
 #include "LightManager.h"
 #include "LightComponent.h"
 #include "SkyboxRasterState.h"
+#include "CustomComponent.h"
 
 using namespace DirectX;
 

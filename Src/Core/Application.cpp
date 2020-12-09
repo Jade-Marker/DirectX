@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Add Custom component
 //Add different cameras, so that the following are provided "(Fixed viewpoints (H1 Top-down and H2 Static), I1 A third person view and a view I2 first person fixed to the user-controlled object are provided)"
 //Sort credits
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
@@ -127,6 +126,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     InitConstantBufferVars();
 
+    DebugLogManager::Initialise(false);
+    DebugLogManager::Clear();
+    DebugLogManager::Log("Starting up");
+
     json j;
     std::ifstream file = std::ifstream("Scene.txt");
     j << file;
@@ -141,11 +144,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     scene.CleanUp();
 
-    DebugLogManager::Initialise(false);
-    DebugLogManager::Clear();
-    DebugLogManager::Log("Starting up");
-    DebugLogManager::GetStream() << "Hello world!";
-    DebugLogManager::GetStream() << 25;
+
 
     InputManager::Initialise();
 
@@ -561,6 +560,7 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         LoadedRotator* rotator;
         LoadedCamera* camera;
         LoadedLight* light;
+        LoadedCustomComponent* customComponent;
         Texture* diffuse = nullptr;
         Texture* specular = nullptr;
         Texture* ambient = nullptr;
@@ -627,6 +627,11 @@ Entity* Application::LoadEntity(LoadedEntity entity)
 
         case SKYBOX_RASTER_STATE:
             component = new SkyboxRasterState();
+            break;
+
+        case CUSTOM_COMPONENT:
+            customComponent = (LoadedCustomComponent*)entity.components[i];
+            component = new CustomComponent(customComponent->filePath);
             break;
         }
 

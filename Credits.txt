@@ -1,3 +1,5 @@
 Skybox images: https://opengameart.org/content/stormy-days-skybox
 texassemble: https://github.com/Microsoft/DirectXTex/wiki/Texassemble
 Ground texture: https://opengameart.org/content/36-free-ground-textures-diffuse-normals-grassleaves01diffusejpg
+Sol library: https://github.com/ThePhD/sol2
+Lua library: https://www.lua.org/download.html

@@ -144,6 +144,7 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		LoadedRotator rotator;
 		LoadedCamera camera;
 		LoadedLight light;
+		LoadedCustomComponent customComponent;
 
 		switch (component.type)
 		{
@@ -175,6 +176,11 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		case SCENE_LIGHT:
 			light = j[i][0];
 			pComponent = new LoadedLight(light);
+			break;
+
+		case CUSTOM_COMPONENT:
+			customComponent = j[i][0];
+			pComponent = new LoadedCustomComponent(customComponent);
 			break;
 
 		default:
@@ -270,4 +276,9 @@ void from_json(const json& j, LoadedLight& light)
 	light.sceneLight.SetDiffuseStrength(j["DiffuseStrength"]);
 	light.sceneLight.SetAmbientStrength(j["AmbientStrength"]);
 	light.sceneLight.SetSpecularStrength(j["SpecularStrength"]);
+}
+
+void from_json(const json& j, LoadedCustomComponent& customComponent)
+{
+	customComponent.filePath = j["filePath"];
 }

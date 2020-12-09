@@ -821,6 +821,91 @@
                 }
             },
 			"isSelectable": false
+        },
+				{
+            "components":[ 
+			[
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": -1,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 3,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+					   "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ],
+				[
+                    {
+						"filePath": "Res\\Scripts\\BasicRotator.lua",
+                        "type": 11
+                    }
+                ],
+				[
+                    {
+						"filePath": "Res\\Scripts\\BasicOscillator.lua",
+                        "type": 11
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 15.0,
+                    "y": 5.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+			"isSelectable": false
         }
     ],
     "modelsPaths": [

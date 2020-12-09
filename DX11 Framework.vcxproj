@@ -141,15 +141,15 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Src\Buffers;$(ProjectDir)Src\Core;$(ProjectDir)Src\Lights;$(ProjectDir)Src\Managers;$(ProjectDir)Src\Mesh;$(ProjectDir)Src\Entity and Components;$(ProjectDir)Src\Shaders;$(ProjectDir)Src\Textures;$(ProjectDir)extern;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Src\Buffers;$(ProjectDir)Src\Core;$(ProjectDir)Src\Lights;$(ProjectDir)Src\Managers;$(ProjectDir)Src\Mesh;$(ProjectDir)Src\Entity and Components;$(ProjectDir)Src\Shaders;$(ProjectDir)Src\Textures;$(ProjectDir)extern;$(ProjectDir)extern\sol;$(ProjectDir)extern\Lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions> /std:c++17 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;PROFILE;_WINDOWS;D3DXFX_LARGEADDRESS_HANDLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;lua54.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
@@ -158,6 +158,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(ProjectDir)extern\Lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
@@ -373,6 +374,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Entity and Components\CustomComponent.cpp" />
     <ClCompile Include="Src\Entity and Components\SkyboxRasterState.cpp" />
     <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
     <ClCompile Include="Src\Managers\LightManager.cpp" />
@@ -411,7 +413,16 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Entity and Components\CustomComponent.h" />
     <ClInclude Include="extern\json.hpp" />
+    <ClInclude Include="extern\Lua\include\lauxlib.h" />
+    <ClInclude Include="extern\Lua\include\lua.h" />
+    <ClInclude Include="extern\Lua\include\lua.hpp" />
+    <ClInclude Include="extern\Lua\include\luaconf.h" />
+    <ClInclude Include="extern\Lua\include\lualib.h" />
+    <ClInclude Include="extern\sol\config.hpp" />
+    <ClInclude Include="extern\sol\forward.hpp" />
+    <ClInclude Include="extern\sol\sol.hpp" />
     <ClInclude Include="Src\Entity and Components\SkyboxRasterState.h" />
     <ClInclude Include="Src\Entity and Components\LightComponent.h" />
     <ClInclude Include="Src\Managers\LightManager.h" />
