@@ -1,8 +1,11 @@
 #include "Application.h"
 
 //todo
-//Add different cameras, so that the following are provided "(Fixed viewpoints (H1 Top-down and H2 Static), I1 A third person view and a view I2 first person fixed to the user-controlled object are provided)"
+//Top-down camera
+//Third person camera
 //Sort credits
+//Finish Input table in CustomComponent
+//Add support for all component types in GetComponent
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -106,6 +109,10 @@ Application::~Application()
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 {
+    DebugLogManager::Initialise(true);
+    DebugLogManager::Clear();
+    DebugLogManager::Log("Starting up");
+
     if (FAILED(InitWindow(hInstance, nCmdShow)))
     {
         return E_FAIL;
@@ -125,10 +132,6 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
     }
 
     InitConstantBufferVars();
-
-    DebugLogManager::Initialise(false);
-    DebugLogManager::Clear();
-    DebugLogManager::Log("Starting up");
 
     json j;
     std::ifstream file = std::ifstream("Scene.txt");
@@ -545,6 +548,13 @@ void Application::InitEntities(const Scene& scene)
         if (scene.loadedEntities[i].parent != -1)
             entities[i]->ChangeParent(entities[scene.loadedEntities[i].parent]);
     }
+
+    //If no main camera is set, create a default
+    if (CameraManager::GetMainCamera() == nullptr)
+    {
+        Entity* defaultCamera = new Entity(Transform(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), nullptr,
+            std::vector<Component*>{ new Camera(_WindowWidth, _WindowHeight, 0.1, 100)}, false);
+    }
 }
 
 Entity* Application::LoadEntity(LoadedEntity entity)
@@ -613,7 +623,6 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         case CAMERA:
             camera = (LoadedCamera*)entity.components[i];
             component = new Camera(_WindowWidth, _WindowHeight, camera->nearDepth, camera->farDepth);
-            CameraManager::SetMainCamera((Camera*)component);
             break;
 
         case CAMERA_CONTROLLER:

@@ -11,6 +11,7 @@ private:
 	const float cMoveSpeed;
 	const float cRotSpeed;
 	const float cRunningScale;
+	Camera* _pCamera;
 
 	void HandleMovement(float deltaTime);
 	void HandleRotation();
@@ -19,6 +20,7 @@ private:
 public:
 	CameraController();
 
+	virtual void Start();
 	virtual void Update(float deltaTime);
 };
 

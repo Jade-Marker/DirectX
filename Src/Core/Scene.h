@@ -5,11 +5,6 @@
 #include "Light.h"
 using json = nlohmann::json;
 
-enum ComponentType
-{
-	MATERIAL, MESH, RENDERER, RASTER_STATE, ROTATOR, RENDERING_BUFFER, SELECTION_HIDE, CAMERA, CAMERA_CONTROLLER, SCENE_LIGHT, SKYBOX_RASTER_STATE, CUSTOM_COMPONENT, NO_TYPE
-};
-
 struct LoadedComponent
 {
 	int type;

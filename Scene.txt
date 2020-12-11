@@ -531,7 +531,13 @@
                     {
                         "type": 8
                     }
-                ]
+                ],
+				[
+					{
+						"filePath": "Res\\Scripts\\FirstPersonCamera.lua",
+                        "type": 11
+					}
+				]
             ],
             "parent": -1,
             "transform": {
@@ -543,6 +549,42 @@
                 "Rotation": {
                     "x": 0.0,
                     "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+			"isSelectable": true
+        },
+		{
+            "components": [
+                [
+                    {
+                        "farDepth": 100.0,
+                        "nearDepth": 0.10000000149011612,
+                        "type": 7
+                    }
+                ],
+				[
+					{
+						"filePath": "Res\\Scripts\\StaticCamera.lua",
+                        "type": 11
+					}
+				]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 30.0,
+                    "y": 0.0,
+                    "z": 5.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": -1.570796327,
                     "z": 0.0
                 },
                 "Scale": {

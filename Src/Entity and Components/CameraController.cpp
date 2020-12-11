@@ -94,9 +94,17 @@ CameraController::CameraController():
 {
 }
 
+void CameraController::Start()
+{
+	_pCamera = _parent->GetComponent<Camera>();
+}
+
 void CameraController::Update(float deltaTime)
 {
-	HandleMovement(deltaTime);
-	HandleRotation();
-	HandleSelection();
+	if (CameraManager::GetMainCamera() == _pCamera)
+	{
+		HandleMovement(deltaTime);
+		HandleRotation();
+		HandleSelection();
+	}
 }

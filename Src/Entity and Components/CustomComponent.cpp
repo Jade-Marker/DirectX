@@ -42,11 +42,23 @@ void CustomComponent::InitUserTypes()
 		"Rotation", &Transform::Rotation,
 		"Scale", &Transform::Scale
 		);
+
+	sol::usertype<Component> component = lua.new_usertype<Component>(
+		"Component"
+		);
+
+	sol::usertype<Camera> camera = lua.new_usertype<Camera>(
+		"Camera",
+		sol::base_classes, sol::bases<Component>()
+		);
 }
 
 void CustomComponent::SetFunctions()
 {
 	lua.set_function("Log", DebugLogManager::Log);
+	lua.set_function("GetComponent", &CustomComponent::GetComponent);
+	lua.set_function("SetMainCamera", CameraManager::SetMainCamera);
+	lua.set_function("GetKeyDown", InputManager::GetKeyDown);
 }
 
 void CustomComponent::GetFunctions()
@@ -61,6 +73,42 @@ void CustomComponent::InitVariables()
 {
 	lua.set("InitialTransform", _parent->GetTransform());
 	lua.set("Transform", &_parent->GetTransform());
+
+	lua["ComponentType"] = lua.create_table_with(
+		"MATERIAL", MATERIAL,
+		"MESH", MESH,
+		"RENDERER", RENDERER,
+		"RASTER_STATE", RASTER_STATE,
+		"ROTATOR", ROTATOR,
+		"RENDERING_BUFFER", RENDERING_BUFFER,
+		"SELECTION_HIDE", SELECTION_HIDE,
+		"CAMERA", CAMERA,
+		"CAMERA_CONTROLLER", CAMERA_CONTROLLER,
+		"SCENE_LIGHT", SCENE_LIGHT,
+		"SKYBOX_RASTER_STATE", SKYBOX_RASTER_STATE,
+		"CUSTOM_COMPONENT", CUSTOM_COMPONENT
+	);
+
+	lua["Input"] = lua.create_table_with(
+		"KEY_1", (int)'1',
+		"KEY_2", (int)'2'
+	);
+
+	lua.set("this", this);
+}
+
+sol::object CustomComponent::GetComponent(ComponentType type)
+{
+	sol::object component;
+
+	switch (type)
+	{
+		case CAMERA:
+			component = sol::make_object<Camera*>(lua, (Camera*)_parent->GetComponent<Camera>());
+			break;
+	}
+
+	return component;
 }
 
 CustomComponent::CustomComponent(const std::string& filePath)

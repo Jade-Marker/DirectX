@@ -1,7 +1,9 @@
 #pragma once
 #include "Component.h"
 #include "DebugLogManager.h"
-
+#include "Camera.h"
+#include "CameraManager.h"
+#include "InputManager.h"
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
@@ -29,6 +31,7 @@ private:
 	void SetFunctions();
 	void GetFunctions();
 	void InitVariables();
+	sol::object GetComponent(ComponentType type);
 
 public:
 	CustomComponent(const std::string& filePath);
