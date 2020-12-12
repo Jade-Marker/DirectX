@@ -31,7 +31,13 @@ private:
 	void SetFunctions();
 	void GetFunctions();
 	void InitVariables();
+
+	sol::object CreateObject(ComponentType type, Entity* entity);
 	sol::object GetComponent(ComponentType type);
+	sol::object GetEntityComponent(Entity* entity, ComponentType type);
+	sol::function GetLuaFunction(std::string name);
+	
+	static std::tuple<int, int> GetDeltaMousePos();
 
 public:
 	CustomComponent(const std::string& filePath);
@@ -39,4 +45,5 @@ public:
 	virtual void Draw();
 	virtual void Update(float deltaTime);
 	virtual void OnSelected();
+
 };

@@ -52,6 +52,12 @@ void CustomComponent::InitUserTypes()
 		sol::base_classes, sol::bases<Component>()
 		);
 
+	sol::usertype<CustomComponent> customComponent = lua.new_usertype<CustomComponent>(
+		"CustomComponent",
+		"GetFunction", &CustomComponent::GetLuaFunction,
+		sol::base_classes, sol::bases<Component>()
+		);
+
 	sol::usertype<Entity> entity = lua.new_usertype<Entity>(
 		"Entity",
 		"GetParent", &Entity::GetParent,
@@ -63,10 +69,12 @@ void CustomComponent::SetFunctions()
 {
 	lua.set_function("Log", DebugLogManager::Log);
 	lua.set_function("GetComponent", &CustomComponent::GetComponent);
+	lua.set_function("GetEntityComponent", &CustomComponent::GetEntityComponent);
 	lua.set_function("SetMainCamera", CameraManager::SetMainCamera);
 	lua.set_function("GetMainCamera", CameraManager::GetMainCamera);
 	lua.set_function("GetKeyDown", InputManager::GetKeyDown);
 	lua.set_function("GetKey", InputManager::GetKey);
+	lua.set_function("GetDeltaMousePos", CustomComponent::GetDeltaMousePos);
 }
 
 void CustomComponent::GetFunctions()
@@ -101,6 +109,7 @@ void CustomComponent::InitVariables()
 		"KEY_1", (int)'1',
 		"KEY_2", (int)'2',
 		"KEY_3", (int)'3',
+		"KEY_4", (int)'4',
 
 		"KEY_A", (int)'A',
 		"KEY_D", (int)'D',
@@ -113,18 +122,46 @@ void CustomComponent::InitVariables()
 	lua.set("parent", _parent);
 }
 
-sol::object CustomComponent::GetComponent(ComponentType type)
+sol::object CustomComponent::CreateObject(ComponentType type, Entity* entity)
 {
-	sol::object component;
+	sol::object object;
 
 	switch (type)
 	{
-		case CAMERA:
-			component = sol::make_object<Camera*>(lua, (Camera*)_parent->GetComponent<Camera>());
-			break;
+	case CAMERA:
+		object = sol::make_object<Camera*>(lua, (Camera*)entity->GetComponent<Camera>());
+		break;
+
+	case CUSTOM_COMPONENT:
+		object = sol::make_object<CustomComponent*>(lua, (CustomComponent*)entity->GetComponent<CustomComponent>());
+		break;
 	}
 
-	return component;
+	return object;
+}
+
+sol::object CustomComponent::GetComponent(ComponentType type)
+{
+	return CreateObject(type, _parent);
+}
+
+sol::object CustomComponent::GetEntityComponent(Entity* entity, ComponentType type)
+{
+	return CreateObject(type, entity);
+}
+
+sol::function CustomComponent::GetLuaFunction(std::string name)
+{
+	return lua[name];
+}
+
+std::tuple<int, int> CustomComponent::GetDeltaMousePos()
+{
+	int deltaX, deltaY;
+
+	InputManager::GetDeltaMousePos(deltaX, deltaY);
+
+	return std::tuple<int, int>(deltaX, deltaY);
 }
 
 CustomComponent::CustomComponent(const std::string& filePath)

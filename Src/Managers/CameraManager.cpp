@@ -23,5 +23,8 @@ void CameraManager::SetMainCamera(Camera* camera)
 {
 	CameraManager* instance = GetInstance();
 
+	if(instance->_mainCamera != nullptr)
+		camera->Reshape(instance->_mainCamera->GetWidth(), instance->_mainCamera->GetHeight());
+
 	instance->_mainCamera = camera;
 }

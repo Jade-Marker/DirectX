@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Third person camera
 //There should be a UpdateLightDirection, so that directional lights also get updated
 //Sort credits
 //Finish Input table in CustomComponent
