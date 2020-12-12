@@ -53,6 +53,11 @@ void Entity::ChangeParent(Entity* parent)
     _parent = parent;
 }
 
+Entity* Entity::GetParent()
+{
+	return _parent;
+}
+
 Transform& Entity::GetTransform()
 {
     return _transform;

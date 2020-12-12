@@ -23,6 +23,7 @@ public:
 	XMMATRIX GetWorldMatrix();
 
 	void ChangeParent(Entity* parent);
+	Entity* GetParent();
 
 	template<typename T>
 	T* GetComponent();

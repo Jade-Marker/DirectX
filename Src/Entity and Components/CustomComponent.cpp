@@ -51,6 +51,12 @@ void CustomComponent::InitUserTypes()
 		"Camera",
 		sol::base_classes, sol::bases<Component>()
 		);
+
+	sol::usertype<Entity> entity = lua.new_usertype<Entity>(
+		"Entity",
+		"GetParent", &Entity::GetParent,
+		"GetTransform", &Entity::GetTransform
+		);
 }
 
 void CustomComponent::SetFunctions()
@@ -58,7 +64,9 @@ void CustomComponent::SetFunctions()
 	lua.set_function("Log", DebugLogManager::Log);
 	lua.set_function("GetComponent", &CustomComponent::GetComponent);
 	lua.set_function("SetMainCamera", CameraManager::SetMainCamera);
+	lua.set_function("GetMainCamera", CameraManager::GetMainCamera);
 	lua.set_function("GetKeyDown", InputManager::GetKeyDown);
+	lua.set_function("GetKey", InputManager::GetKey);
 }
 
 void CustomComponent::GetFunctions()
@@ -91,10 +99,18 @@ void CustomComponent::InitVariables()
 
 	lua["Input"] = lua.create_table_with(
 		"KEY_1", (int)'1',
-		"KEY_2", (int)'2'
+		"KEY_2", (int)'2',
+		"KEY_3", (int)'3',
+
+		"KEY_A", (int)'A',
+		"KEY_D", (int)'D',
+		"KEY_S", (int)'S',
+		"KEY_W", (int)'W'
 	);
 
 	lua.set("this", this);
+
+	lua.set("parent", _parent);
 }
 
 sol::object CustomComponent::GetComponent(ComponentType type)
