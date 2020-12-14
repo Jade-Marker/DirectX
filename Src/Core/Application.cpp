@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Sort credits
 //There should be a UpdateLightDirection, so that directional lights also get updated
 //Finish Input table in CustomComponent
 //Add support for all component types in GetComponent
