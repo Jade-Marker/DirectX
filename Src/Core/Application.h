@@ -31,7 +31,7 @@
 #include "RenderingBuffers.h"
 #include "CameraManager.h"
 #include "DebugLogManager.h"
-#include "CameraController.h"
+#include "DebugCameraController.h"
 #include "EntityManager.h"
 #include "SelectionHide.h"
 #include "Scene.h"

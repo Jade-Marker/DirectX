@@ -1,7 +1,6 @@
 #include "Application.h"
 
 //todo
-//Add speed boost for other controllers
 //Sort credits
 //There should be a UpdateLightDirection, so that directional lights also get updated
 //Finish Input table in CustomComponent
@@ -626,8 +625,8 @@ Entity* Application::LoadEntity(LoadedEntity entity)
             component = new Camera(_WindowWidth, _WindowHeight, camera->nearDepth, camera->farDepth);
             break;
 
-        case CAMERA_CONTROLLER:
-            component = new CameraController();
+        case DEBUG_CAMERA_CONTROLLER:
+            component = new DebugCameraController();
             break;
 
         case SCENE_LIGHT:

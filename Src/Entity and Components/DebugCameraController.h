@@ -4,7 +4,7 @@
 #include "EntityManager.h"
 #include "Mesh.h"
 #include <DirectXCollision.h>
-class CameraController :
+class DebugCameraController :
 	public Component
 {
 private:
@@ -18,7 +18,7 @@ private:
 	void HandleSelection();
 
 public:
-	CameraController();
+	DebugCameraController();
 
 	virtual void Start();
 	virtual void Update(float deltaTime);

@@ -99,17 +99,21 @@ void CustomComponent::InitVariables()
 		"RENDERING_BUFFER", RENDERING_BUFFER,
 		"SELECTION_HIDE", SELECTION_HIDE,
 		"CAMERA", CAMERA,
-		"CAMERA_CONTROLLER", CAMERA_CONTROLLER,
+		"DEBUG_CAMERA_CONTROLLER", DEBUG_CAMERA_CONTROLLER,
 		"SCENE_LIGHT", SCENE_LIGHT,
 		"SKYBOX_RASTER_STATE", SKYBOX_RASTER_STATE,
 		"CUSTOM_COMPONENT", CUSTOM_COMPONENT
 	);
 
 	lua["Input"] = lua.create_table_with(
+		"KEY_SHIFT", (int)VK_SHIFT,
+		"KEY_CONTROL", (int)VK_CONTROL,
+
 		"KEY_1", (int)'1',
 		"KEY_2", (int)'2',
 		"KEY_3", (int)'3',
 		"KEY_4", (int)'4',
+		"KEY_5", (int)'5',
 
 		"KEY_A", (int)'A',
 		"KEY_D", (int)'D',

@@ -1,6 +1,6 @@
-#include "CameraController.h"
+#include "DebugCameraController.h"
 
-void CameraController::HandleMovement(float deltaTime)
+void DebugCameraController::HandleMovement(float deltaTime)
 {
 	XMVECTOR offset = XMVectorSet(0, 0, 0, 0);
 
@@ -38,7 +38,7 @@ void CameraController::HandleMovement(float deltaTime)
 	_parent->GetTransform().Translate(offset);
 }
 
-void CameraController::HandleRotation()
+void DebugCameraController::HandleRotation()
 {
 	XMVECTOR rotation = XMVectorSet(0, 0, 0, 0);
 	int deltaX, deltaY;
@@ -51,7 +51,7 @@ void CameraController::HandleRotation()
 	_parent->GetTransform().Rotate(rotation);
 }
 
-void CameraController::HandleSelection()
+void DebugCameraController::HandleSelection()
 {
 	if (InputManager::GetKeyDown(VK_LBUTTON))
 	{
@@ -89,17 +89,17 @@ void CameraController::HandleSelection()
 	}
 }
 
-CameraController::CameraController():
+DebugCameraController::DebugCameraController():
 	cMoveSpeed(0.25f), cRotSpeed(0.001f), cRunningScale(4.0f)
 {
 }
 
-void CameraController::Start()
+void DebugCameraController::Start()
 {
 	_pCamera = _parent->GetComponent<Camera>();
 }
 
-void CameraController::Update(float deltaTime)
+void DebugCameraController::Update(float deltaTime)
 {
 	if (CameraManager::GetMainCamera() == _pCamera)
 	{
