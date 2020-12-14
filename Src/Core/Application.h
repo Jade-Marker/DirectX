@@ -45,29 +45,34 @@ using namespace DirectX;
 class Application
 {
 private:
+	//Win32 variables
 	HINSTANCE               _hInst;
 	HWND                    _hWnd;
+
+	//DirectX variables
 	D3D_DRIVER_TYPE         _driverType;
 	D3D_FEATURE_LEVEL       _featureLevel;
 	IDXGISwapChain*         _pSwapChain;
+
+	//Rendering variables
 	ID3D11RenderTargetView* _pRenderTargetView;
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D*		_pDepthStencilBuffer;
 	ID3D11DepthStencilState*_pSkyBoxDepthStencilState;
 	ID3D11DepthStencilState*_pDefaultDepthStencilState;
 	ID3D11BlendState*		_pBlendState;
-
 	float _clearColor[4];
+
 
 	UINT _WindowHeight;
 	UINT _WindowWidth;
 
-
+	//Constant buffers
 	ConstantBuffer			_localConstantBuffer;
 	ConstantBuffer			_globalConstantBuffer;
-
 	float					_time;
 
+	//Resources
 	std::vector<Mesh*> _meshes;
 	std::vector<Shader*> _shaders;
 	std::vector<Texture*> _textures;
@@ -93,8 +98,8 @@ private:
 	void InitTextures(const Scene& scene);
 	void InitMeshes(const Scene& scene);
 	void InitShaders(const Scene& scene);
-	void InitConstantBufferVars();
 	void InitEntities(const Scene& scene);
 	Entity* LoadEntity(LoadedEntity entity);
+	void InitScene();
 	void ResizeRenderTargetView();
 };

@@ -10,10 +10,10 @@ void Renderer::BindTexture(Texture* texture, int slot)
 
 void Renderer::Start()
 {
-    _pMesh = _parent->GetComponent<Mesh>();
-    _pMaterial = _parent->GetComponent<Material>();
-    _pRasterState = _parent->GetComponent<RasterState>();
-    _pRenderingBuffers = _parent->GetComponent<RenderingBuffers>();
+    _pMesh = _pParent->GetComponent<Mesh>();
+    _pMaterial = _pParent->GetComponent<Material>();
+    _pRasterState = _pParent->GetComponent<RasterState>();
+    _pRenderingBuffers = _pParent->GetComponent<RenderingBuffers>();
 
     if (dynamic_cast<SkyboxRasterState*>(_pRasterState) != nullptr)
         _isSkybox = true;
@@ -50,6 +50,8 @@ void Renderer::Draw()
             }
             else
             {
+                //Draw the back faces then the front faces so that both are seen in transparent objects
+
                 _pRasterState->FrontFaceCullState();
                 DeviceManager::GetContext()->DrawIndexed(_pMesh->GetIndexCount(), 0, 0);
 

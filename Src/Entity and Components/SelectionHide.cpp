@@ -2,5 +2,5 @@
 
 void SelectionHide::OnSelected()
 {
-	_parent->GetTransform().Scale = XMFLOAT3(0, 0, 0);
+	_pParent->GetTransform().Scale = XMFLOAT3(0, 0, 0);
 }

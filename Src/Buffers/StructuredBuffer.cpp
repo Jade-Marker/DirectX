@@ -31,8 +31,9 @@ void StructuredBuffer::Bind(Shader* shader, UINT slot)
 	shader->SetShaderResources(slot, 1, &_pView);
 }
 
-void StructuredBuffer::Update(const void* pData, UINT size, UINT offset)
+void StructuredBuffer::UpdateBuffer(const void* pData, UINT size, UINT offset)
 {
+	//If trying to update past the end of the buffer, resize it
 	if (size + offset > _size)
 	{
 		ID3D11Buffer* newBuffer;
@@ -42,11 +43,15 @@ void StructuredBuffer::Update(const void* pData, UINT size, UINT offset)
 		ZeroMemory(&mappedResource, sizeof(mappedResource));
 		DeviceManager::GetContext()->Map(_pBuffer, 0, D3D11_MAP_READ, 0, &mappedResource);
 
+		//Set size of new buffer to be atleast 2* bigger than current
 		UINT factor = (size + offset) / _size;
 		factor = max(2, factor);
 		_size *= factor;
 
+		//Initialise the new buffer with the data of the old buffer
 		InitializeBuffer(newBuffer, newView, mappedResource.pData, _size / _stride, _stride);
+
+		//Delete the old buffer
 		DeviceManager::GetContext()->Unmap(_pBuffer, 0);
 		_pBuffer->Release();
 		_pView->Release();

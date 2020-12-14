@@ -16,6 +16,6 @@ public:
 
 	virtual void Bind(Shader* shader, UINT slot);
 
-	void Update(const void* pData, UINT size, UINT offset);
+	void UpdateBuffer(const void* pData, UINT size, UINT offset);
 };
 

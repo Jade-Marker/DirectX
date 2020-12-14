@@ -11,8 +11,9 @@ Mesh* Meshes::GeneratePlane(int width, int height)
         {
             float xLower, xUpper, yLower, yUpper;
 
-            xLower = -1.0f + (x * 2.0f) - width;
-            xUpper = 1.0f + (x * 2.0f) - width;
+            //-width and -height so that the center of the plane is (0,0,-1) in model space
+            xLower = (x * 2.0f) - width;
+            xUpper = 2.0f + (x * 2.0f) - width;
             yLower = (y * 2.0f) - height;
             yUpper = 2.0f + (y * 2.0f) - height;
 

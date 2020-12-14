@@ -4,7 +4,7 @@
 class CameraManager
 {
 private:
-	Camera* _mainCamera;
+	Camera* _pMainCamera;
 
 	CameraManager();
 	static CameraManager* GetInstance();

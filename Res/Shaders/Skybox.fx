@@ -1,9 +1,3 @@
-//--------------------------------------------------------------------------------------
-// File: DX11 Framework.fx
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-//--------------------------------------------------------------------------------------
-
 #include <ConstantBuffers.fx>
 
 TextureCube skyBoxTexture : register(t0);
@@ -32,6 +26,7 @@ VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
 
+    //Cancel out translation of view matrix so that the skybox is always centered
     matrix viewNoTranslation = {
         View[0][0], View[0][1], View[0][2], 0,
         View[1][0], View[1][1], View[1][2], 0,

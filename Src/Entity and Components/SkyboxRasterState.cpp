@@ -23,6 +23,7 @@ void SkyboxRasterState::SkyboxState()
 
 bool SkyboxRasterState::IsWireframe()
 {
+	//The skybox should never be wireframe, so return false
 	return false;
 }
 

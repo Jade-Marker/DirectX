@@ -18,47 +18,47 @@ void CustomComponent::SafeCall(sol::function function, types ...args)
 
 void CustomComponent::InitLua(const std::string& filePath)
 {
-	CheckResult(lua.safe_script_file(filePath));
+	CheckResult(_lua.safe_script_file(filePath));
 }
 
 void CustomComponent::LoadLibraries()
 {
-	lua.open_libraries(sol::lib::base);
-	lua.open_libraries(sol::lib::math);
+	_lua.open_libraries(sol::lib::base);
+	_lua.open_libraries(sol::lib::math);
 }
 
 void CustomComponent::InitUserTypes()
 {
-	sol::usertype<XMFLOAT3> xmfloat3 = lua.new_usertype<XMFLOAT3>(
+	sol::usertype<XMFLOAT3> xmfloat3 = _lua.new_usertype<XMFLOAT3>(
 		"XMFLOAT3",
 		"x", &XMFLOAT3::x,
 		"y", &XMFLOAT3::y,
 		"z", &XMFLOAT3::z
 		);
 
-	sol::usertype<Transform> transform = lua.new_usertype<Transform>(
+	sol::usertype<Transform> transform = _lua.new_usertype<Transform>(
 		"Transform",
 		"Position", &Transform::Position,
 		"Rotation", &Transform::Rotation,
 		"Scale", &Transform::Scale
 		);
 
-	sol::usertype<Component> component = lua.new_usertype<Component>(
+	sol::usertype<Component> component = _lua.new_usertype<Component>(
 		"Component"
 		);
 
-	sol::usertype<Camera> camera = lua.new_usertype<Camera>(
+	sol::usertype<Camera> camera = _lua.new_usertype<Camera>(
 		"Camera",
 		sol::base_classes, sol::bases<Component>()
 		);
 
-	sol::usertype<CustomComponent> customComponent = lua.new_usertype<CustomComponent>(
+	sol::usertype<CustomComponent> customComponent = _lua.new_usertype<CustomComponent>(
 		"CustomComponent",
 		"GetFunction", &CustomComponent::GetLuaFunction,
 		sol::base_classes, sol::bases<Component>()
 		);
 
-	sol::usertype<Entity> entity = lua.new_usertype<Entity>(
+	sol::usertype<Entity> entity = _lua.new_usertype<Entity>(
 		"Entity",
 		"GetParent", &Entity::GetParent,
 		"GetTransform", &Entity::GetTransform
@@ -67,30 +67,30 @@ void CustomComponent::InitUserTypes()
 
 void CustomComponent::SetFunctions()
 {
-	lua.set_function("Log", DebugLogManager::Log);
-	lua.set_function("GetComponent", &CustomComponent::GetComponent);
-	lua.set_function("GetEntityComponent", &CustomComponent::GetEntityComponent);
-	lua.set_function("SetMainCamera", CameraManager::SetMainCamera);
-	lua.set_function("GetMainCamera", CameraManager::GetMainCamera);
-	lua.set_function("GetKeyDown", InputManager::GetKeyDown);
-	lua.set_function("GetKey", InputManager::GetKey);
-	lua.set_function("GetDeltaMousePos", CustomComponent::GetDeltaMousePos);
+	_lua.set_function("Log", DebugLogManager::Log);
+	_lua.set_function("GetComponent", &CustomComponent::GetComponent);
+	_lua.set_function("GetEntityComponent", &CustomComponent::GetEntityComponent);
+	_lua.set_function("SetMainCamera", CameraManager::SetMainCamera);
+	_lua.set_function("GetMainCamera", CameraManager::GetMainCamera);
+	_lua.set_function("GetKeyDown", InputManager::GetKeyDown);
+	_lua.set_function("GetKey", InputManager::GetKey);
+	_lua.set_function("GetDeltaMousePos", CustomComponent::GetDeltaMousePos);
 }
 
 void CustomComponent::GetFunctions()
 {
-	startFunction = lua["Start"];
-	updateFunction = lua["Update"];
-	drawFunction = lua["Draw"];
-	onSelectedFunction = lua["OnSelected"];
+	_startFunction = _lua["Start"];
+	_updateFunction = _lua["Update"];
+	_drawFunction = _lua["Draw"];
+	_onSelectedFunction = _lua["OnSelected"];
 }
 
 void CustomComponent::InitVariables()
 {
-	lua.set("InitialTransform", _parent->GetTransform());
-	lua.set("Transform", &_parent->GetTransform());
+	_lua.set("InitialTransform", _pParent->GetTransform());
+	_lua.set("Transform", &_pParent->GetTransform());
 
-	lua["ComponentType"] = lua.create_table_with(
+	_lua["ComponentType"] = _lua.create_table_with(
 		"MATERIAL", MATERIAL,
 		"MESH", MESH,
 		"RENDERER", RENDERER,
@@ -105,7 +105,8 @@ void CustomComponent::InitVariables()
 		"CUSTOM_COMPONENT", CUSTOM_COMPONENT
 	);
 
-	lua["Input"] = lua.create_table_with(
+	//With more time, this section would have been fleshed out to contain all inputs
+	_lua["Input"] = _lua.create_table_with(
 		"KEY_SHIFT", (int)VK_SHIFT,
 		"KEY_CONTROL", (int)VK_CONTROL,
 
@@ -121,23 +122,24 @@ void CustomComponent::InitVariables()
 		"KEY_W", (int)'W'
 	);
 
-	lua.set("this", this);
+	_lua.set("this", this);
 
-	lua.set("parent", _parent);
+	_lua.set("parent", _pParent);
 }
 
 sol::object CustomComponent::CreateObject(ComponentType type, Entity* entity)
 {
 	sol::object object;
 
+	//With more time, this section would have been fleshed out so that it covered all component types
 	switch (type)
 	{
 	case CAMERA:
-		object = sol::make_object<Camera*>(lua, (Camera*)entity->GetComponent<Camera>());
+		object = sol::make_object<Camera*>(_lua, (Camera*)entity->GetComponent<Camera>());
 		break;
 
 	case CUSTOM_COMPONENT:
-		object = sol::make_object<CustomComponent*>(lua, (CustomComponent*)entity->GetComponent<CustomComponent>());
+		object = sol::make_object<CustomComponent*>(_lua, (CustomComponent*)entity->GetComponent<CustomComponent>());
 		break;
 	}
 
@@ -146,7 +148,7 @@ sol::object CustomComponent::CreateObject(ComponentType type, Entity* entity)
 
 sol::object CustomComponent::GetComponent(ComponentType type)
 {
-	return CreateObject(type, _parent);
+	return CreateObject(type, _pParent);
 }
 
 sol::object CustomComponent::GetEntityComponent(Entity* entity, ComponentType type)
@@ -156,7 +158,7 @@ sol::object CustomComponent::GetEntityComponent(Entity* entity, ComponentType ty
 
 sol::function CustomComponent::GetLuaFunction(std::string name)
 {
-	return lua[name];
+	return _lua[name];
 }
 
 std::tuple<int, int> CustomComponent::GetDeltaMousePos()
@@ -181,20 +183,20 @@ void CustomComponent::Start()
 {
 	InitVariables();
 
-	SafeCall(startFunction);
+	SafeCall(_startFunction);
 }
 
 void CustomComponent::Draw()
 {
-	SafeCall(drawFunction);
+	SafeCall(_drawFunction);
 }
 
 void CustomComponent::Update(float deltaTime)
 {
-	SafeCall(updateFunction, deltaTime);
+	SafeCall(_updateFunction, deltaTime);
 }
 
 void CustomComponent::OnSelected()
 {
-	SafeCall(onSelectedFunction);
+	SafeCall(_onSelectedFunction);
 }

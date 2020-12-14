@@ -4,7 +4,7 @@
 class Component
 {
 protected:
-	Entity* _parent;
+	Entity* _pParent;
 	bool _deleteOnEntityDelete;
 
 public:

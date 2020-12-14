@@ -3,7 +3,7 @@
 #include "CameraManager.h"
 
 Entity::Entity(const Transform& transform, Entity* parent, std::vector<Component*> components, bool isSelectable) :
-	_transform(transform), _parent(parent), _components(components), _isSelectable(isSelectable)
+	_transform(transform), _pParent(parent), _components(components), _isSelectable(isSelectable)
 {
     for (int i = 0; i < _components.size(); i++)
         _components[i]->Initialise(this);
@@ -40,9 +40,9 @@ XMMATRIX Entity::GetWorldMatrix()
 {
     DirectX::XMMATRIX world = _transform.GetWorldMatrix();
 
-    if (_parent != nullptr)
+    if (_pParent != nullptr)
     {
-        world = world * _parent->GetWorldMatrix();
+        world = world * _pParent->GetWorldMatrix();
     }
 
     return world;
@@ -50,12 +50,12 @@ XMMATRIX Entity::GetWorldMatrix()
 
 void Entity::ChangeParent(Entity* parent)
 {
-    _parent = parent;
+    _pParent = parent;
 }
 
 Entity* Entity::GetParent()
 {
-	return _parent;
+	return _pParent;
 }
 
 Transform& Entity::GetTransform()

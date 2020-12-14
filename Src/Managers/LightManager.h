@@ -16,7 +16,7 @@ private:
 	static LightManager* GetInstance();
 
 public:
-	static void Bind(Shader* shader, int slot);
+	static void BindLightBuffer(Shader* shader, int slot);
 	static int AddLight(Light light);
 	static int GetNumLights();
 	static void UpdateLights();

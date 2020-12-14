@@ -4,9 +4,9 @@ void LightComponent::UpdateLightPosition()
 {
 	if (_isPointLight)
 	{
-		XMMATRIX worldMatrix = _parent->GetWorldMatrix();
+		XMMATRIX worldMatrix = _pParent->GetWorldMatrix();
 
-		XMFLOAT3 transformPosition = _parent->GetTransform().Position;
+		XMFLOAT3 transformPosition = _pParent->GetTransform().Position;
 		XMFLOAT4 lightPos = XMFLOAT4(transformPosition.x, transformPosition.y, transformPosition.z, 1.0f);
 
 		XMStoreFloat4(&lightPos, XMVector3Transform(XMLoadFloat4(&lightPos), worldMatrix));
@@ -24,7 +24,7 @@ LightComponent::LightComponent(Light& light)
 
 void LightComponent::Start()
 {
-	_isPointLight = (LightManager::GetLight(_lightIndex).GetPosition().w == 1.0f);
+	_isPointLight = (LightManager::GetLight(_lightIndex).GetPosition().w == 1.0f);	//If w = 1, the light is a point light and if w = 0 it is a directional light
 
 	UpdateLightPosition();	
 }

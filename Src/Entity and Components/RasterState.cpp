@@ -2,8 +2,7 @@
 
 void RasterState::SetRasterState(ID3D11RasterizerState* state)
 {
-    _rasterState = state;
-    DeviceManager::GetContext()->RSSetState(_rasterState);
+    DeviceManager::GetContext()->RSSetState(state);
 }
 
 void RasterState::CreateRasterState(D3D11_FILL_MODE fillMode, D3D11_CULL_MODE cullMode, ID3D11RasterizerState*& rasterState)
@@ -47,7 +46,7 @@ ID3D11RasterizerState* RasterState::GetWireframeState()
 }
 
 RasterState::RasterState(bool startInWireFrame):
-    _wireframeMode(startInWireFrame), _rasterState(nullptr)
+    _wireframeMode(startInWireFrame)
 {
 }
 

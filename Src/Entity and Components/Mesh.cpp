@@ -10,7 +10,7 @@ void Mesh::CalculateBounds()
 	maxY = -std::numeric_limits<float>::infinity();
 	maxZ = -std::numeric_limits<float>::infinity();
 
-	float* currentVertex = (float*)((UINT)_vertices + _positionOffset);
+	float* currentVertex = (float*)((UINT)_pVertices + _positionOffset);	//+ position offset, as the position may not be the first element of the vertex
 	for (int i = 0; i < _vertexCount; i++)
 	{
 		float x, y, z;
@@ -41,14 +41,14 @@ void Mesh::CalculateBounds()
 
 void Mesh::LoadVertices(const void* source)
 {
-	_vertices = new unsigned char[_vertexCount * _vertexSize];
-	memcpy(_vertices, source, _vertexSize * _vertexCount);
+	_pVertices = new unsigned char[_vertexCount * _vertexSize];
+	memcpy(_pVertices, source, _vertexSize * _vertexCount);
 }
 
 void Mesh::LoadIndices(const void* source)
 {
-	_indices = new WORD[_indexCount];
-	memcpy(_indices, source, sizeof(WORD) * _indexCount);
+	_pIndices = new WORD[_indexCount];
+	memcpy(_pIndices, source, sizeof(WORD) * _indexCount);
 }
 
 Mesh::Mesh(const void* vertices, int vertexSize, int vertexCount, const WORD* indices, int indexCount, int positionOffset):
@@ -61,13 +61,13 @@ Mesh::Mesh(const void* vertices, int vertexSize, int vertexCount, const WORD* in
 
 Mesh::~Mesh()
 {
-	delete[] _indices;
-	delete[] _vertices;
+	delete[] _pIndices;
+	delete[] _pVertices;
 }
 
 const void* Mesh::GetVertices()
 {
-	return _vertices;
+	return _pVertices;
 }
 
 int Mesh::GetVertexCount()
@@ -82,7 +82,7 @@ int Mesh::GetVertexSize()
 
 const WORD* Mesh::GetIndices()
 {
-	return _indices;
+	return _pIndices;
 }
 
 int Mesh::GetIndexCount()

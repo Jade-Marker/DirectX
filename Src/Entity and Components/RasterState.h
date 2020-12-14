@@ -7,7 +7,6 @@ class RasterState :
 	public Component
 {
 protected:
-	ID3D11RasterizerState* _rasterState;
 	bool _wireframeMode;
 
 protected:

@@ -8,16 +8,16 @@ Rotator::Rotator(XMFLOAT3 tScale):
 void Rotator::Update(float deltaTime)
 {
     if (_xDirState)
-        _parent->GetTransform().Rotation.x += _tScale.x * deltaTime;
+        _pParent->GetTransform().Rotation.x += _tScale.x * deltaTime;
     else
-        _parent->GetTransform().Rotation.x -= _tScale.x * deltaTime;
+        _pParent->GetTransform().Rotation.x -= _tScale.x * deltaTime;
 
     if (_yDirState)
-        _parent->GetTransform().Rotation.y += _tScale.y * deltaTime;
+        _pParent->GetTransform().Rotation.y += _tScale.y * deltaTime;
     else
-        _parent->GetTransform().Rotation.y -= _tScale.y * deltaTime;
+        _pParent->GetTransform().Rotation.y -= _tScale.y * deltaTime;
 
-    _parent->GetTransform().Rotation.z += _tScale.z * deltaTime;
+    _pParent->GetTransform().Rotation.z += _tScale.z * deltaTime;
 
     if (InputManager::GetKeyDown('J'))
         _xDirState = true;

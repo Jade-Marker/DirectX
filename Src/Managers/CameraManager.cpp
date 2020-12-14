@@ -1,7 +1,7 @@
 #include "CameraManager.h"
 
 CameraManager::CameraManager() :
-	_mainCamera(nullptr)
+	_pMainCamera(nullptr)
 {
 }
 
@@ -16,15 +16,15 @@ Camera* CameraManager::GetMainCamera()
 {
 	CameraManager* instance = GetInstance();
 
-	return instance->_mainCamera;
+	return instance->_pMainCamera;
 }
 
 void CameraManager::SetMainCamera(Camera* camera)
 {
 	CameraManager* instance = GetInstance();
 
-	if(instance->_mainCamera != nullptr)
-		camera->Reshape(instance->_mainCamera->GetWidth(), instance->_mainCamera->GetHeight());
+	if(instance->_pMainCamera != nullptr)
+		camera->Reshape(instance->_pMainCamera->GetWidth(), instance->_pMainCamera->GetHeight());	//Reshape as window size may have changed since the camera width/height were set
 
-	instance->_mainCamera = camera;
+	instance->_pMainCamera = camera;
 }

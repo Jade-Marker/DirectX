@@ -10,7 +10,7 @@ void ConstantBuffer::Bind(Shader* shader, UINT slot)
 	shader->SetConstantBuffers(slot, 1, &_pBuffer);
 }
 
-void ConstantBuffer::Update(const void* pData)
+void ConstantBuffer::UpdateSubresource(const void* pData)
 {
 	DeviceManager::GetContext()->UpdateSubresource(_pBuffer, 0, nullptr, pData, 0, 0);
 }

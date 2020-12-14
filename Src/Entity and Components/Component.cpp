@@ -7,7 +7,7 @@ Component::Component(bool deleteOnEntityDelete):
 
 void Component::Initialise(Entity* parent)
 {
-	_parent = parent;
+	_pParent = parent;
 }
 
 void Component::Start()

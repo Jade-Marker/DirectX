@@ -14,12 +14,11 @@ class CustomComponent :
 	public Component
 {
 private:
-	sol::state lua;
-
-	sol::function startFunction;
-	sol::function updateFunction;
-	sol::function drawFunction;
-	sol::function onSelectedFunction;
+	sol::state _lua;
+	sol::function _startFunction;
+	sol::function _updateFunction;
+	sol::function _drawFunction;
+	sol::function _onSelectedFunction;
 
 private:
 	void CheckResult(sol::protected_function_result result);

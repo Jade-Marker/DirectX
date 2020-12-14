@@ -138,5 +138,6 @@ namespace Meshes
     static Mesh Pyramid = Mesh(Vertices::pyramidVertices, sizeof(BasicVertex), sizeof(Vertices::pyramidVertices) / sizeof(Vertices::pyramidVertices[0]), Indices::pyramidIndices, sizeof(Indices::pyramidIndices) / sizeof(WORD));
     static Mesh Icosphere = Mesh(Vertices::icosphereVertices, sizeof(BasicVertex), sizeof(Vertices::icosphereVertices) / sizeof(Vertices::icosphereVertices[0]), Indices::icosphereIndices, sizeof(Indices::icosphereIndices) / sizeof(WORD));
     
+    //Generates a plane of size width*height, with vertices ranging from -width to width in x, and -height to height
     Mesh* GeneratePlane(int width, int height);
 }

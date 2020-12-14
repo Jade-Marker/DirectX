@@ -46,6 +46,7 @@ void InputManager::MouseMove(int x, int y)
 		instance->_mouseX = x;
 		instance->_mouseY = y;
 
+		//Move mouse to center of window, so that the player doesn't move the mouse outside the bounds of the window
 		SetCursorPos((int)(CameraManager::GetMainCamera()->GetWidth() / 2.0f) + instance->_windowX, (int)(CameraManager::GetMainCamera()->GetHeight() / 2.0f) + instance->_windowY);
 	}
 }
@@ -98,6 +99,7 @@ void InputManager::Update()
 {
 	InputManager* instance = GetInstance();
 
+	//Reset _keysDown
 	for (int i = 0; i < cKeyBoardCount; i++)
 	{
 		if (instance->_keysDown[i])

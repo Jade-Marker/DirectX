@@ -23,7 +23,7 @@ public:
 	virtual void Update(float deltaTime);
 
 	const XMFLOAT3& GetPosition();
-	XMFLOAT3 GetDirection();
+	XMFLOAT3 GetForward();
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 

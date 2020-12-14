@@ -10,26 +10,26 @@ class Entity
 {
 private:
 	Transform _transform;
-	Entity* _parent;
+	Entity* _pParent;
 	std::vector<Component*> _components;
 	bool _isSelectable;
 
 public:
 	Entity(const Transform& transform, Entity* parent, std::vector<Component*> components, bool isSelectable);
 	~Entity();
+
 	void Draw();
 	void Update(float deltaTime);
 	void OnSelected();
-	XMMATRIX GetWorldMatrix();
 
+	XMMATRIX GetWorldMatrix();
 	void ChangeParent(Entity* parent);
 	Entity* GetParent();
+	Transform& GetTransform();
+	bool IsSelectable();
 
 	template<typename T>
 	T* GetComponent();
-
-	Transform& GetTransform();
-	bool IsSelectable();
 
 	static bool CompareDistance(Entity* object, Entity* other);
 };

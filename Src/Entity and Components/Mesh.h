@@ -5,11 +5,13 @@
 class Mesh : public Component
 {
 private:
-	void* _vertices;
+	//Vertices stored as a void* instead of an array or vector so that any type of vertex can be used. array/vector doesn't work with polymorphism unless each element is a pointer
+	//In this case however, we want to store the vertices as a continuous block of memory, so arrays/vectors just won't work for multiple vertex types
+	void* _pVertices;	
 	int _vertexCount;
 	int _vertexSize;
 
-	WORD* _indices;
+	WORD* _pIndices;
 	int _indexCount;
 
 	int _positionOffset;

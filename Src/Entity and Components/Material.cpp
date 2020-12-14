@@ -1,13 +1,13 @@
 #include "Material.h"
 
 Material::Material(Shader* pShader, Texture* pDiffuse, Texture* pAmbient, Texture* pSpecular, bool isTransparent, XMFLOAT4 diffuseMtrl, XMFLOAT4 ambientMtrl, XMFLOAT4 specularMtrl):
-	_shader(pShader), _pDiffuse(pDiffuse), _pAmbient(pAmbient), _pSpecular(pSpecular), _isTransparent(isTransparent), _diffuseMtrl(diffuseMtrl), _ambientMtrl(ambientMtrl), _specularMtrl(specularMtrl)
+	_pShader(pShader), _pDiffuse(pDiffuse), _pAmbient(pAmbient), _pSpecular(pSpecular), _isTransparent(isTransparent), _diffuseMtrl(diffuseMtrl), _ambientMtrl(ambientMtrl), _specularMtrl(specularMtrl)
 {
 }
 
 Shader* const Material::GetShader()
 {
-	return _shader;
+	return _pShader;
 }
 
 Texture* const Material::GetDiffuseTexture()

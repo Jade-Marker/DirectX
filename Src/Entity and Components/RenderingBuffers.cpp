@@ -7,12 +7,12 @@ RenderingBuffers::RenderingBuffers(ConstantBuffer* pLocalConstantBuffer):
 
 void RenderingBuffers::Start()
 {
-	Mesh* pMesh = _parent->GetComponent<Mesh>();
+	Mesh* pMesh = _pParent->GetComponent<Mesh>();
 
 	_vertexBuffer.Initialise(pMesh);
 	_indexBuffer.Initialise(pMesh);
 
-	_pMaterial = _parent->GetComponent<Material>();
+	_pMaterial = _pParent->GetComponent<Material>();
 }
 
 void RenderingBuffers::BindBuffers(Shader* shader)
@@ -21,7 +21,7 @@ void RenderingBuffers::BindBuffers(Shader* shader)
 	_indexBuffer.Bind();
 
 	LocalConstantBuffer cb;
-	cb.WorldMatrix = XMMatrixTranspose(_parent->GetWorldMatrix());
+	cb.WorldMatrix = XMMatrixTranspose(_pParent->GetWorldMatrix());
 
 	if (_pMaterial)
 	{
@@ -36,6 +36,6 @@ void RenderingBuffers::BindBuffers(Shader* shader)
 		cb.SpecularMtrl = XMFLOAT4(1, 1, 1, 1);
 	}
 
-	_pLocalConstantBuffer->Update(&cb);
+	_pLocalConstantBuffer->UpdateSubresource(&cb);
 	_pLocalConstantBuffer->Bind(shader, cLocalConstantBufferSlot);
 }

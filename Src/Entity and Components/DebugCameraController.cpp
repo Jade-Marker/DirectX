@@ -8,13 +8,13 @@ void DebugCameraController::HandleMovement(float deltaTime)
 
 	if (InputManager::GetKey('W'))
 	{
-		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetDirection();
+		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetForward();
 		offset += XMLoadFloat3(&cameraForward) * deltaTime;
 	}
 
 	if (InputManager::GetKey('S'))
 	{
-		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetDirection();
+		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetForward();
 		offset += -XMLoadFloat3(&cameraForward) * deltaTime;
 	}
 
@@ -35,20 +35,19 @@ void DebugCameraController::HandleMovement(float deltaTime)
 	if (isRunning)
 		offset *= cRunningScale;
 
-	_parent->GetTransform().Translate(offset);
+	_pParent->GetTransform().Translate(offset);
 }
 
 void DebugCameraController::HandleRotation()
 {
-	XMVECTOR rotation = XMVectorSet(0, 0, 0, 0);
 	int deltaX, deltaY;
 
 	InputManager::GetDeltaMousePos(deltaX, deltaY);
 	if (deltaX != 0 && deltaY != 0)
 	{
-		rotation = XMVectorSet(float(deltaY), float(deltaX), 0, 0) * cRotSpeed;
+		XMVECTOR rotation = XMVectorSet(float(deltaY), float(deltaX), 0, 0) * cRotSpeed;
+		_pParent->GetTransform().Rotate(rotation);
 	}
-	_parent->GetTransform().Rotate(rotation);
 }
 
 void DebugCameraController::HandleSelection()
@@ -57,9 +56,9 @@ void DebugCameraController::HandleSelection()
 	{
 		std::vector<Entity*> entities = EntityManager::GetEntities();
 		Entity* selectedObject = nullptr;
-		float minDistance = std::numeric_limits<float>::infinity();
+		float smallestDistance = std::numeric_limits<float>::infinity();
 		XMVECTOR rayOrigin = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
-		XMVECTOR rayDirection = XMLoadFloat3(&CameraManager::GetMainCamera()->GetDirection());
+		XMVECTOR rayDirection = XMLoadFloat3(&CameraManager::GetMainCamera()->GetForward());
 
 		for (int i = 0; i < entities.size(); i++)
 		{
@@ -73,16 +72,16 @@ void DebugCameraController::HandleSelection()
 				float distance;
 				if (boundingBox.Intersects(rayOrigin, rayDirection, distance))
 				{
-					if (distance < minDistance)
+					if (distance < smallestDistance)
 					{
-						minDistance = distance;
+						smallestDistance = distance;
 						selectedObject = entities[i];
 					}
 				}
 			}
 		}
 
-		if (selectedObject != nullptr && selectedObject != _parent)
+		if (selectedObject != nullptr && selectedObject != _pParent)
 		{
 			selectedObject->OnSelected();
 		}
@@ -96,11 +95,12 @@ DebugCameraController::DebugCameraController():
 
 void DebugCameraController::Start()
 {
-	_pCamera = _parent->GetComponent<Camera>();
+	_pCamera = _pParent->GetComponent<Camera>();
 }
 
 void DebugCameraController::Update(float deltaTime)
 {
+	//If the camera this controls isn't the main camera, then don't move/rotate/select
 	if (CameraManager::GetMainCamera() == _pCamera)
 	{
 		HandleMovement(deltaTime);

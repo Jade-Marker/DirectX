@@ -32,8 +32,6 @@ public:
 	float GetAmbientStrength();
 	float GetSpecularStrength();
 
-	const void* GetData();
-
 	void SetDiffuse(const XMFLOAT4& diffuseColor);
 	void SetAmbient(const XMFLOAT4& ambientColor);
 	void SetSpecular(const XMFLOAT4& specularColor);

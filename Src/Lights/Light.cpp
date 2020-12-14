@@ -58,11 +58,6 @@ float Light::GetSpecularStrength()
     return _specularStrength;
 }
 
-const void* Light::GetData()
-{
-	return &_diffuseColor;
-}
-
 void Light::SetDiffuse(const XMFLOAT4& diffuseColor)
 {
     _diffuseColor = diffuseColor;

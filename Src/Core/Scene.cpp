@@ -135,7 +135,7 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 {
 	for (int i = 0; i < j.size(); i++)
 	{
-		LoadedComponent component = j[i][0];
+		LoadedComponent component = j[i][0];	//j[i][0], as each component is an object in an array in another array. Not 100% sure why it's a nested array
 		LoadedComponent* pComponent;
 
 		LoadedMaterial material;

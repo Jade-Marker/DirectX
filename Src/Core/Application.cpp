@@ -1,11 +1,5 @@
 #include "Application.h"
 
-//todo
-//There should be a UpdateLightDirection, so that directional lights also get updated
-//Finish Input table in CustomComponent
-//Add support for all component types in GetComponent
-//Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
@@ -95,7 +89,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 Application::Application():
     _hInst(nullptr), _hWnd(nullptr), _driverType(D3D_DRIVER_TYPE_NULL), _featureLevel(D3D_FEATURE_LEVEL_11_0), _pSwapChain(nullptr), _pRenderTargetView(nullptr),
-    _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f }
+    _pDepthStencilView(nullptr), _pDepthStencilBuffer(nullptr), _pBlendState(nullptr), _pSkyBoxDepthStencilState(nullptr), _pDefaultDepthStencilState(nullptr), _clearColor{ 0.0f, 0.3f, 0.3f, 1.0f }, _time(0.0f)
 {
 
 }
@@ -129,25 +123,9 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
         return E_FAIL;
     }
 
-    InitConstantBufferVars();
-
-    json j;
-    std::ifstream file = std::ifstream("Scene.txt");
-    j << file;
-    file.close();
-
-    Scene scene = j.get<Scene>();
-
-    InitMeshes(scene);
-    InitTextures(scene);
-    InitShaders(scene);
-    InitEntities(scene);
-
-    scene.CleanUp();
+    InitScene();
 
     DebugLogManager::Log("Created " + std::to_string(EntityManager::GetEntities().size()) + " entities");
-
-
     InputManager::Initialise();
 
     return S_OK;
@@ -167,27 +145,29 @@ void Application::Update(float deltaTime)
 
 void Application::Draw()
 {
+    //Clear the render target and the depth stencil buffers
     DeviceManager::GetContext()->ClearRenderTargetView(_pRenderTargetView, _clearColor);
     DeviceManager::GetContext()->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-
+    //Set the GlobalConstantBuffer (contains variables that don't change between objects)
     GlobalConstantBuffer cb;
     cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetViewMatrix()));
     cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetProjectionMatrix()));
     cb.EyePosW = CameraManager::GetMainCamera()->GetPosition();
     cb.gTime = _time;
     cb.numLights = LightManager::GetNumLights();
-    _globalConstantBuffer.Update(&cb);
+    _globalConstantBuffer.UpdateSubresource(&cb);
 
-
+    //Bind the global constant buffer and the light buffer to the shaders
     for (int i = 0; i < _shaders.size(); i++)
     {
         _globalConstantBuffer.Bind(_shaders[i], cGlobalConstantBufferSlot);
-        LightManager::Bind(_shaders[i], cLightBufferSlot);
+        LightManager::BindLightBuffer(_shaders[i], cLightBufferSlot);
     }
 
-    std::vector<Entity*> _transparentObjects;
 
+    //If an object is opaque, draw it. Else, add it to _transparentObjects
+    std::vector<Entity*> _transparentObjects;
     std::vector<Entity*> entities = EntityManager::GetEntities();
     for (int i = 0; i < entities.size(); i++)
     {
@@ -198,6 +178,7 @@ void Application::Draw()
             _transparentObjects.push_back(entities[i]);
         else
         {
+            //If the object is a skybox, swap _pSkyBoxDepthStencilState, draw it then swap back
             SkyboxRasterState* skyboxRaster = entities[i]->GetComponent<SkyboxRasterState>();
             if (skyboxRaster != nullptr)
             {
@@ -210,6 +191,7 @@ void Application::Draw()
         }
     }
 
+    //Sort _transparentObjects so they are back to front, then render them in that order
     std::sort(_transparentObjects.begin(), _transparentObjects.end(), Entity::CompareDistance);
 
     for (int i = 0; i < _transparentObjects.size(); i++)
@@ -229,6 +211,7 @@ void Application::Resize(UINT width, UINT height)
         {
             ResizeRenderTargetView();
 
+            //When the window resizes, the render target view can resize but the depth stencil can't. So we have to release it, then recreate it
             _pDepthStencilBuffer->Release();
             _pDepthStencilView->Release();
             InitDepthStencilBuffer();
@@ -330,7 +313,6 @@ HRESULT Application::InitDevice()
         if (SUCCEEDED(hr))
             break;
     }
-
     if (FAILED(hr))
         return hr;
 
@@ -339,13 +321,11 @@ HRESULT Application::InitDevice()
     // Create a render target view
     ID3D11Texture2D* pBackBuffer = nullptr;
     hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
     if (FAILED(hr))
         return hr;
 
     hr = DeviceManager::GetDevice()->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
     pBackBuffer->Release();
-
     if (FAILED(hr))
         return hr;
 
@@ -384,13 +364,11 @@ HRESULT Application::InitDevice()
 
     // Create the local constant buffer
     hr = _localConstantBuffer.Initialise(sizeof(LocalConstantBuffer));
-
     if (FAILED(hr))
         return hr;
 
     //Create the global constant buffer
     hr = _globalConstantBuffer.Initialise(sizeof(GlobalConstantBuffer));
-
     if (FAILED(hr))
         return hr;
 
@@ -457,6 +435,7 @@ void Application::Cleanup()
 
     for (int i = 0; i < _meshes.size(); i++)
     {
+        //Static meshes delete themselves, so ignore them
         if((_meshes[i] != &Meshes::Cube) && (_meshes[i] != &Meshes::Icosphere) && (_meshes[i] != &Meshes::Pyramid))
             delete _meshes[i];
     }
@@ -467,6 +446,7 @@ void Application::Cleanup()
     for (int i = 0; i < _textures.size(); i++)
         delete _textures[i];
 
+    //Deallocate static ID3D11RasterizerStates
     SkyboxRasterState::DeallocateStates();
 
     DebugLogManager::Log("Closing");
@@ -494,7 +474,7 @@ void Application::InitMeshes(const Scene& scene)
 
 void Application::InitShaders(const Scene& scene)
 {
-    // Define the input layouts
+    // Define the input layouts for lit vertices
     D3D11_INPUT_ELEMENT_DESC lightingLayout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -503,6 +483,7 @@ void Application::InitShaders(const Scene& scene)
     };
     UINT numElementsLighting = ARRAYSIZE(lightingLayout);
 
+    // Define the input layouts for unlit vertices
     D3D11_INPUT_ELEMENT_DESC basicLayout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -528,11 +509,6 @@ void Application::InitShaders(const Scene& scene)
     }
 }
 
-void Application::InitConstantBufferVars()
-{
-    _time = 0;
-}
-
 void Application::InitEntities(const Scene& scene)
 {
     for (int i = 0; i < scene.loadedEntities.size(); i++)
@@ -541,6 +517,8 @@ void Application::InitEntities(const Scene& scene)
         EntityManager::AddEntity(newEntity);
     }
 
+    //Parents are initialised as nullptr, as they are indices in the scene file, and an entity may reference one that hasn't been loaded in yet
+    //So, we need to set the parents here
     std::vector<Entity*> entities = EntityManager::GetEntities();
     for (int i = 0; i < scene.loadedEntities.size(); i++)
     {
@@ -649,6 +627,23 @@ Entity* Application::LoadEntity(LoadedEntity entity)
     Entity* newEntity = new Entity(entity.transform, nullptr, components, entity.selectable);
 
     return newEntity;
+}
+
+void Application::InitScene()
+{
+    json j;
+    std::ifstream file = std::ifstream("Scene.txt");
+    j << file;
+    file.close();
+
+    Scene scene = j.get<Scene>();
+
+    InitMeshes(scene);
+    InitTextures(scene);
+    InitShaders(scene);
+    InitEntities(scene);
+
+    scene.CleanUp();
 }
 
 void Application::ResizeRenderTargetView()

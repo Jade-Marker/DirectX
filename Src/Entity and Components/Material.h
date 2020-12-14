@@ -6,7 +6,7 @@
 class Material : public Component
 {
 private:
-	Shader* _shader;
+	Shader* _pShader;
 	Texture* _pDiffuse;
 	Texture* _pAmbient;
 	Texture* _pSpecular;
