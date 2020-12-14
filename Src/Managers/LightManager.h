@@ -17,8 +17,10 @@ private:
 
 public:
 	static void Bind(Shader* shader, int slot);
-	static Light* AddLight(Light light);
+	static int AddLight(Light light);
 	static int GetNumLights();
 	static void UpdateLights();
+	static Light GetLight(int index);
+	static void SetLight(const Light& light, int index);
 };
 

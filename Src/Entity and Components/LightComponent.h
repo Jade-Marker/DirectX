@@ -6,7 +6,7 @@ class LightComponent :
 	public Component
 {
 private:
-	Light* _pLightData;
+	int _lightIndex;
 	bool _isPointLight;
 
 private:

@@ -1,8 +1,9 @@
 #include "Application.h"
 
 //todo
-//There should be a UpdateLightDirection, so that directional lights also get updated
+//Add speed boost for other controllers
 //Sort credits
+//There should be a UpdateLightDirection, so that directional lights also get updated
 //Finish Input table in CustomComponent
 //Add support for all component types in GetComponent
 //Update DebugLogManager so that it doesn't always write std::endl (so that composite outputs like std::cout << "X =" << x << std::endl can be achieved)
@@ -146,6 +147,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
     scene.CleanUp();
 
+    DebugLogManager::Log("Created " + std::to_string(EntityManager::GetEntities().size()) + " entities");
 
 
     InputManager::Initialise();

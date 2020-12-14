@@ -24,14 +24,14 @@ void LightManager::Bind(Shader* shader, int slot)
 	instance->_pLightBuffer->Bind(shader, slot);
 }
 
-Light* LightManager::AddLight(Light light)
+int LightManager::AddLight(Light light)
 {
 	LightManager* instance = GetInstance();
 	
 	instance->_pLightBuffer->Update(&light, sizeof(Light), sizeof(Light) * (instance->_lights.size()));
 	instance->_lights.push_back(light);
 
-	return &instance->_lights[instance->_lights.size() - 1];
+	return instance->_lights.size() - 1;
 }
 
 int LightManager::GetNumLights()
@@ -46,4 +46,18 @@ void LightManager::UpdateLights()
 	LightManager* instance = GetInstance();
 
 	instance->_pLightBuffer->Update(instance->_lights.data(), sizeof(Light) * instance->_lights.size(), 0);
+}
+
+Light LightManager::GetLight(int index)
+{
+	LightManager* instance = GetInstance();
+	
+	return instance->_lights[index];
+}
+
+void LightManager::SetLight(const Light& light, int index)
+{
+	LightManager* instance = GetInstance();
+
+	instance->_lights[index] = light;
 }

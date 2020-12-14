@@ -11,18 +11,20 @@ void LightComponent::UpdateLightPosition()
 
 		XMStoreFloat4(&lightPos, XMVector3Transform(XMLoadFloat4(&lightPos), worldMatrix));
 
-		_pLightData->SetPosition(lightPos);
+		Light light = LightManager::GetLight(_lightIndex);
+		light.SetPosition(lightPos);
+		LightManager::SetLight(light, _lightIndex);
 	}
 }
 
 LightComponent::LightComponent(Light& light)
 {
-	_pLightData = LightManager::AddLight(light);
+	_lightIndex = LightManager::AddLight(light);
 }
 
 void LightComponent::Start()
 {
-	_isPointLight = (_pLightData->GetPosition().w == 1.0f);
+	_isPointLight = (LightManager::GetLight(_lightIndex).GetPosition().w == 1.0f);
 
 	UpdateLightPosition();	
 }

@@ -11,7 +11,7 @@
                             "y": 1.0,
                             "z": 1.0
                         },
-                        "diffuse": 0,
+                        "diffuse": 11,
                         "diffuseMtrl": {
                             "w": 1.0,
                             "x": 1.0,
@@ -502,17 +502,17 @@
             "transform": {
                 "Position": {
                     "x": 0.0,
-                    "y": -9.0,
-                    "z": 0.0
+                    "y": -7.0,
+                    "z": 5.0
                 },
                 "Rotation": {
-                    "x": 70.0,
+                    "x": 1.57079632679,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "Scale": {
-                    "x": 0.5,
-                    "y": 0.5,
+                    "x": 0.59,
+                    "y": 2.25,
                     "z": 0.5
                 }
             },
@@ -522,7 +522,7 @@
             "components": [
                 [
                     {
-                        "farDepth": 100.0,
+                        "farDepth": 300.0,
                         "nearDepth": 0.10000000149011612,
                         "type": 7
                     }
@@ -600,17 +600,17 @@
                 [
                     {
                         "Ambient": {
-                            "w": 0.4000000059604645,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
+                            "w": 1.0,
+                            "x": 0.91372549019,
+                            "y": 0.61960784313,
+                            "z": 0.15294117647
                         },
                         "AmbientStrength": 0.25,
                         "Diffuse": {
                             "w": 1.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
+                            "x": 0.91372549019,
+                            "y": 0.61960784313,
+                            "z": 0.15294117647
                         },
                         "DiffuseStrength": 0.5,
                         "Direction": {
@@ -657,24 +657,24 @@
             },
 			"isSelectable": true
         },
-		        {
+		{
             "components": [
                 [
                     {
                         "Ambient": {
-                            "w": 0.4000000059604645,
+                            "w": 1.0,
                             "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
+                            "y": 0.0,
+                            "z": 0.0
                         },
-                        "AmbientStrength": 0.0,
+                        "AmbientStrength": 1.0,
                         "Diffuse": {
                             "w": 1.0,
                             "x": 0.0,
                             "y": 1.0,
                             "z": 0.0
                         },
-                        "DiffuseStrength": 5.0,
+                        "DiffuseStrength": 2.5,
                         "Direction": {
                             "w": 0.0,
                             "x": 0.0,
@@ -689,9 +689,9 @@
                         },
                         "Specular": {
                             "w": 1.0,
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
+                            "x": 0.4,
+                            "y": 0.0,
+                            "z": 0.0
                         },
                         "SpecularPower": 2.0,
                         "SpecularStrength": 1.0,
@@ -699,11 +699,11 @@
                     }
                 ]
             ],
-            "parent": -1,
+            "parent": 19,
             "transform": {
                 "Position": {
-                    "x": 5.0,
-                    "y": -2.5,
+                    "x": 0.0,
+                    "y": 0.5,
                     "z": 0.0
                 },
                 "Rotation": {
@@ -857,9 +857,9 @@
                     "z": 0.0
                 },
                 "Scale": {
-                    "x": 20.0,
+                    "x": 60.0,
                     "y": 1.0,
-                    "z": 20.0
+                    "z": 60.0
                 }
             },
 			"isSelectable": false
@@ -1224,11 +1224,834 @@
                 }
             },
 			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 6,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 6,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": 23,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 0.8,
+                    "y": 0.8,
+                    "z": 0.8
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 6,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 7,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ],
+				[
+                    {
+                        "tScale": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        },
+                        "type": 4
+                    }
+                ]
+            ],
+            "parent": 19,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 7,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 8,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": 22,
+            "transform": {
+                "Position": {
+                    "x": 0.7,
+                    "y": 0.25,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.52359877559,
+                    "y": 1.57079632679,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 0.25,
+                    "y": 0.25,
+                    "z": 0.25
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": 3,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 2,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": 3,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 4,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": 23,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 1.57079632679,
+                    "z": 0.26179938779
+                },
+                "Scale": {
+                    "x": 0.8,
+                    "y": 0.8,
+                    "z": 0.8
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 8,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 9,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": -30.0,
+                    "y": -10,
+                    "z": -30.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": -1.57079632679,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 5.0,
+                    "y": 5.0,
+                    "z": 5.0
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 9,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 10,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": 25,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.6,
+                    "z": 1.0
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 10,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 11,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 0.5,
+                    "y": -10.0,
+                    "z": 5.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 4.0,
+                    "y": 1.25,
+                    "z": 4.0
+                }
+            },
+			"isSelectable": false
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 11,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": true,
+                        "shader": 0,
+                        "specular": 1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 3,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ],
+                [
+                    {
+                        "type": 6
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 0.0,
+                    "y": -4.98,
+                    "z": 40.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 5.0,
+                    "y": 5.0,
+                    "z": 3.0
+                }
+            },
+			"isSelectable": true
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 12,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": true,
+                        "shader": 0,
+                        "specular": -1,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 3,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ],
+                [
+                    {
+                        "type": 6
+                    }
+                ]
+            ],
+            "parent": 26,
+            "transform": {
+                "Position": {
+                    "x": 1.5,
+                    "y": -0.5,
+                    "z": 0.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 0.2,
+                    "y": 0.2,
+                    "z": 0.33333333
+                }
+            },
+			"isSelectable": true
+        },
+		{
+            "components": [
+                [
+                    {
+                        "ambient": -1,
+                        "ambientMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "diffuse": 13,
+                        "diffuseMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "isTransparent": false,
+                        "shader": 0,
+                        "specular": 14,
+                        "specularMtrl": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "type": 0
+                    }
+                ],
+                [
+                    {
+                        "mesh": 3,
+                        "type": 1
+                    }
+                ],
+                [
+                    {
+                        "type": 2
+                    }
+                ],
+                [
+                    {
+                        "startInWireframe": false,
+                        "type": 3
+                    }
+                ],
+                [
+                    {
+                        "type": 5
+                    }
+                ],
+                [
+                    {
+                        "type": 6
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 40.0,
+                    "y": -6,
+                    "z": -40.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 4,
+                    "y": 4,
+                    "z": 4
+                }
+            },
+			"isSelectable": true
+        },
+		{
+            "components": [
+                [
+                    {
+                        "Ambient": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "AmbientStrength": 0.0,
+                        "Diffuse": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "DiffuseStrength": 0.0,
+                        "Direction": {
+                            "w": 0.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Position": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "Specular": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 1.0
+                        },
+                        "SpecularPower": 2.0,
+                        "SpecularStrength": 10.0,
+                        "type": 9
+                    }
+                ]
+            ],
+            "parent": -1,
+            "transform": {
+                "Position": {
+                    "x": 40.0,
+                    "y": 0,
+                    "z": -50.0
+                },
+                "Rotation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "Scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+			"isSelectable": false
         }
     ],
     "modelsPaths": [
         "Res\\Models\\fish.obj",		
-        "Res\\Models\\Ground.obj"		
+        "Res\\Models\\Ground.obj",		
+        "Res\\Models\\cauldron.obj",		
+        "Res\\Models\\broth.obj",		
+        "Res\\Models\\witch hat.obj",
+        "Res\\Models\\arc.obj",
+        "Res\\Models\\water frame.obj",
+        "Res\\Models\\water base.obj"
     ],
     "shaderPaths": [
         {
@@ -1258,7 +2081,16 @@
         "Res\\Textures\\fish.dds",
         "Res\\Textures\\fishAmbient.dds",
         "Res\\Textures\\StormSkybox.dds",
-        "Res\\Textures\\Ground.dds"
+        "Res\\Textures\\Ground.dds",
+        "Res\\Textures\\cauldron.dds",
+        "Res\\Textures\\witch hat.dds",
+        "Res\\Textures\\tree.dds",
+        "Res\\Textures\\wood.dds",
+        "Res\\Textures\\rock.dds",
+        "Res\\Textures\\ChainLink(2).dds",
+        "Res\\Textures\\glass.dds",
+        "Res\\Textures\\box.dds",
+        "Res\\Textures\\box specular.dds"
     ],
     "version": 1.0
 }
