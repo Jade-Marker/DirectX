@@ -16,8 +16,8 @@ private:
 
 	int _positionOffset;
 
-	XMFLOAT3 boundingSize;
-	XMFLOAT3 boundingCenter;
+	XMFLOAT3 _boundingSize;
+	XMFLOAT3 _boundingCenter;
 
 private:
 	void CalculateBounds();

@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 struct LoadedComponent
 {
-	int type;
+	ComponentType type;
 
 	LoadedComponent(ComponentType type) :
 		type(type)

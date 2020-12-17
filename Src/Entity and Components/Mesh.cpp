@@ -30,13 +30,13 @@ void Mesh::CalculateBounds()
 		currentVertex = (float*)((UINT)currentVertex + _vertexSize);
 	}
 
-	boundingCenter.x = (minX + maxX) / 2.0f;
-	boundingCenter.y = (minY + maxY) / 2.0f;
-	boundingCenter.z = (minZ + maxZ) / 2.0f;
+	_boundingCenter.x = (minX + maxX) / 2.0f;
+	_boundingCenter.y = (minY + maxY) / 2.0f;
+	_boundingCenter.z = (minZ + maxZ) / 2.0f;
 
-	boundingSize.x = maxX - minX;
-	boundingSize.y = maxY - minY;
-	boundingSize.z = maxZ - minZ;
+	_boundingSize.x = maxX - minX;
+	_boundingSize.y = maxY - minY;
+	_boundingSize.z = maxZ - minZ;
 }
 
 void Mesh::LoadVertices(const void* source)
@@ -92,10 +92,10 @@ int Mesh::GetIndexCount()
 
 const XMFLOAT3& Mesh::GetBoundingSize()
 {
-	return boundingSize;
+	return _boundingSize;
 }
 
 const XMFLOAT3& Mesh::GetBoundingCenter()
 {
-	return boundingCenter;
+	return _boundingCenter;
 }
