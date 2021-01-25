@@ -469,6 +469,11 @@
       <EnableDebuggingInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</EnableDebuggingInformation>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MathLibrary\MathLibrary.vcxproj">
+      <Project>{dbb022ad-e450-461e-89e8-25821de77f63}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
