@@ -2,5 +2,5 @@
 
 void SelectionHide::OnSelected()
 {
-	_pParent->GetTransform().Scale = XMFLOAT3(0, 0, 0);
+	_pParent->GetTransform().Scale = Vector3D(0, 0, 0);
 }

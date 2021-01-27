@@ -16,13 +16,13 @@ bool OBJLoader::FindSimilarVertex(const LightVertex& vertex, std::map<LightVerte
 	}
 }
 
-void OBJLoader::CreateIndices(const std::vector<XMFLOAT3>& inVertices, 
-							  const std::vector<XMFLOAT2>& inTexCoords, 
-							  const std::vector<XMFLOAT3>& inNormals, 
+void OBJLoader::CreateIndices(const std::vector<Vector3D>& inVertices, 
+							  const std::vector<Vector2D>& inTexCoords, 
+							  const std::vector<Vector3D>& inNormals, 
 							  std::vector<unsigned short>& outIndices, 
-							  std::vector<XMFLOAT3>& outVertices, 
-							  std::vector<XMFLOAT2>& outTexCoords, 
-							  std::vector<XMFLOAT3>& outNormals)
+							  std::vector<Vector3D>& outVertices, 
+							  std::vector<Vector2D>& outTexCoords, 
+							  std::vector<Vector3D>& outNormals)
 {
 	// Mapping from an already-existing SimpleVertex to its corresponding index
 	std::map<LightVertex, unsigned short> vertToIndexMap;
@@ -86,9 +86,9 @@ Mesh* OBJLoader::Load(const char* filename, bool invertTexCoords)
 		{
 			//Vectors to store the vertex positions, normals and texture coordinates. Need to use vectors since they're resizeable and we have
 			//no way of knowing ahead of time how large these meshes will be
-			std::vector<XMFLOAT3> verts;
-			std::vector<XMFLOAT3> normals;
-			std::vector<XMFLOAT2> texCoords;
+			std::vector<Vector3D> verts;
+			std::vector<Vector3D> normals;
+			std::vector<Vector2D> texCoords;
 
 			//DirectX uses 1 index buffer, OBJ is optimized for storage and not rendering and so uses 3 smaller index buffers.....great...
 			//We'll have to merge this into 1 index buffer which we'll do after loading in all of the required data.
@@ -98,9 +98,9 @@ Mesh* OBJLoader::Load(const char* filename, bool invertTexCoords)
 
 			std::string input;
 
-			XMFLOAT3 vert;
-			XMFLOAT2 texCoord;
-			XMFLOAT3 normal;
+			Vector3D vert;
+			Vector2D texCoord;
+			Vector3D normal;
 			unsigned short vInd[3]; //indices for the vertex position
 			unsigned short tInd[3]; //indices for the texture coordinate
 			unsigned short nInd[3]; //indices for the normal
@@ -169,9 +169,9 @@ Mesh* OBJLoader::Load(const char* filename, bool invertTexCoords)
 			inFile.close(); //Finished with input file now, all the data we need has now been loaded in
 
 			//Get vectors to be of same size, ready for singular indexing
-			std::vector<XMFLOAT3> expandedVertices;
-			std::vector<XMFLOAT3> expandedNormals;
-			std::vector<XMFLOAT2> expandedTexCoords;
+			std::vector<Vector3D> expandedVertices;
+			std::vector<Vector3D> expandedNormals;
+			std::vector<Vector2D> expandedTexCoords;
 			unsigned int numIndices = vertIndices.size();
 			for(unsigned int i = 0; i < numIndices; i++)
 			{
@@ -183,11 +183,11 @@ Mesh* OBJLoader::Load(const char* filename, bool invertTexCoords)
 			//Now to (finally) form the final vertex, texture coord, normal list and single index buffer using the above expanded vectors
 			std::vector<unsigned short> meshIndices;
 			meshIndices.reserve(numIndices);
-			std::vector<XMFLOAT3> meshVertices;
+			std::vector<Vector3D> meshVertices;
 			meshVertices.reserve(expandedVertices.size());
-			std::vector<XMFLOAT3> meshNormals;
+			std::vector<Vector3D> meshNormals;
 			meshNormals.reserve(expandedNormals.size());
-			std::vector<XMFLOAT2> meshTexCoords;
+			std::vector<Vector2D> meshTexCoords;
 			meshTexCoords.reserve(expandedTexCoords.size());
 
 			CreateIndices(expandedVertices, expandedTexCoords, expandedNormals, meshIndices, meshVertices, meshTexCoords, meshNormals);

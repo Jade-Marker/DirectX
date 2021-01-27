@@ -4,7 +4,7 @@ class PointLight :
 	public Light
 {
 public:
-	PointLight(const XMFLOAT3& position, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
+	PointLight(const Vector3D& position, const Vector4D& diffuseColor, const Vector4D& ambientColor, const Vector4D& specularColor,
 		float specularPower, float diffuseStrength, float ambientStrength, float specularStrength);
 };
 

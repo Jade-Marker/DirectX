@@ -1,4 +1,7 @@
 #pragma once
+
+class Vector4D;
+
 class Vector3D
 {
 public:
@@ -28,4 +31,6 @@ public:
     float Square();
     float Dist(const Vector3D& vec);
     float Magnitude();
+
+    Vector4D ToQuaterion() const;
 };

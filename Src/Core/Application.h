@@ -4,7 +4,6 @@
 #include <windowsx.h>
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
-#include <directxmath.h>
 #include <directxcolors.h>
 #include <vector>
 #include <algorithm>
@@ -39,6 +38,9 @@
 #include "LightComponent.h"
 #include "SkyboxRasterState.h"
 #include "CustomComponent.h"
+
+#include <MathLibrary\Vector3D.h>
+#include <MathLibrary\Matrix.h>
 
 using namespace DirectX;
 

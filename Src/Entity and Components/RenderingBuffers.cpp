@@ -21,7 +21,7 @@ void RenderingBuffers::BindBuffers(Shader* shader)
 	_indexBuffer.Bind();
 
 	LocalConstantBuffer cb;
-	cb.WorldMatrix = XMMatrixTranspose(_pParent->GetWorldMatrix());
+	cb.WorldMatrix = _pParent->GetWorldMatrix();
 
 	if (_pMaterial)
 	{
@@ -31,9 +31,9 @@ void RenderingBuffers::BindBuffers(Shader* shader)
 	}
 	else
 	{
-		cb.DiffuseMtrl = XMFLOAT4(1, 1, 1, 1);
-		cb.AmbientMtrl = XMFLOAT4(1, 1, 1, 1);
-		cb.SpecularMtrl = XMFLOAT4(1, 1, 1, 1);
+		cb.DiffuseMtrl  =Vector4D(1, 1, 1, 1);
+		cb.AmbientMtrl  =Vector4D(1, 1, 1, 1);
+		cb.SpecularMtrl =Vector4D(1, 1, 1, 1);
 	}
 
 	_pLocalConstantBuffer->UpdateSubresource(&cb);

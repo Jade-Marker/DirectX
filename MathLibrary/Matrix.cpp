@@ -274,20 +274,40 @@ Matrix Matrix::Inverse()
 	return augmentedMatrix;
 }
 
-Matrix Matrix::Translate(float x, float y, float z)
+Matrix Matrix::Translate(const Vector3D& offsets)
 {
 	Matrix result = Matrix();
 
-	result.rows[0][3] = x;
-	result.rows[1][3] = y;
-	result.rows[2][3] = z;
+	result.rows[0][3] = offsets.x;
+	result.rows[1][3] = offsets.y;
+	result.rows[2][3] = offsets.z;
 
 	return result;
 }
 
-Matrix Matrix::Rotate(float x, float y, float z)
+Matrix Matrix::Rotate(const Vector3D& angles)
 {
-	return RotateZ(z) * RotateY(y) * RotateX(x);
+	Matrix result;
+
+	Vector4D quaternion = angles.ToQuaterion();
+
+	float x2 = quaternion.x * quaternion.x;
+	float y2 = quaternion.y * quaternion.y;
+	float z2 = quaternion.z * quaternion.z;
+
+	result.rows[0][0] = 1.0f - 2.0f * y2 - 2.0f * z2;
+	result.rows[0][1] = 2.0f * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
+	result.rows[0][2] = 2.0f * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
+
+	result.rows[1][0] = 2.0f * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
+	result.rows[1][1] = 1.0f - 2.0f * x2 - 2.0f * z2;
+	result.rows[1][2] = 2.0f * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
+
+	result.rows[2][0] = 2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
+	result.rows[2][1] = 2.0f * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
+	result.rows[2][2] = 1.0f - 2.0f * x2 - 2.0f * y2;
+
+	return result;
 }
 
 Matrix Matrix::RotateX(float angle)
@@ -326,13 +346,13 @@ Matrix Matrix::RotateZ(float angle)
 	return result;
 }
 
-Matrix Matrix::Scale(float x, float y, float z)
+Matrix Matrix::Scale(const Vector3D& scales)
 {
 	Matrix result = Matrix();
 
-	result.rows[0][0] = x;
-	result.rows[1][1] = y;
-	result.rows[2][2] = z;
+	result.rows[0][0] = scales.x;
+	result.rows[1][1] = scales.y;
+	result.rows[2][2] = scales.z;
 
 	return result;
 }

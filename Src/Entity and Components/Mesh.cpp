@@ -90,12 +90,12 @@ int Mesh::GetIndexCount()
 	return _indexCount;
 }
 
-const XMFLOAT3& Mesh::GetBoundingSize()
+const Vector3D& Mesh::GetBoundingSize()
 {
 	return _boundingSize;
 }
 
-const XMFLOAT3& Mesh::GetBoundingCenter()
+const Vector3D& Mesh::GetBoundingCenter()
 {
 	return _boundingCenter;
 }

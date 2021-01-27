@@ -4,12 +4,7 @@ void LightComponent::UpdateLightPosition()
 {
 	if (_isPointLight)
 	{
-		XMMATRIX worldMatrix = _pParent->GetWorldMatrix();
-
-		XMFLOAT3 transformPosition = _pParent->GetTransform().Position;
-		XMFLOAT4 lightPos = XMFLOAT4(transformPosition.x, transformPosition.y, transformPosition.z, 1.0f);
-
-		XMStoreFloat4(&lightPos, XMVector3Transform(XMLoadFloat4(&lightPos), worldMatrix));
+		Vector4D lightPos = _pParent->GetWorldMatrix() * Vector4D(_pParent->GetTransform().Position, 1.0f);
 
 		Light light = LightManager::GetLight(_lightIndex);
 		light.SetPosition(lightPos);

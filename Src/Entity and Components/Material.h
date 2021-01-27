@@ -11,21 +11,21 @@ private:
 	Texture* _pAmbient;
 	Texture* _pSpecular;
 	bool _isTransparent;
-	XMFLOAT4 _diffuseMtrl;
-	XMFLOAT4 _ambientMtrl;
-	XMFLOAT4 _specularMtrl;
+	Vector4D _diffuseMtrl;
+	Vector4D _ambientMtrl;
+	Vector4D _specularMtrl;
 
 
 public:
-	Material(Shader* pShader, Texture* pDiffuse, Texture* pAmbient, Texture* pSpecular, bool isTransparent, XMFLOAT4 diffuseMtrl, XMFLOAT4 ambientMtrl, XMFLOAT4 specularMtrl);
+	Material(Shader* pShader, Texture* pDiffuse, Texture* pAmbient, Texture* pSpecular, bool isTransparent, Vector4D diffuseMtrl, Vector4D ambientMtrl, Vector4D specularMtrl);
 
 	Shader* const GetShader();
 	Texture* const GetDiffuseTexture();
 	Texture* const GetAmbientTexture();
 	Texture* const GetSpecularTexture();
-	const XMFLOAT4& GetDiffuseMaterial();
-	const XMFLOAT4& GetAmbientMaterial();
-	const XMFLOAT4& GetSpecularMaterial();
+	const Vector4D& GetDiffuseMaterial();
+	const Vector4D& GetAmbientMaterial();
+	const Vector4D& GetSpecularMaterial();
 
 	bool IsTransparent();
 };

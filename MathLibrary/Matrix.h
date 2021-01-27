@@ -41,12 +41,12 @@ public:
 	void SwapRows(int rowNum, int otherRow);
 	Matrix Inverse();
 
-	static Matrix Translate(float x, float y, float z);
-	static Matrix Rotate(float x, float y, float z);
+	static Matrix Translate(const Vector3D& offsets);
+	static Matrix Rotate(const Vector3D& angles);
 	static Matrix RotateX(float angle);
 	static Matrix RotateY(float angle);
 	static Matrix RotateZ(float angle);
-	static Matrix Scale(float x, float y, float z);
+	static Matrix Scale(const Vector3D& scales);
 
 	static Matrix PerspectiveFovLH(float fovAngleY, float aspect, float nearZ, float farZ);
 };

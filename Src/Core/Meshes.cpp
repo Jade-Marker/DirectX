@@ -17,10 +17,10 @@ Mesh* Meshes::GeneratePlane(int width, int height)
             yLower = (y * 2.0f) - height;
             yUpper = 2.0f + (y * 2.0f) - height;
 
-            BasicVertex vertex1 = { XMFLOAT3(xLower, yUpper, -1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) };
-            BasicVertex vertex2 = { XMFLOAT3(xUpper, yUpper, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) };
-            BasicVertex vertex3 = { XMFLOAT3(xLower, yLower, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) };
-            BasicVertex vertex4 = { XMFLOAT3(xUpper, yLower, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) };
+            BasicVertex vertex1 = { Vector3D(xLower, yUpper, -1.0f), Vector4D(1.0f, 0.0f, 0.0f, 1.0f) };
+            BasicVertex vertex2 = { Vector3D(xUpper, yUpper, -1.0f), Vector4D(0.0f, 1.0f, 0.0f, 1.0f) };
+            BasicVertex vertex3 = { Vector3D(xLower, yLower, -1.0f), Vector4D(0.0f, 0.0f, 1.0f, 1.0f) };
+            BasicVertex vertex4 = { Vector3D(xUpper, yLower, -1.0f), Vector4D(1.0f, 1.0f, 0.0f, 1.0f) };
 
             verticesVector.push_back(vertex1);
             verticesVector.push_back(vertex2);

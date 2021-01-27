@@ -1,6 +1,6 @@
 #include "Rotator.h"
 
-Rotator::Rotator(XMFLOAT3 tScale):
+Rotator::Rotator(Vector3D tScale):
 	_tScale(tScale), _yDirState(false), _xDirState(false)
 {
 }

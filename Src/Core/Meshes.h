@@ -10,63 +10,63 @@ namespace Meshes
     {
         static LightVertex cubeVertices[] =
         {
-            { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f),   XMFLOAT2(0.0f,0.0f) },       //0
-            { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.0f, 0.0f, -1.0f),    XMFLOAT2(1.0f,0.0f) },       //1
-            { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(0.0f, 0.0f, -1.0f),  XMFLOAT2(0.0f,1.0f) },       //2
-            { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f),   XMFLOAT2(1.0f,1.0f) },       //3
-
-            { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(1.0f, 0.0f, 0.0f),    XMFLOAT2(0.0f,0.0f) },       //4
-            { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(1.0f, 0.0f, 0.0f),     XMFLOAT2(1.0f,0.0f) },       //5
-            { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f),   XMFLOAT2(0.0f,1.0f) },       //6
-            { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(1.0f, 0.0f, 0.0f),    XMFLOAT2(1.0f,1.0f) },       //7
-
-            { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.0f, 0.0f, 1.0f),     XMFLOAT2(1.0f,0.0f) },       //8
-            { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(0.0f, 0.0f, 1.0f),    XMFLOAT2(0.0f,0.0f) },       //9
-            { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.0f, 0.0f, 1.0f),    XMFLOAT2(1.0f,1.0f) },       //10
-            { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f),   XMFLOAT2(0.0f,1.0f) },       //11
-
-            { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(-1.0f, 0.0f, 0.0f),    XMFLOAT2(0.0f,0.0f) },       //12
-            { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f),   XMFLOAT2(1.0f,0.0f) },       //13
-            { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f),   XMFLOAT2(0.0f,1.0f) },       //14
-            { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(-1.0f, 0.0f, 0.0f),  XMFLOAT2(1.0f,1.0f) },       //15
-
-            { XMFLOAT3(-1.0f, 1.0f, 1.0f),  XMFLOAT3(0.0f, 1.0f, 0.0f),    XMFLOAT2(0.0f,0.0f) },       //16
-            { XMFLOAT3(1.0f, 1.0f, 1.0f),   XMFLOAT3(0.0f, 1.0f, 0.0f),     XMFLOAT2(1.0f,0.0f) },       //17
-            { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f),   XMFLOAT2(0.0f,1.0f) },       //18
-            { XMFLOAT3(1.0f, 1.0f, -1.0f),  XMFLOAT3(0.0f, 1.0f, 0.0f),    XMFLOAT2(1.0f,1.0f) },       //19
-
-
-            { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f),   XMFLOAT2(0.0f,0.0f) },       //20
-            { XMFLOAT3(-1.0f, -1.0f, -1.0f),XMFLOAT3(0.0f, -1.0f, 0.0f),  XMFLOAT2(1.0f,0.0f) },       //21
-            { XMFLOAT3(1.0f, -1.0f, 1.0f),  XMFLOAT3(0.0f, -1.0f, 0.0f),    XMFLOAT2(0.0f,1.0f) },       //22
-            { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, -1.0f, 0.0f),   XMFLOAT2(1.0f,1.0f) },       //23
+            { Vector3D(-1.0f, 1.0f, -1.0f), Vector3D(0.0f, 0.0f, -1.0f),    Vector2D(0.0f,0.0f) },       //0
+            { Vector3D(1.0f, 1.0f, -1.0f),  Vector3D(0.0f, 0.0f, -1.0f),    Vector2D(1.0f,0.0f) },       //1
+            { Vector3D(-1.0f, -1.0f, -1.0f),Vector3D(0.0f, 0.0f, -1.0f),    Vector2D(0.0f,1.0f) },       //2
+            { Vector3D(1.0f, -1.0f, -1.0f), Vector3D(0.0f, 0.0f, -1.0f),    Vector2D(1.0f,1.0f) },       //3
+                                                                            
+            { Vector3D(1.0f, 1.0f, -1.0f),  Vector3D(1.0f, 0.0f, 0.0f),     Vector2D(0.0f,0.0f) },       //4
+            { Vector3D(1.0f, 1.0f, 1.0f),   Vector3D(1.0f, 0.0f, 0.0f),     Vector2D(1.0f,0.0f) },       //5
+            { Vector3D(1.0f, -1.0f, -1.0f), Vector3D(1.0f, 0.0f, 0.0f),     Vector2D(0.0f,1.0f) },       //6
+            { Vector3D(1.0f, -1.0f, 1.0f),  Vector3D(1.0f, 0.0f, 0.0f),     Vector2D(1.0f,1.0f) },       //7
+                                                                            
+            { Vector3D(1.0f, 1.0f, 1.0f),   Vector3D(0.0f, 0.0f, 1.0f),     Vector2D(1.0f,0.0f) },       //8
+            { Vector3D(-1.0f, 1.0f, 1.0f),  Vector3D(0.0f, 0.0f, 1.0f),     Vector2D(0.0f,0.0f) },       //9
+            { Vector3D(1.0f, -1.0f, 1.0f),  Vector3D(0.0f, 0.0f, 1.0f),     Vector2D(1.0f,1.0f) },       //10
+            { Vector3D(-1.0f, -1.0f, 1.0f), Vector3D(0.0f, 0.0f, 1.0f),     Vector2D(0.0f,1.0f) },       //11
+                                                                            
+            { Vector3D(-1.0f, 1.0f, 1.0f),  Vector3D(-1.0f, 0.0f, 0.0f),    Vector2D(0.0f,0.0f) },       //12
+            { Vector3D(-1.0f, 1.0f, -1.0f), Vector3D(-1.0f, 0.0f, 0.0f),    Vector2D(1.0f,0.0f) },       //13
+            { Vector3D(-1.0f, -1.0f, 1.0f), Vector3D(-1.0f, 0.0f, 0.0f),    Vector2D(0.0f,1.0f) },       //14
+            { Vector3D(-1.0f, -1.0f, -1.0f),Vector3D(-1.0f, 0.0f, 0.0f),    Vector2D(1.0f,1.0f) },       //15
+                                                                            
+            { Vector3D(-1.0f, 1.0f, 1.0f),  Vector3D(0.0f, 1.0f, 0.0f),     Vector2D(0.0f,0.0f) },       //16
+            { Vector3D(1.0f, 1.0f, 1.0f),   Vector3D(0.0f, 1.0f, 0.0f),     Vector2D(1.0f,0.0f) },       //17
+            { Vector3D(-1.0f, 1.0f, -1.0f), Vector3D(0.0f, 1.0f, 0.0f),     Vector2D(0.0f,1.0f) },       //18
+            { Vector3D(1.0f, 1.0f, -1.0f),  Vector3D(0.0f, 1.0f, 0.0f),     Vector2D(1.0f,1.0f) },       //19
+                                                                            
+                                                                            
+            { Vector3D(-1.0f, -1.0f, 1.0f), Vector3D(0.0f, -1.0f, 0.0f),    Vector2D(0.0f,0.0f) },       //20
+            { Vector3D(-1.0f, -1.0f, -1.0f),Vector3D(0.0f, -1.0f, 0.0f),    Vector2D(1.0f,0.0f) },       //21
+            { Vector3D(1.0f, -1.0f, 1.0f),  Vector3D(0.0f, -1.0f, 0.0f),    Vector2D(0.0f,1.0f) },       //22
+            { Vector3D(1.0f, -1.0f, -1.0f), Vector3D(0.0f, -1.0f, 0.0f),    Vector2D(1.0f,1.0f) },       //23
 
         };    
 
         static BasicVertex pyramidVertices[] =
         {
-            { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //0
-            { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },       //1
-            { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },     //2
-            { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },      //3
-
-            { XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },       //4
+            { Vector3D(-1.0f, -1.0f, 1.0f),     Vector4D(0.0f, 1.0f, 0.0f, 1.0f) },      //0
+            { Vector3D(1.0f, -1.0f, 1.0f),      Vector4D(0.0f, 1.0f, 0.0f, 1.0f) },       //1
+            { Vector3D(-1.0f, -1.0f, -1.0f),    Vector4D(0.0f, 1.0f, 0.0f, 1.0f) },     //2
+            { Vector3D(1.0f, -1.0f, -1.0f),     Vector4D(0.0f, 1.0f, 0.0f, 1.0f) },      //3
+                                                
+            { Vector3D(0.0f, 1.0f, 0.0f),       Vector4D(1.0f, 0.0f, 0.0f, 1.0f) },       //4
         };
 
         static BasicVertex icosphereVertices[] =
         {
-            { XMFLOAT3(0.0f,        -1.000000f,  0.000000f), XMFLOAT4(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
-            { XMFLOAT3(0.7236f,      -0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
-            { XMFLOAT3(-0.276385f,   -0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
-            { XMFLOAT3(-0.894425f,   -0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
-            { XMFLOAT3(-0.276385f,   -0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
-            { XMFLOAT3(0.723600f,    -0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
-            { XMFLOAT3(0.276385f,     0.447215f, 0.850640f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
-            { XMFLOAT3(-0.723600f,    0.447215f,  0.525720f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
-            { XMFLOAT3(-0.723600f,    0.447215f,  -0.525720f),XMFLOAT4(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
-            { XMFLOAT3(0.276385f,     0.447215f, -0.850640f), XMFLOAT4(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
-            { XMFLOAT3(0.894425f,     0.447215f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
-            { XMFLOAT3(0.000000f,     1.000000f, 0.000000f),  XMFLOAT4(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
+            { Vector3D(0.0f,        -1.000000f,  0.000000f),  Vector4D(1.0f,                       1.0f,                       1.0f,                       1.0f) },     //0
+            { Vector3D(0.7236f,      -0.447215f,  0.525720f), Vector4D(1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f - (0.25f / 3.0f) * 1,  1.0f) },     //1
+            { Vector3D(-0.276385f,   -0.447215f, 0.850640f),  Vector4D(1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f - (0.25f / 3.0f) * 2,  1.0f) },     //2
+            { Vector3D(-0.894425f,   -0.447215f, 0.000000f),  Vector4D(1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f - (0.25f / 3.0f) * 3,  1.0f) },     //3
+            { Vector3D(-0.276385f,   -0.447215f, -0.850640f), Vector4D(1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f - (0.25f / 3.0f) * 4,  1.0f) },     //4
+            { Vector3D(0.723600f,    -0.447215f,  -0.525720f),Vector4D(1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f - (0.25f / 3.0f) * 5,  1.0f) },     //5
+            { Vector3D(0.276385f,     0.447215f, 0.850640f),  Vector4D(1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f - (0.25f / 3.0f) * 6,  1.0f) },     //6
+            { Vector3D(-0.723600f,    0.447215f,  0.525720f), Vector4D(1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f - (0.25f / 3.0f) * 7,  1.0f) },     //7
+            { Vector3D(-0.723600f,    0.447215f,  -0.525720f),Vector4D(1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f - (0.25f / 3.0f) * 8,  1.0f) },     //8
+            { Vector3D(0.276385f,     0.447215f, -0.850640f), Vector4D(1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f - (0.25f / 3.0f) * 9,  1.0f) },     //9
+            { Vector3D(0.894425f,     0.447215f, 0.000000f),  Vector4D(1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f - (0.25f / 3.0f) * 10, 1.0f) },     //10
+            { Vector3D(0.000000f,     1.000000f, 0.000000f),  Vector4D(1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f - (0.25f / 3.0f) * 11, 1.0f) },     //11
         };        
     }
 

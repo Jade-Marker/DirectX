@@ -16,8 +16,8 @@ private:
 
 	int _positionOffset;
 
-	XMFLOAT3 _boundingSize;
-	XMFLOAT3 _boundingCenter;
+	Vector3D _boundingSize;
+	Vector3D _boundingCenter;
 
 private:
 	void CalculateBounds();
@@ -34,7 +34,7 @@ public:
 	const WORD* GetIndices();
 	int GetIndexCount();
 
-	const XMFLOAT3& GetBoundingSize();
-	const XMFLOAT3& GetBoundingCenter();
+	const Vector3D& GetBoundingSize();
+	const Vector3D& GetBoundingCenter();
 };
 

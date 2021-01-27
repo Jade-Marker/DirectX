@@ -25,11 +25,11 @@ struct LoadedMaterial :LoadedComponent
 	int ambient;
 	int specular;
 	bool isTransparent;
-	XMFLOAT4 diffuseMtrl;
-	XMFLOAT4 ambientMtrl;
-	XMFLOAT4 specularMtrl;
+	Vector4D diffuseMtrl;
+	Vector4D ambientMtrl;
+	Vector4D specularMtrl;
 
-	LoadedMaterial(int shader, int diffuse, int ambient, int specular, bool isTransparent, XMFLOAT4 diffuseMtrl, XMFLOAT4 ambientMtrl, XMFLOAT4 specularMtrl) :
+	LoadedMaterial(int shader, int diffuse, int ambient, int specular, bool isTransparent, Vector4D diffuseMtrl, Vector4D ambientMtrl, Vector4D specularMtrl) :
 		LoadedComponent(MATERIAL), shader(shader), diffuse(diffuse), ambient(ambient), specular(specular), isTransparent(isTransparent), diffuseMtrl(diffuseMtrl), ambientMtrl(ambientMtrl), specularMtrl(specularMtrl)
 	{}
 
@@ -66,9 +66,9 @@ struct LoadedRasterState :LoadedComponent
 
 struct LoadedRotator :LoadedComponent
 {
-	XMFLOAT3 tScale;
+	Vector3D tScale;
 
-	LoadedRotator(XMFLOAT3 tScale) :
+	LoadedRotator(Vector3D tScale) :
 		LoadedComponent(ROTATOR), tScale(tScale)
 	{}
 
@@ -121,7 +121,7 @@ struct LoadedEntity
 	}
 
 	LoadedEntity() :
-		transform(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0)), parent(-1), selectable(false)
+		transform(Vector3D(0, 0, 0), Vector3D(0, 0, 0), Vector3D(0, 0, 0)), parent(-1), selectable(false)
 	{}
 };
 
@@ -150,14 +150,13 @@ struct Scene
 	void CleanUp();
 };
 
-namespace DirectX
-{
-	void to_json(json& j, const XMFLOAT3& vector);
-	void to_json(json& j, const XMFLOAT4& vector);
 
-	void from_json(const json& j, XMFLOAT3& vector);
-	void from_json(const json& j, XMFLOAT4& vector);
-}
+void to_json(json& j, const Vector3D& vector);
+void to_json(json& j, const Vector4D& vector);
+
+void from_json(const json& j, Vector3D& vector);
+void from_json(const json& j, Vector4D& vector);
+
 
 void to_json(json& j, const std::vector<LoadedComponent*>& components);
 void to_json(json& j, const LoadedMaterial& material);

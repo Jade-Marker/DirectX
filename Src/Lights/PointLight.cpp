@@ -1,7 +1,7 @@
 #include "PointLight.h"
 
-PointLight::PointLight(const XMFLOAT3& position, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
+PointLight::PointLight(const Vector3D& position, const Vector4D& diffuseColor, const Vector4D& ambientColor, const Vector4D& specularColor,
     float specularPower, float diffuseStrength, float ambientStrength, float specularStrength):
-    Light(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT4(0,0,0,0), diffuseColor, ambientColor, specularColor, specularPower, diffuseStrength, ambientStrength, specularStrength)
+    Light(Vector4D(position, 1.0f), Vector4D(0,0,0,0), diffuseColor, ambientColor, specularColor, specularPower, diffuseStrength, ambientStrength, specularStrength)
 {
 }

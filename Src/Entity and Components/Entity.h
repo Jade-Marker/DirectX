@@ -1,6 +1,5 @@
 #pragma once
 #include <d3d11_1.h>
-#include <directxmath.h>
 #include <vector>
 #include "Structures.h"
 
@@ -22,7 +21,7 @@ public:
 	void Update(float deltaTime);
 	void OnSelected();
 
-	XMMATRIX GetWorldMatrix();
+	Matrix GetWorldMatrix();
 	void ChangeParent(Entity* parent);
 	Entity* GetParent();
 	Transform& GetTransform();

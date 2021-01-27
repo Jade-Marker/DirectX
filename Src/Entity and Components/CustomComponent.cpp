@@ -29,11 +29,11 @@ void CustomComponent::LoadLibraries()
 
 void CustomComponent::InitUserTypes()
 {
-	sol::usertype<XMFLOAT3> xmfloat3 = _lua.new_usertype<XMFLOAT3>(
-		"XMFLOAT3",
-		"x", &XMFLOAT3::x,
-		"y", &XMFLOAT3::y,
-		"z", &XMFLOAT3::z
+	sol::usertype<Vector3D> xmfloat3 = _lua.new_usertype<Vector3D>(
+		"Vector3D",
+		"x", &Vector3D::x,
+		"y", &Vector3D::y,
+		"z", &Vector3D::z
 		);
 
 	sol::usertype<Transform> transform = _lua.new_usertype<Transform>(

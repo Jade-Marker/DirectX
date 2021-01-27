@@ -1,19 +1,21 @@
 #pragma once
-#include <DirectXMath.h>
 #include <cstring>
-using namespace DirectX;
+#include <MathLibrary\Vector2D.h>
+#include <MathLibrary\Vector3D.h>
+#include <MathLibrary\Vector4D.h>
+#include <MathLibrary\Matrix.h>
 
 struct BasicVertex
 {
-	XMFLOAT3 Pos;
-	XMFLOAT4 Color;
+	Vector3D Pos;
+	Vector4D Color;
 };
 
 struct LightVertex
 {
-	XMFLOAT3 Pos;
-	XMFLOAT3 Normal;
-	XMFLOAT2 TexCoord;
+	Vector3D Pos;
+	Vector3D Normal;
+	Vector2D TexCoord;
 
 	bool operator<(const LightVertex other) const
 	{
@@ -21,31 +23,32 @@ struct LightVertex
 	};
 };
 
-struct LocalConstantBuffer
+__declspec(align(16)) struct LocalConstantBuffer
 {
-	XMMATRIX WorldMatrix;
-	XMFLOAT4 DiffuseMtrl;
-	XMFLOAT4 AmbientMtrl;
-	XMFLOAT4 SpecularMtrl;
+	Matrix WorldMatrix;
+	Vector4D DiffuseMtrl;
+	Vector4D AmbientMtrl;
+	Vector4D SpecularMtrl;
 };
 
-struct GlobalConstantBuffer
+__declspec(align(16)) struct GlobalConstantBuffer
 {
-	XMMATRIX ViewMatrix;
-	XMMATRIX ProjectionMatrix;
-	XMFLOAT3 EyePosW;
+	Matrix ViewMatrix;
+	Matrix ProjectionMatrix;
+	Vector3D EyePosW;
 	float gTime;
+
 
 	int numLights;
 };
 
 struct Transform
 {
-	XMFLOAT3 Position;
-	XMFLOAT3 Rotation;
-	XMFLOAT3 Scale;
+	Vector3D Position;
+	Vector3D Rotation;
+	Vector3D Scale;
 
-	Transform(const XMFLOAT3& position, const XMFLOAT3& rotation, const XMFLOAT3& scale)
+	Transform(const Vector3D& position, const Vector3D& rotation, const Vector3D& scale)
 	{
 		Position = position;
 		Rotation = rotation;
@@ -54,46 +57,29 @@ struct Transform
 
 	Transform()
 	{
-		Position = XMFLOAT3(0, 0, 0);
-		Rotation = XMFLOAT3(0, 0, 0);
-		Scale = XMFLOAT3(0, 0, 0);
+		Position = Vector3D();
+		Rotation = Vector3D();
+		Scale = Vector3D();
 	}
 
-	void Translate(const XMFLOAT3& translation)
+	void Translate(const Vector3D& translation)
 	{
-		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + XMLoadFloat3(&translation));
+		Position += translation;
 	}
 
-	void Translate(const XMVECTOR& translation)
+	void Rotate(const Vector3D& rotation)
 	{
-		XMStoreFloat3(&Position, XMLoadFloat3(&Position) + translation);
+		Rotation += rotation;
 	}
 
-	void Rotate(const XMFLOAT3& rotation)
+	Matrix GetWorldMatrix()
 	{
-		XMStoreFloat3(&Rotation, XMLoadFloat3(&Rotation) + XMLoadFloat3(&rotation));
+		return Matrix::Translate(Position) * GetRotationMatrix() * Matrix::Scale(Scale);
 	}
 
-	void Rotate(const XMVECTOR& rotation)
+	Matrix GetRotationMatrix()
 	{
-		XMStoreFloat3(&Rotation, XMLoadFloat3(&Rotation) + rotation);
-	}
-
-	XMMATRIX GetWorldMatrix()
-	{
-		DirectX::XMMATRIX world =
-			DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&Scale)) *
-			GetRotationMatrix() *
-			DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&Position)) *
-			DirectX::XMMatrixIdentity();
-
-		return world;
-	}
-
-	XMMATRIX GetRotationMatrix()
-	{
-		DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&Rotation));
-		return rotation;
+		return Matrix::Rotate(Rotation);
 	}
 };
 

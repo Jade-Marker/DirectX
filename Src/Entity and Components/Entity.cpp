@@ -36,13 +36,13 @@ void Entity::OnSelected()
         _components[i]->OnSelected();
 }
 
-XMMATRIX Entity::GetWorldMatrix()
+Matrix Entity::GetWorldMatrix()
 {
-    DirectX::XMMATRIX world = _transform.GetWorldMatrix();
+    Matrix world = _transform.GetWorldMatrix();
 
     if (_pParent != nullptr)
     {
-        world = world * _pParent->GetWorldMatrix();
+        world = _pParent->GetWorldMatrix() * world;
     }
 
     return world;
@@ -70,13 +70,9 @@ bool Entity::IsSelectable()
 
 bool Entity::CompareDistance(Entity* object, Entity* other)
 {
-    XMVECTOR objectPos;
-    XMVECTOR otherPos;
-    XMVECTOR blank;
-    XMMatrixDecompose(&blank, &blank, &objectPos, object->GetWorldMatrix());
-    XMMatrixDecompose(&blank, &blank, &otherPos, other->GetWorldMatrix());
+    Vector3D objectPos = object->GetWorldMatrix() * Vector3D();
+    Vector3D otherPos = other->GetWorldMatrix() * Vector3D();
+    Vector3D cameraPos = CameraManager::GetMainCamera()->GetPosition();
 
-    XMVECTOR cameraPos = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
-
-    return (XMVector3LengthSq(cameraPos - objectPos).m128_f32[0] > XMVector3LengthSq(cameraPos - otherPos).m128_f32[0]);
+    return ((cameraPos - objectPos).Square() > (cameraPos - otherPos).Square());
 }

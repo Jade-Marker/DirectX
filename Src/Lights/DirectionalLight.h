@@ -4,7 +4,7 @@ class DirectionalLight :
 	public Light
 {
 public:
-	DirectionalLight(const XMFLOAT3& direction, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
+	DirectionalLight(const Vector3D& direction, const Vector4D& diffuseColor, const Vector4D& ambientColor, const Vector4D& specularColor,
 		float specularPower, float diffuseStrength, float ambientStrength, float specularStrength);
 };
 

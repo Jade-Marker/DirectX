@@ -151,8 +151,8 @@ void Application::Draw()
 
     //Set the GlobalConstantBuffer (contains variables that don't change between objects)
     GlobalConstantBuffer cb;
-    cb.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetViewMatrix()));
-    cb.ProjectionMatrix = XMMatrixTranspose(XMLoadFloat4x4(&CameraManager::GetMainCamera()->GetProjectionMatrix()));
+    cb.ViewMatrix = CameraManager::GetMainCamera()->GetViewMatrix();
+    cb.ProjectionMatrix = CameraManager::GetMainCamera()->GetProjectionMatrix();
     cb.EyePosW = CameraManager::GetMainCamera()->GetPosition();
     cb.gTime = _time;
     cb.numLights = LightManager::GetNumLights();
@@ -529,7 +529,7 @@ void Application::InitEntities(const Scene& scene)
     //If no main camera is set, create a default
     if (CameraManager::GetMainCamera() == nullptr)
     {
-        Entity* defaultCamera = new Entity(Transform(XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1)), nullptr,
+        Entity* defaultCamera = new Entity(Transform(Vector3D(0, 0, 0), Vector3D(0, 0, 0), Vector3D(1, 1, 1)), nullptr,
             std::vector<Component*>{ new Camera(_WindowWidth, _WindowHeight, 0.1, 100)}, false);
     }
 }

@@ -2,35 +2,33 @@
 
 void DebugCameraController::HandleMovement(float deltaTime)
 {
-	XMVECTOR offset = XMVectorSet(0, 0, 0, 0);
+	Vector3D offset = Vector3D();
 
 	bool isRunning = InputManager::GetKey(VK_SHIFT);
 
 	if (InputManager::GetKey('W'))
 	{
-		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetForward();
-		offset += XMLoadFloat3(&cameraForward) * deltaTime;
+		offset += CameraManager::GetMainCamera()->GetForward() * deltaTime;
 	}
 
 	if (InputManager::GetKey('S'))
 	{
-		XMFLOAT3 cameraForward = CameraManager::GetMainCamera()->GetForward();
-		offset += -XMLoadFloat3(&cameraForward) * deltaTime;
+		offset -= CameraManager::GetMainCamera()->GetForward() * deltaTime;
 	}
 
 	if (InputManager::GetKey('A'))
 	{
-		XMFLOAT3 cameraRight = CameraManager::GetMainCamera()->GetRight();
-		offset += -XMLoadFloat3(&cameraRight) * deltaTime;
+		offset -= CameraManager::GetMainCamera()->GetRight() * deltaTime;
 	}
 
 	if (InputManager::GetKey('D'))
 	{
-		XMFLOAT3 cameraRight = CameraManager::GetMainCamera()->GetRight();
-		offset += XMLoadFloat3(&cameraRight) * deltaTime;
+		offset += CameraManager::GetMainCamera()->GetRight() * deltaTime;
 	}
 
-	offset = XMVector3Normalize(offset) * cMoveSpeed;
+
+	offset.Normalise();
+	offset *= cMoveSpeed;
 
 	if (isRunning)
 		offset *= cRunningScale;
@@ -45,8 +43,7 @@ void DebugCameraController::HandleRotation()
 	InputManager::GetDeltaMousePos(deltaX, deltaY);
 	if (deltaX != 0 && deltaY != 0)
 	{
-		XMVECTOR rotation = XMVectorSet(float(deltaY), float(deltaX), 0, 0) * cRotSpeed;
-		_pParent->GetTransform().Rotate(rotation);
+		_pParent->GetTransform().Rotate(Vector3D(float(deltaY), float(deltaX), 0) * cRotSpeed);
 	}
 }
 
@@ -57,17 +54,23 @@ void DebugCameraController::HandleSelection()
 		std::vector<Entity*> entities = EntityManager::GetEntities();
 		Entity* selectedObject = nullptr;
 		float smallestDistance = std::numeric_limits<float>::infinity();
-		XMVECTOR rayOrigin = XMLoadFloat3(&CameraManager::GetMainCamera()->GetPosition());
-		XMVECTOR rayDirection = XMLoadFloat3(&CameraManager::GetMainCamera()->GetForward());
+		Vector3D cameraPosition = CameraManager::GetMainCamera()->GetPosition();
+		Vector3D cameraDirection = CameraManager::GetMainCamera()->GetForward();
+		DirectX::XMVECTOR rayOrigin = DirectX::XMVectorSet(cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0f);
+		DirectX::XMVECTOR rayDirection = DirectX::XMVectorSet(cameraDirection.x, cameraDirection.y, cameraDirection.z, 1.0f);
 
 		for (int i = 0; i < entities.size(); i++)
 		{
 			Mesh* pMesh = entities[i]->GetComponent<Mesh>();
 			if (pMesh && entities[i]->IsSelectable())
 			{
-				BoundingBox boundingBox = BoundingBox(pMesh->GetBoundingCenter(), pMesh->GetBoundingSize());
+				Vector3D boundingCenter = pMesh->GetBoundingCenter();
+				Vector3D boundingSize = pMesh->GetBoundingSize();
 
-				boundingBox.Transform(boundingBox, entities[i]->GetWorldMatrix());
+				DirectX::BoundingBox boundingBox = DirectX::BoundingBox(DirectX::XMFLOAT3(boundingCenter.x, boundingCenter.y, boundingCenter.z), DirectX::XMFLOAT3(boundingSize.x, boundingSize.y, boundingSize.z));
+				DirectX::XMMATRIX worldMatrix = DirectX::XMMATRIX(entities[i]->GetWorldMatrix().values);
+				worldMatrix = DirectX::XMMatrixTranspose(worldMatrix);
+				boundingBox.Transform(boundingBox, worldMatrix);
 
 				float distance;
 				if (boundingBox.Intersects(rayOrigin, rayDirection, distance))

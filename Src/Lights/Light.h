@@ -1,42 +1,40 @@
 #pragma once
-#include <DirectXMath.h>
-
-using namespace DirectX;
+#include <MathLibrary\Vector4D.h>
 
 class Light
 {
 private:
-	XMFLOAT4 _diffuseColor;
-	XMFLOAT4 _ambientColor;
-	XMFLOAT4 _specularColor;
-	XMFLOAT4 _position;
-	XMFLOAT4 _direction;
+	Vector4D _diffuseColor;
+	Vector4D _ambientColor;
+	Vector4D _specularColor;
+	Vector4D _position;
+	Vector4D _direction;
 	float	 _specularPower;
 	float _diffuseStrength;
 	float _ambientStrength;
 	float _specularStrength;
 
 public:
-	Light(const XMFLOAT4& position, const XMFLOAT4& direction, const XMFLOAT4& diffuseColor, const XMFLOAT4& ambientColor, const XMFLOAT4& specularColor,
+	Light(const Vector4D& position, const Vector4D& direction, const Vector4D& diffuseColor, const Vector4D& ambientColor, const Vector4D& specularColor,
 		float specularPower, float diffuseStrength, float ambientStrength, float specularStrength);
 	Light();
 
-	const XMFLOAT4& GetPosition();
-	const XMFLOAT4& GetDirection();
-	const XMFLOAT4& GetDiffuseColor();
-	const XMFLOAT4& GetAmbientColor();
-	const XMFLOAT4& GetSpecularColor();
+	const Vector4D& GetPosition();
+	const Vector4D& GetDirection();
+	const Vector4D& GetDiffuseColor();
+	const Vector4D& GetAmbientColor();
+	const Vector4D& GetSpecularColor();
 
 	float GetSpecularPower();
 	float GetDiffuseStrength();
 	float GetAmbientStrength();
 	float GetSpecularStrength();
 
-	void SetDiffuse(const XMFLOAT4& diffuseColor);
-	void SetAmbient(const XMFLOAT4& ambientColor);
-	void SetSpecular(const XMFLOAT4& specularColor);
-	void SetPosition(const XMFLOAT4& position);
-	void SetDirection(const XMFLOAT4& direction);
+	void SetDiffuse(const Vector4D& diffuseColor);
+	void SetAmbient(const Vector4D& ambientColor);
+	void SetSpecular(const Vector4D& specularColor);
+	void SetPosition(const Vector4D& position);
+	void SetDirection(const Vector4D& direction);
 
 	void SetSpecularPower(float specularPower);
 	void SetDiffuseStrength(float diffuseStrength);

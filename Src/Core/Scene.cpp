@@ -11,24 +11,24 @@ void Scene::CleanUp()
 	}
 }
 
-void DirectX::to_json(json& j, const XMFLOAT3& vector)
+void to_json(json& j, const Vector3D& vector)
 {
 	j = json{ {"x", vector.x}, {"y", vector.y}, {"z", vector.z} };
 }
 
-void DirectX::to_json(json& j, const XMFLOAT4& vector)
+void to_json(json& j, const Vector4D& vector)
 {
 	j = json{ {"x", vector.x}, {"y", vector.y}, {"z", vector.z}, {"w", vector.w} };
 }
 
-void DirectX::from_json(const json& j, XMFLOAT3& vector)
+void from_json(const json& j, Vector3D& vector)
 {
 	vector.x = j["x"];
 	vector.y = j["y"];
 	vector.z = j["z"];
 }
 
-void DirectX::from_json(const json& j, XMFLOAT4& vector)
+void from_json(const json& j, Vector4D& vector)
 {
 	vector.x = j["x"];
 	vector.y = j["y"];
