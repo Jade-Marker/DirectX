@@ -66,6 +66,10 @@ void to_json(json& j, const std::vector<LoadedComponent*>& components)
 			j += json{ *(LoadedLight*)components[i] };
 			break;
 
+		case PARTICLE_MODEL:
+			j += json{ *(LoadedParticleModel*)components[i] };
+			break;
+
 		default:
 			j += json{ *components[i] };
 			break;
@@ -145,6 +149,7 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		LoadedCamera camera;
 		LoadedLight light;
 		LoadedCustomComponent customComponent;
+		LoadedParticleModel particleModel;
 
 		switch (component.type)
 		{
@@ -181,6 +186,11 @@ void from_json(const json& j, std::vector<LoadedComponent*>& components)
 		case CUSTOM_COMPONENT:
 			customComponent = j[i][0];
 			pComponent = new LoadedCustomComponent(customComponent);
+			break;
+
+		case PARTICLE_MODEL:
+			particleModel = j[i][0];
+			pComponent = new LoadedParticleModel(particleModel);
 			break;
 
 		default:
@@ -281,4 +291,12 @@ void from_json(const json& j, LoadedLight& light)
 void from_json(const json& j, LoadedCustomComponent& customComponent)
 {
 	customComponent.filePath = j["filePath"];
+}
+
+void from_json(const json& j, LoadedParticleModel& particleModel)
+{
+	particleModel.velocity = j["velocity"];
+	particleModel.acceleration = j["acceleration"];
+	particleModel.angularVelocity = j["angularVelocity"];
+	particleModel.angularAcceleration = j["angularAcceleration"];
 }

@@ -34,10 +34,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
             float deltaTime = time - timeOld;
 
-            theApp->Update(deltaTime);
-            theApp->Draw();
+            if (deltaTime > 0.0f)
+            {
 
-            timeOld = time;
+                theApp->Update(deltaTime);
+                theApp->Draw();
+
+                timeOld = time;
+            }
         }
     }
 

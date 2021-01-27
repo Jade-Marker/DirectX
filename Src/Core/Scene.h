@@ -108,6 +108,18 @@ struct LoadedCustomComponent : LoadedComponent
 	{}
 };
 
+struct LoadedParticleModel : LoadedComponent
+{
+	Vector3D velocity;
+	Vector3D acceleration;
+	Vector3D angularVelocity;
+	Vector3D angularAcceleration;
+
+	LoadedParticleModel() :
+		LoadedComponent(PARTICLE_MODEL)
+	{}
+};
+
 struct LoadedEntity
 {
 	Transform transform;
@@ -184,3 +196,4 @@ void from_json(const json& j, LoadedShader& shader);
 void from_json(const json& j, Scene& scene);
 void from_json(const json& j, LoadedLight& light);
 void from_json(const json& j, LoadedCustomComponent& customComponent);
+void from_json(const json& j, LoadedParticleModel& particleModel);

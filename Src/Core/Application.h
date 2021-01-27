@@ -38,6 +38,7 @@
 #include "LightComponent.h"
 #include "SkyboxRasterState.h"
 #include "CustomComponent.h"
+#include "ParticleModel.h"
 
 #include <MathLibrary\Vector3D.h>
 #include <MathLibrary\Matrix.h>

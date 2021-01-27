@@ -374,6 +374,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Entity and Components\ParticleModel.cpp" />
     <ClCompile Include="Src\Entity and Components\CustomComponent.cpp" />
     <ClCompile Include="Src\Entity and Components\SkyboxRasterState.cpp" />
     <ClCompile Include="Src\Entity and Components\LightComponent.cpp" />
@@ -413,6 +414,7 @@
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Entity and Components\ParticleModel.h" />
     <ClInclude Include="Src\Entity and Components\CustomComponent.h" />
     <ClInclude Include="extern\json.hpp" />
     <ClInclude Include="extern\Lua\include\lauxlib.h" />

@@ -548,6 +548,7 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         LoadedCamera* camera;
         LoadedLight* light;
         LoadedCustomComponent* customComponent;
+        LoadedParticleModel* particleModel;
         Texture* diffuse = nullptr;
         Texture* specular = nullptr;
         Texture* ambient = nullptr;
@@ -618,6 +619,11 @@ Entity* Application::LoadEntity(LoadedEntity entity)
         case CUSTOM_COMPONENT:
             customComponent = (LoadedCustomComponent*)entity.components[i];
             component = new CustomComponent(customComponent->filePath);
+            break;
+
+        case PARTICLE_MODEL:
+            particleModel = (LoadedParticleModel*)entity.components[i];
+            component = new ParticleModel(particleModel->velocity, particleModel->acceleration, particleModel->angularVelocity, particleModel->angularAcceleration);
             break;
         }
 

@@ -59,6 +59,7 @@
     <ClInclude Include="extern\sol\sol.hpp" />
     <ClInclude Include="Src\Entity and Components\CustomComponent.h" />
     <ClInclude Include="Src\Entity and Components\DebugCameraController.h" />
+    <ClInclude Include="Src\Entity and Components\ParticleModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="Src\Entity and Components\SkyboxRasterState.cpp" />
     <ClCompile Include="Src\Entity and Components\CustomComponent.cpp" />
     <ClCompile Include="Src\Entity and Components\DebugCameraController.cpp" />
+    <ClCompile Include="Src\Entity and Components\ParticleModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">
