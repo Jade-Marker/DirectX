@@ -31,6 +31,4 @@ public:
     float Square();
     float Dist(const Vector3D& vec);
     float Magnitude();
-
-    Vector4D ToQuaterion() const;
 };

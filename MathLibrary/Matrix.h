@@ -2,6 +2,7 @@
 #include <exception>
 #include "Vector3D.h"
 #include "Vector4D.h"
+#include "Quaternion.h"
 class Matrix
 {
 public:

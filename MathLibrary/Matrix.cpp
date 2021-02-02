@@ -287,27 +287,9 @@ Matrix Matrix::Translate(const Vector3D& offsets)
 
 Matrix Matrix::Rotate(const Vector3D& angles)
 {
-	Matrix result;
+	Quaternion quaternion = Quaternion::EulerToQuaternion(angles);
 
-	Vector4D quaternion = angles.ToQuaterion();
-
-	float x2 = quaternion.x * quaternion.x;
-	float y2 = quaternion.y * quaternion.y;
-	float z2 = quaternion.z * quaternion.z;
-
-	result.rows[0][0] = 1.0f - 2.0f * y2 - 2.0f * z2;
-	result.rows[0][1] = 2.0f * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
-	result.rows[0][2] = 2.0f * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
-
-	result.rows[1][0] = 2.0f * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
-	result.rows[1][1] = 1.0f - 2.0f * x2 - 2.0f * z2;
-	result.rows[1][2] = 2.0f * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
-
-	result.rows[2][0] = 2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
-	result.rows[2][1] = 2.0f * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
-	result.rows[2][2] = 1.0f - 2.0f * x2 - 2.0f * y2;
-
-	return result;
+	return quaternion.ToRotationMatrix();
 }
 
 Matrix Matrix::RotateX(float angle)

@@ -120,22 +120,3 @@ float Vector3D::Magnitude()
 {
 	return sqrt(Square());
 }
-
-Vector4D Vector3D::ToQuaterion() const
-{
-	float cosZ, sinZ, cosY, sinY, cosX, sinX;
-	cosZ = cosf(z * 0.5f);
-	sinZ = sinf(z * 0.5f);
-	cosY = cosf(y * 0.5f);
-	sinY = sinf(y * 0.5f);
-	cosX = cosf(x * 0.5f);
-	sinX = sinf(x * 0.5f);
-
-	Vector4D quaternion;
-	quaternion.w = cosX * cosY * cosZ - sinX * sinY * sinZ;
-	quaternion.x = sinX * cosY * cosZ + cosX * sinY * sinZ;
-	quaternion.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
-	quaternion.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
-
-	return quaternion;
-}
