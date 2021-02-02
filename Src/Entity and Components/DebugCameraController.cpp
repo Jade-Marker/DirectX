@@ -8,27 +8,28 @@ void DebugCameraController::HandleMovement(float deltaTime)
 
 	if (InputManager::GetKey('W'))
 	{
-		offset += CameraManager::GetMainCamera()->GetForward() * deltaTime;
+		offset += CameraManager::GetMainCamera()->GetForward();
 	}
 
 	if (InputManager::GetKey('S'))
 	{
-		offset -= CameraManager::GetMainCamera()->GetForward() * deltaTime;
+		offset -= CameraManager::GetMainCamera()->GetForward();
 	}
 
 	if (InputManager::GetKey('A'))
 	{
-		offset -= CameraManager::GetMainCamera()->GetRight() * deltaTime;
+		offset -= CameraManager::GetMainCamera()->GetRight();
 	}
 
 	if (InputManager::GetKey('D'))
 	{
-		offset += CameraManager::GetMainCamera()->GetRight() * deltaTime;
+		offset += CameraManager::GetMainCamera()->GetRight();
 	}
 
 
 	offset.Normalise();
 	offset *= cMoveSpeed;
+	offset *= deltaTime;
 
 	if (isRunning)
 		offset *= cRunningScale;
@@ -92,7 +93,7 @@ void DebugCameraController::HandleSelection()
 }
 
 DebugCameraController::DebugCameraController():
-	cMoveSpeed(0.25f), cRotSpeed(0.001f), cRunningScale(4.0f)
+	cMoveSpeed(20.0f), cRotSpeed(0.001f), cRunningScale(4.0f)
 {
 }
 

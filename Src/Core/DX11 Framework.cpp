@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <chrono>
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -24,23 +25,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
         }
         else
         {
-            static DWORD dwTimeStart = 0;
+            static auto timeOld = std::chrono::system_clock::now();
+            auto timeNow = std::chrono::system_clock::now();
+            std::chrono::duration<float> elapsed = timeNow - timeOld;
+            float deltaTime = elapsed.count();
 
-            if (dwTimeStart == 0)
-                dwTimeStart = GetTickCount();
-
-            static float timeOld;
-            float time = (GetTickCount() - dwTimeStart) / 1000.0f;
-
-            float deltaTime = time - timeOld;
-
-            if (deltaTime > 0.0f)
+            if(deltaTime > 0.0f)
             {
-
                 theApp->Update(deltaTime);
                 theApp->Draw();
 
-                timeOld = time;
+                timeOld = timeNow;
             }
         }
     }
