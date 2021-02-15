@@ -15,5 +15,5 @@ void ParticleModel::Update(float deltaTime)
 	_pParent->GetTransform().Translate(_velocity * deltaTime);
 
 	_angularVelocity += _angularAcceleration * deltaTime;
-	_pParent->GetTransform().Rotate(_angularVelocity * deltaTime);
+	_pParent->GetTransform().EulerRotate(_angularVelocity * deltaTime);
 }

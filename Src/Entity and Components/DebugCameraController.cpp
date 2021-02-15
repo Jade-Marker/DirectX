@@ -44,7 +44,8 @@ void DebugCameraController::HandleRotation()
 	InputManager::GetDeltaMousePos(deltaX, deltaY);
 	if (deltaX != 0 && deltaY != 0)
 	{
-		_pParent->GetTransform().Rotate(Vector3D(float(deltaY), float(deltaX), 0) * cRotSpeed);
+		angle += Vector3D(float(deltaY), float(deltaX), 0) * cRotSpeed;
+		_pParent->GetTransform().Rotation = Quaternion::EulerToQuaternion(angle);
 	}
 }
 

@@ -1,5 +1,6 @@
 #include "Quaternion.h"
 #include "Matrix.h"
+#include "Constants.h"
 #include <math.h>
 
 Quaternion::Quaternion():
@@ -17,7 +18,12 @@ Quaternion::Quaternion(const Vector4D& vector):
 {
 }
 
-Matrix Quaternion::ToRotationMatrix()
+Quaternion::Quaternion(const Vector3D& vector, float w):
+	x(vector.x), y(vector.y), z(vector.z), w(w)
+{
+}
+
+Matrix Quaternion::ToRotationMatrix() const
 {
 	Matrix result;
 
@@ -40,6 +46,112 @@ Matrix Quaternion::ToRotationMatrix()
 	return result;
 }
 
+void Quaternion::Normalise()
+{
+	float magSquared = x * x + y * y + z * z + w * w;
+	if (magSquared == 0)
+	{
+		w = 1;
+	}
+	else
+	{
+		float scale = 1.0f / (sqrtf(magSquared));
+
+		x *= scale;
+		y *= scale;
+		z *= scale;
+		w *= scale;
+	}
+
+}
+
+Vector3D Quaternion::ToEuler() const
+{
+	//Todo, get the x and z components added to this
+	Vector3D result;
+
+	result.y = AngleAboutY();
+
+	return result;
+}
+
+float Quaternion::AngleAboutY() const
+{
+	Matrix rotationMatrix = ToRotationMatrix();
+	Vector3D xAxis = rotationMatrix * Vector3D(1, 0, 0);
+
+	float hypotenuse = sqrtf(xAxis.x * xAxis.x + xAxis.z * xAxis.z);
+	float tanAngle = xAxis.z / xAxis.x;
+	float sinAngle = xAxis.z / hypotenuse;
+	float cosAngle = xAxis.x / hypotenuse;
+
+	float angle = asinf(sinAngle);
+
+	bool sinPos = !signbit(sinAngle);
+	bool cosPos = !signbit(cosAngle);
+	bool tanPos = !signbit(tanAngle);
+
+	if (sinPos && !cosPos && !tanPos)
+		angle = cPI - angle;
+	else if (tanPos && !sinPos && !cosPos)
+		angle = cPI + -angle;
+	else if (cosPos && !sinPos && !tanPos)
+		angle = cPI2 + angle;
+
+	return angle;
+}
+
+Quaternion Quaternion::Conjugate()
+{
+	return Quaternion(-x, -y, -z, w);
+}
+
+void Quaternion::RotateByVector(const Vector3D& vector)
+{
+	Quaternion q = Quaternion(vector, 0);
+	q = *this * q;
+
+	w += q.w * 0.5f;
+	x += q.x * 0.5f;
+	y += q.y * 0.5f;
+	z += q.z * 0.5f;
+
+	Normalise();
+}
+
+Quaternion Quaternion::operator*(const Quaternion& value)
+{
+	Quaternion result;
+
+	Quaternion q = *this;
+	result.w = q.w * value.w - q.x * value.x -
+		q.y * value.y - q.z * value.z;
+	result.x = q.w * value.x + q.x * value.w +
+		q.y * value.z - q.z * value.y;
+	result.y = q.w * value.y + q.y * value.w +
+		q.z * value.x - q.x * value.z;
+	result.z = q.w * value.z + q.z * value.w +
+		q.x * value.y - q.y * value.x;
+
+	return result;
+}
+
+Quaternion& Quaternion::operator*=(const Quaternion& value)
+{
+	Quaternion q = *this;
+
+	w = q.w * value.w - q.x * value.x -
+		q.y * value.y - q.z * value.z;
+	x = q.w * value.x + q.x * value.w +
+		q.y * value.z - q.z * value.y;
+	y = q.w * value.y + q.y * value.w +
+		q.z * value.x - q.x * value.z;
+	z = q.w * value.z + q.z * value.w +
+		q.x * value.y - q.y * value.x;
+
+	return *this;
+}
+
 Quaternion Quaternion::EulerToQuaternion(const Vector3D& eulerAngles)
 {
 	float cosZ, sinZ, cosY, sinY, cosX, sinX;
@@ -57,4 +169,9 @@ Quaternion Quaternion::EulerToQuaternion(const Vector3D& eulerAngles)
 		cosX * cosY * cosZ - sinX * sinY * sinZ);
 
 	return quaternion;
+}
+
+Quaternion Quaternion::EulerToQuaternion(float x, float y, float z)
+{
+	return EulerToQuaternion(Vector3D(x, y, z));
 }

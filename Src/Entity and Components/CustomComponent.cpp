@@ -29,18 +29,34 @@ void CustomComponent::LoadLibraries()
 
 void CustomComponent::InitUserTypes()
 {
-	sol::usertype<Vector3D> xmfloat3 = _lua.new_usertype<Vector3D>(
+	sol::usertype<Vector3D> vector3D = _lua.new_usertype<Vector3D>(
 		"Vector3D",
+		sol::constructors<Vector3D(), Vector3D(float, float, float)>(),
+		sol::meta_method::addition, &Vector3D::operator+,
 		"x", &Vector3D::x,
 		"y", &Vector3D::y,
 		"z", &Vector3D::z
+		);
+	_lua.set_function("Vector3D", [](float x, float y, float z) {return Vector3D(x, y, z); });
+
+	Quaternion(*floatFunc)(float, float, float) = &Quaternion::EulerToQuaternion;
+	sol::usertype<Quaternion> quaternion = _lua.new_usertype<Quaternion>(
+		"Quaternion",
+		"x", &Quaternion::x,
+		"y", &Quaternion::y,
+		"z", &Quaternion::z,
+		"w", &Quaternion::w,
+		"EulerToQuaternion", floatFunc,
+		"ToEuler", &Quaternion::ToEuler
 		);
 
 	sol::usertype<Transform> transform = _lua.new_usertype<Transform>(
 		"Transform",
 		"Position", &Transform::Position,
 		"Rotation", &Transform::Rotation,
-		"Scale", &Transform::Scale
+		"Scale", &Transform::Scale,
+		"Rotate", &Transform::EulerRotate,
+		"Translate", &Transform::Translate
 		);
 
 	sol::usertype<Component> component = _lua.new_usertype<Component>(

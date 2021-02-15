@@ -60,6 +60,7 @@
     <ClInclude Include="Src\Entity and Components\CustomComponent.h" />
     <ClInclude Include="Src\Entity and Components\DebugCameraController.h" />
     <ClInclude Include="Src\Entity and Components\ParticleModel.h" />
+    <ClInclude Include="Src\Core\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Buffers\Buffer.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="Src\Entity and Components\CustomComponent.cpp" />
     <ClCompile Include="Src\Entity and Components\DebugCameraController.cpp" />
     <ClCompile Include="Src\Entity and Components\ParticleModel.cpp" />
+    <ClCompile Include="Src\Core\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

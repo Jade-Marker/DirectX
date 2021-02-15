@@ -110,7 +110,7 @@ void to_json(json& j, const LoadedEntity& entity)
 
 void to_json(json& j, const Transform& transform)
 {
-	j = json{ {"Position", transform.Position},{"Rotation", transform.Rotation},{"Scale", transform.Scale} };
+	j = json{ {"Position", transform.Position},{"Rotation", transform.Rotation.ToEuler()},{"Scale", transform.Scale} };
 }
 
 void to_json(json& j, const LoadedComponent& component)
@@ -252,7 +252,7 @@ void from_json(const json& j, Transform& transform)
 {
 	transform.Position = j["Position"];
 	transform.Scale = j["Scale"];
-	transform.Rotation = j["Rotation"];
+	transform.Rotation = Quaternion::EulerToQuaternion(j["Rotation"]);
 }
 
 void from_json(const json& j, LoadedComponent& component)

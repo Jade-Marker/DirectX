@@ -133,7 +133,7 @@ struct LoadedEntity
 	}
 
 	LoadedEntity() :
-		transform(Vector3D(0, 0, 0), Vector3D(0, 0, 0), Vector3D(0, 0, 0)), parent(-1), selectable(false)
+		transform(Vector3D(0, 0, 0), Quaternion(), Vector3D(0, 0, 0)), parent(-1), selectable(false)
 	{}
 };
 

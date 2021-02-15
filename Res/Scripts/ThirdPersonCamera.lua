@@ -2,8 +2,12 @@ camera = {}
 
 cRotSpeed = 0.00125
 
+EulerRotation = {}
+
 function Start()
 	camera = GetComponent(this, ComponentType.CAMERA);
+
+	EulerRotation = Vector3D(0,0,0)
 end
 
 function Update(deltaTime)
@@ -18,10 +22,10 @@ function Update(deltaTime)
 		SetRootActive(true)
 
 		Position = parent:GetParent():GetTransform().Position
-		Rotation = parent:GetParent():GetTransform().Rotation
+		
+		EulerRotation = EulerRotation + Vector3D(0, deltaX * cRotSpeed, deltaY * cRotSpeed)
 
-		Rotation.y = Rotation.y - deltaX * cRotSpeed
-		Rotation.z = Rotation.z + deltaY * cRotSpeed
+		parent:GetParent():GetTransform().Rotation = Quaternion.EulerToQuaternion(EulerRotation.x, EulerRotation.y, EulerRotation.z)
 	else
 		SetRootActive(false)
 	end

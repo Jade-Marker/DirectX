@@ -7,17 +7,21 @@ Rotator::Rotator(Vector3D tScale):
 
 void Rotator::Update(float deltaTime)
 {
+    Vector3D rotation;
+
     if (_xDirState)
-        _pParent->GetTransform().Rotation.x += _tScale.x * deltaTime;
+        rotation.x += _tScale.x * deltaTime;
     else
-        _pParent->GetTransform().Rotation.x -= _tScale.x * deltaTime;
+        rotation.x -= _tScale.x * deltaTime;
 
     if (_yDirState)
-        _pParent->GetTransform().Rotation.y += _tScale.y * deltaTime;
+        rotation.y += _tScale.y * deltaTime;
     else
-        _pParent->GetTransform().Rotation.y -= _tScale.y * deltaTime;
+        rotation.y -= _tScale.y * deltaTime;
 
-    _pParent->GetTransform().Rotation.z += _tScale.z * deltaTime;
+    rotation.z += _tScale.z * deltaTime;
+
+    _pParent->GetTransform().EulerRotate(rotation);
 
     if (InputManager::GetKeyDown('J'))
         _xDirState = true;

@@ -4,6 +4,9 @@
 #include <MathLibrary\Vector3D.h>
 #include <MathLibrary\Vector4D.h>
 #include <MathLibrary\Matrix.h>
+#include <MathLibrary\Constants.h>
+
+#include "Transform.h"
 
 struct BasicVertex
 {
@@ -40,47 +43,6 @@ __declspec(align(16)) struct GlobalConstantBuffer
 
 
 	int numLights;
-};
-
-struct Transform
-{
-	Vector3D Position;
-	Vector3D Rotation;
-	Vector3D Scale;
-
-	Transform(const Vector3D& position, const Vector3D& rotation, const Vector3D& scale)
-	{
-		Position = position;
-		Rotation = rotation;
-		Scale = scale;
-	}
-
-	Transform()
-	{
-		Position = Vector3D();
-		Rotation = Vector3D();
-		Scale = Vector3D();
-	}
-
-	void Translate(const Vector3D& translation)
-	{
-		Position += translation;
-	}
-
-	void Rotate(const Vector3D& rotation)
-	{
-		Rotation += rotation;
-	}
-
-	Matrix GetWorldMatrix()
-	{
-		return Matrix::Translate(Position) * GetRotationMatrix() * Matrix::Scale(Scale);
-	}
-
-	Matrix GetRotationMatrix()
-	{
-		return Matrix::Rotate(Rotation);
-	}
 };
 
 enum ComponentType

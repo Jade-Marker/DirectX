@@ -12,6 +12,7 @@ private:
 	const float cRotSpeed;
 	const float cRunningScale;
 	Camera* _pCamera;
+	Vector3D angle;
 
 	void HandleMovement(float deltaTime);
 	void HandleRotation();

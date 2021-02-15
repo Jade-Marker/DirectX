@@ -529,7 +529,7 @@ void Application::InitEntities(const Scene& scene)
     //If no main camera is set, create a default
     if (CameraManager::GetMainCamera() == nullptr)
     {
-        Entity* defaultCamera = new Entity(Transform(Vector3D(0, 0, 0), Vector3D(0, 0, 0), Vector3D(1, 1, 1)), nullptr,
+        Entity* defaultCamera = new Entity(Transform(Vector3D(0, 0, 0), Quaternion(), Vector3D(1, 1, 1)), nullptr,
             std::vector<Component*>{ new Camera(_WindowWidth, _WindowHeight, 0.1, 100)}, false);
     }
 }

@@ -412,6 +412,7 @@
     <ClCompile Include="Src\Buffers\StructuredBuffer.cpp" />
     <ClCompile Include="Src\Textures\Texture.cpp" />
     <ClCompile Include="Src\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="Src\Core\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Entity and Components\ParticleModel.h" />
@@ -463,6 +464,7 @@
     <ClInclude Include="Src\Core\Structures.h" />
     <ClInclude Include="Src\Textures\Texture.h" />
     <ClInclude Include="Src\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Src\Core\Transform.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>
   <ItemGroup>

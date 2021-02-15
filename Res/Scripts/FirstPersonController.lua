@@ -6,7 +6,9 @@ cBoostScale = 4
 cRotSpeed = 0.001
 cCrouchAmount = 3
 
-function Move(Position, Rotation, isForward, deltaTime, isBoosted)
+EulerRotation = {}
+
+function Move(Position, EulerRotation, isForward, deltaTime, isBoosted)
 	scalar = 0;
 
 	if(isForward) then scalar = 1
@@ -16,11 +18,11 @@ function Move(Position, Rotation, isForward, deltaTime, isBoosted)
 		scalar = scalar * cBoostScale
 	end
 
-	Position.x = Position.x - scalar * math.cos(Rotation.y + math.pi/2) * cMoveSpeed * deltaTime
-	Position.z = Position.z + scalar * math.sin(Rotation.y + math.pi/2) * cMoveSpeed * deltaTime
+	Position.x = Position.x - scalar * math.cos(EulerRotation.y + math.pi/2) * cMoveSpeed * deltaTime
+	Position.z = Position.z + scalar * math.sin(EulerRotation.y + math.pi/2) * cMoveSpeed * deltaTime
 end
 
-function MoveSide(Position, Rotation, isLeft, deltaTime, isBoosted)
+function MoveSide(Position, EulerRotation, isLeft, deltaTime, isBoosted)
 	scalar = 0;
 
 	if(isLeft) then scalar = 1
@@ -30,13 +32,15 @@ function MoveSide(Position, Rotation, isLeft, deltaTime, isBoosted)
 		scalar = scalar * cBoostScale
 	end
 
-	Position.x = Position.x - scalar * math.cos(Rotation.y) * cMoveSpeed * deltaTime
-	Position.z = Position.z + scalar * math.sin(Rotation.y) * cMoveSpeed * deltaTime
+	Position.x = Position.x - scalar * math.cos(EulerRotation.y) * cMoveSpeed * deltaTime
+	Position.z = Position.z + scalar * math.sin(EulerRotation.y) * cMoveSpeed * deltaTime
 end
 
 function Start()
 	camera = GetComponent(this, ComponentType.CAMERA);
 	initialPos = InitialTransform.Position
+
+	EulerRotation = Vector3D(0,0,0)
 end
 
 function Update(deltaTime)
@@ -46,25 +50,26 @@ function Update(deltaTime)
 
 	if(GetMainCamera() == camera) then
 		Position = Transform.Position
-		Rotation = Transform.Rotation
 		deltaX, deltaY = GetDeltaMousePos()
 		isBoosted = GetKey(Input.KEY_SHIFT)
 
+		EulerRotation = EulerRotation + Vector3D(deltaY * cRotSpeed, deltaX * cRotSpeed, 0)
+		Transform.Rotation = Quaternion.EulerToQuaternion(EulerRotation.x, EulerRotation.y, EulerRotation.z)
 
 		if(GetKey(Input.KEY_W)) then
-			Move(Position, Rotation, true, deltaTime, isBoosted)
+			Move(Position, EulerRotation, true, deltaTime, isBoosted)
 		end
 
 		if(GetKey(Input.KEY_S)) then
-			Move(Position, Rotation, false, deltaTime, isBoosted)
+			Move(Position, EulerRotation, false, deltaTime, isBoosted)
 		end
 
 		if(GetKey(Input.KEY_A)) then
-			MoveSide(Position, Rotation, true, deltaTime, isBoosted)
+			MoveSide(Position, EulerRotation, true, deltaTime, isBoosted)
 		end
 
 		if(GetKey(Input.KEY_D)) then
-			MoveSide(Position, Rotation, false, deltaTime, isBoosted)
+			MoveSide(Position, EulerRotation, false, deltaTime, isBoosted)
 		end
 
 		if(GetKey(Input.KEY_CONTROL)) then
@@ -72,8 +77,5 @@ function Update(deltaTime)
 		else
 			Position.y = initialPos.y	
 		end
-
-		Rotation.x = Rotation.x + deltaY * cRotSpeed
-		Rotation.y = Rotation.y + deltaX * cRotSpeed
 	end
 end

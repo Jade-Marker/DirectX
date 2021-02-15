@@ -1,3 +1,3 @@
 function Update(deltaTime)
-	Transform.Rotation.y = Transform.Rotation.y + 5 * deltaTime
+	Transform:Rotate(Vector3D(0, 5 * deltaTime, 0))
 end
